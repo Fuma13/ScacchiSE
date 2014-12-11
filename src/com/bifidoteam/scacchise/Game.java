@@ -1,6 +1,6 @@
-package com.bifidoteam.scacchi;
+package com.bifidoteam.scacchise;
 
-import com.bifidoteam.scacchi.util.SystemUiHider;
+import com.bifidoteam.scacchise.util.SystemUiHider;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
@@ -16,7 +16,7 @@ import android.view.View;
  * 
  * @see SystemUiHider
  */
-public class Gioco extends Activity
+public class Game extends Activity
 {
 	/**
 	 * Whether or not the system UI should be auto-hidden after
@@ -51,7 +51,7 @@ public class Gioco extends Activity
 	{
 		super.onCreate(savedInstanceState);
 
-		setContentView(R.layout.activity_gioco);
+		setContentView(R.layout.activity_game);
 
 		final View controlsView = findViewById(R.id.fullscreen_content_controls);
 		final View contentView = findViewById(R.id.fullscreen_content);
@@ -118,8 +118,6 @@ public class Gioco extends Activity
 				{
 					mSystemUiHider.show();
 				}
-				
-				CicloWhile();
 			}
 		});
 
@@ -177,15 +175,5 @@ public class Gioco extends Activity
 	{
 		mHideHandler.removeCallbacks(mHideRunnable);
 		mHideHandler.postDelayed(mHideRunnable, delayMillis);
-	}
-	
-	private boolean entra = false;
-	
-	private void CicloWhile()
-	{
-		entra = !entra;
-		while(entra){}
-		
-		
 	}
 }

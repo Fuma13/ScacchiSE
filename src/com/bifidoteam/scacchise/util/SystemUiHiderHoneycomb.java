@@ -1,4 +1,4 @@
-package com.bifidoteam.scacchi.util;
+package com.bifidoteam.scacchise.util;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
