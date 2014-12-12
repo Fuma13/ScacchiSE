@@ -4,8 +4,8 @@ package com.bifidoteam.scacchise.model;
 abstract class Pezzo {	
 		
 	//-----------------------------Private Variables----------------------------------------
-	private int index;
-	private boolean white;
+	protected int index;
+	protected boolean white;
 	//private Graphic_Info gi; 								-> creare la classe Graphic_Info
 	//-----------------------------Private Variables----------------------------------------
 	
