@@ -11,7 +11,7 @@ abstract class Pezzo {
 	
 	
 	//--------------------------------Costructors-------------------------------------------
-	public Pezzo(int startingIndex,boolean startingColor){
+	protected Pezzo(int startingIndex,boolean startingColor){
 		this.index = startingIndex;
 		this.white = startingColor;
 	}
@@ -22,7 +22,7 @@ abstract class Pezzo {
 	//-----------------------------Public functions-----------------------------------------
 	abstract MedusaTree GetReachableIndices();
 	
-	public String toString(){
+	protected String ToString(){
 		return "IndexOnBoard:"+index+" White?"+white;
 	}
 	//-----------------------------Public functions-----------------------------------------
