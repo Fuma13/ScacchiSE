@@ -1,24 +1,34 @@
 package com.bifidoteam.scacchise.model;
 
 
-public class Pezzo {
-	
-	//private Variables
-	protected int index;
-	protected boolean color;
+public class Pezzo {	
+		
+	//-----------------------------Private Variables----------------------------------------
+	private int index;
+	private boolean color;
 	//private Graphic_Info gi; 								-> creare la classe Graphic_Info
+	//-----------------------------Private Variables----------------------------------------
 	
-	//Costructors 
+	
+	//--------------------------------Costructors-------------------------------------------
 	public Pezzo(int startingIndex,boolean startingColor){
 		this.index = startingIndex;
 		this.color = startingColor;
 	}
-		
-	//public functions
+	//--------------------------------Costructors-------------------------------------------
+	
+	
+	
+	//-----------------------------Public functions-----------------------------------------
 	//public MedusaTree GetReachableIndices();				-> creare la classe MedusaTreee
+	public String toString(){
+		return "IndexOnBoard:"+index+" Color:"+color;
+	}
+	//-----------------------------Public functions-----------------------------------------
 	
 	
-	//--------------------------------getter/setter-----------------------------------------
+	
+	//--------------------------------Getter/Setter-----------------------------------------
 	public int getIndex() {
 		return index;
 	}
@@ -32,5 +42,5 @@ public class Pezzo {
 	public void setColor(boolean color) {
 		this.color = color;
 	}
-	//--------------------------------getter/setter-----------------------------------------
+	//--------------------------------Getter/Setter-----------------------------------------
 }
