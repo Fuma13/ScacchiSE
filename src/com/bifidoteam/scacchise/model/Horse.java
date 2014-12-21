@@ -1,7 +1,7 @@
 package com.bifidoteam.scacchise.model;
 import com.bifidoteam.scacchise.util.Constants;
 
-public class Horse extends Pezzo {
+public class Horse extends Piece {
 
 	//--------------------------------Costructors-------------------------------------------
 	public Horse(int startingIndex, boolean startingColor) {

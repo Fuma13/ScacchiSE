@@ -1,5 +1,5 @@
 package com.bifidoteam.scacchise.model;
 
-public interface PedoneInterface {
+public interface PawnInterface {
 	public MedusaTree GetEatableIndices();
 }

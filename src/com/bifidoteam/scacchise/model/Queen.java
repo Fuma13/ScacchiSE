@@ -2,7 +2,7 @@ package com.bifidoteam.scacchise.model;
 
 import com.bifidoteam.scacchise.util.Constants;
 
-public class Queen extends Pezzo {
+public class Queen extends Piece {
 
 	//--------------------------------Costructors-------------------------------------------
 	public Queen(int startingIndex, boolean startingColor) {

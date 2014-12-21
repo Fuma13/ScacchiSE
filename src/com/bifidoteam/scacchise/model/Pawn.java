@@ -1,10 +1,10 @@
 package com.bifidoteam.scacchise.model;
 import com.bifidoteam.scacchise.util.Constants;
 
-public class Pedone extends Pezzo implements PedoneInterface {
+public class Pawn extends Piece implements PawnInterface {
 
 	//--------------------------------Costructors-------------------------------------------
-	public Pedone(int startingIndex, boolean startingColor) {
+	public Pawn(int startingIndex, boolean startingColor) {
 		super(startingIndex, startingColor);
 	}
 	//--------------------------------Costructors-------------------------------------------

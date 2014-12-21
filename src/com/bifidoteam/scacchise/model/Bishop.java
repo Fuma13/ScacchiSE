@@ -2,10 +2,10 @@ package com.bifidoteam.scacchise.model;
 import com.bifidoteam.scacchise.util.Constants;
 import java.lang.Math;
 
-public class Alfiere extends Pezzo {
+public class Bishop extends Piece {
 
 	//--------------------------------Costructors-------------------------------------------
-	public Alfiere(int startingIndex, boolean startingColor) {
+	public Bishop(int startingIndex, boolean startingColor) {
 		super(startingIndex, startingColor);
 	}
 	//--------------------------------Costructors-------------------------------------------
