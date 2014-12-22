@@ -1,17 +1,17 @@
 package com.bifidoteam.scacchise.model;
 
 
-abstract class Pezzo {	
+abstract class Piece {	
 		
 	//-----------------------------Private Variables----------------------------------------
 	protected int index;
 	protected boolean white;
-	//private Graphic_Info gi; 								-> //TODO: creare la classe Graphic_Info
+	//private Graphic_Info gi; 								-> creare la classe Graphic_Info
 	//-----------------------------Private Variables----------------------------------------
 	
 	
 	//--------------------------------Costructors-------------------------------------------
-	protected Pezzo(int startingIndex,boolean startingColor){
+	protected Piece(int startingIndex,boolean startingColor){
 		this.index = startingIndex;
 		this.white = startingColor;
 	}

@@ -24,3 +24,5 @@ proguard/
 
 # Log Files
 *.log
+
+src/com/bifidoteam/scacchise/model/Chessboard.java
