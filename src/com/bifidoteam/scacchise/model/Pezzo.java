@@ -6,7 +6,7 @@ abstract class Pezzo {
 	//-----------------------------Private Variables----------------------------------------
 	protected int index;
 	protected boolean white;
-	//private Graphic_Info gi; 								-> creare la classe Graphic_Info
+	//private Graphic_Info gi; 								-> //TODO: creare la classe Graphic_Info
 	//-----------------------------Private Variables----------------------------------------
 	
 	

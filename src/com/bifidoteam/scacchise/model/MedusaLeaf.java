@@ -17,6 +17,12 @@ public class MedusaLeaf {
 		this.isCut = false;			//this leaf and next are cut
 	}
 	
+	public MedusaLeaf(int newIndex){
+		this.indexOnChessboard = newIndex;
+		this.next = null;
+		this.isCut = false;
+	}
+	
 	public MedusaLeaf(int newIndex,MedusaLeaf newNext){
 		this.indexOnChessboard = newIndex;
 		this.next = newNext;
