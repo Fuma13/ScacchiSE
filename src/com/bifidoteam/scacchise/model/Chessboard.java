@@ -4,8 +4,11 @@ import com.bifidoteam.scacchise.util.Constants;
 
 public class Chessboard
 {
+	//-----------------------------Private Variables----------------------------------------
 	private Pezzo[] chessboard = new Pezzo[Constants.MAX_INDEX];
+	//-----------------------------Private Variables----------------------------------------
 	
+	//-----------------------------Public functions-----------------------------------------
 	public MedusaTree GetRealIndices(int index) {
 		if(index >= 0 && index < Constants.MAX_INDEX && chessboard[index] != null) {
 			return chessboard[index].GetReachableIndices();
@@ -24,4 +27,5 @@ public class Chessboard
 		else
 			return null;
 	}
+	//-----------------------------Public functions-----------------------------------------
 }

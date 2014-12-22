@@ -66,8 +66,19 @@ public class MedusaTree implements Iterable<Integer>,Iterator<Integer>{
 		return notFound;
 	}
 	
-	public void CutBefore() {
+	public void CutBeforeAndAfter() {
 		if(currentNearPos != -1) {
+			if(currentLeaf != null) {
+				//Cut the current leaf
+				currentLeaf.setIsCut(true);
+				if(currentLeaf.getNext() != null) {
+					//Cut also the next so the iterator can change branch
+					currentLeaf.getNext().setIsCut(true);
+				}
+			}
+		}
+		
+/*		if(currentNearPos != -1) {
 			if(nearPositions.get(currentNearPos) == currentLeaf) { //If it is the first leaf, then cut this branch
 				nearPositions.remove(currentNearPos);
 				currentLeaf = nearPositions.get(currentNearPos);
@@ -89,49 +100,60 @@ public class MedusaTree implements Iterable<Integer>,Iterator<Integer>{
 				}
 			}
 		}
+ */
 	}
 	
 	public void CutAfter() {
 		if(currentNearPos != -1) {
-			if(currentLeaf.getNext() != null) { //Check if it is not the last
+			if(currentLeaf != null && currentLeaf.getNext() != null) { //Check if it is not the last
 				//Remove the next leaf
-				currentLeaf.setNext(null);
+				currentLeaf.getNext().setIsCut(true);
 			} //if is the last there is nothing to cut
 		}
 	}
 	//-----------------------------Public functions-----------------------------------------
 
 	//--------------------------------Iterator functions------------------------------------
+	//TODO:FUMA: Controllare che l'iterator sia giusto
 	@Override
 	public boolean hasNext() {
 		boolean hasNextValue = false;
 		if(currentNearPos == -1) {//check on the first one
-			currentNearPos = 0;
-			currentLeaf = nearPositions.get(currentNearPos);
-			if(currentLeaf != null)
-				hasNextValue = true;
-			else
-				hasNextValue = false;
+			MedusaLeaf tempCurrentLeaf = nearPositions.get(0);
+			if(tempCurrentLeaf != null) {
+				if(!tempCurrentLeaf.IsCut())
+					hasNextValue = true;
+				//Change branch
+				else {
+					hasNextValue = hasNextChangeBranch();
+				}
+			}//Else Tree Empty
 		}
 		else {
 			//Continue in this branch
-			if(currentLeaf.getNext() != null){
+			if(!currentLeaf.IsCut() && currentLeaf.getNext() != null){
 				hasNextValue = true;
 			}
 			//Change branch
 			else {
-				int tempCurrentNearPos = currentNearPos;
-				while(tempCurrentNearPos +1 < nearPositions.size()){ //if is not the last
-					tempCurrentNearPos += 1;
-					//if this branch is not cut 
-					if(!nearPositions.get(tempCurrentNearPos).IsCut()){
-						hasNextValue = true;
-					}
-				}
+				hasNextValue = hasNextChangeBranch();
 			}
 		}
 		return hasNextValue;
 			
+	}
+	
+	private boolean hasNextChangeBranch() {
+		boolean hasNextValue = false;
+		int tempCurrentNearPos = currentNearPos;
+		while(tempCurrentNearPos +1 < nearPositions.size()){ //if is not the last
+			tempCurrentNearPos += 1;
+			//if this branch is not cut 
+			if(nearPositions.get(tempCurrentNearPos)!= null && !nearPositions.get(tempCurrentNearPos).IsCut()){
+				hasNextValue = true;
+			}
+		}
+		return hasNextValue;
 	}
 
 	@Override
@@ -140,7 +162,14 @@ public class MedusaTree implements Iterable<Integer>,Iterator<Integer>{
 		if(currentNearPos == -1) {//return the first one
 			currentNearPos = 0;
 			currentLeaf = nearPositions.get(currentNearPos);
-			nextIndex = currentLeaf.getIndexOnChessboard();
+			if(currentLeaf != null) {
+				if(!currentLeaf.IsCut()) {
+					nextIndex = currentLeaf.getIndexOnChessboard();
+				}
+				else {
+					nextIndex = NextChangeBranch();
+				}
+			}// Else Tree Empty
 		}
 		else {
 			if(currentLeaf.getNext() != null){
@@ -149,20 +178,26 @@ public class MedusaTree implements Iterable<Integer>,Iterator<Integer>{
 				nextIndex =  currentLeaf.getIndexOnChessboard();
 			}
 			else {
-				//while if is not the last branch
-				while(currentNearPos +1 < nearPositions.size()){
-					//Change branch
-					currentNearPos += 1;
-					//Take the first leaf in this branch
-					currentLeaf = nearPositions.get(currentNearPos);
-					//if this leaf is not cut 
-					if(!currentLeaf.IsCut()){
-						nextIndex = currentLeaf.getIndexOnChessboard();
-					}
-				}
+				nextIndex = NextChangeBranch();
 			}
 		}
 		//There are not next leaf or branch
+		return nextIndex;
+	}
+	
+	private Integer NextChangeBranch() {
+		Integer nextIndex = null;
+		//while if is not the last branch
+		while(currentNearPos +1 < nearPositions.size()){
+			//Change branch
+			currentNearPos += 1;
+			//Take the first leaf in this branch
+			currentLeaf = nearPositions.get(currentNearPos);
+			//if this leaf is not cut 
+			if(!currentLeaf.IsCut()){
+				nextIndex = currentLeaf.getIndexOnChessboard();
+			}
+		}
 		return nextIndex;
 	}
 

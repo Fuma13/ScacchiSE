@@ -18,7 +18,6 @@ public class GameManager implements ControllerInterface{
 	private boolean whiteTurn; //true if it is the white player turn, false otherwise
 	private GameState gameState;
 	private MedusaTree medusaTreeSelectedIndex;
-	
 	//-----------------------------Private Variables----------------------------------------
 	
 	//--------------------------------Costructors-------------------------------------------
@@ -93,7 +92,7 @@ public class GameManager implements ControllerInterface{
 //		SetWaitingState();
 //	}
 	
-	//-----------------------------Chessboard functions-------------------------------------
+	//-----------------------------Chessboard functions
 	private boolean IsPlayerPiece(int index)
 	{
 		boolean isPlayerPiece = false;
@@ -121,12 +120,11 @@ public class GameManager implements ControllerInterface{
 				}
 				else {
 					//Else the piece can't arrive in this cell
-					reachebleIndices.CutBefore();
+					reachebleIndices.CutBeforeAndAfter();
 				}
 			}
 		}
 		return reachebleIndices;
 	}
-	//-----------------------------Chessboard functions-------------------------------------
 	//-----------------------------Private functions----------------------------------------
 }
