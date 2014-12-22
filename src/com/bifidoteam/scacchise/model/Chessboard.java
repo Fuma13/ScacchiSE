@@ -25,7 +25,7 @@ public class Chessboard
 		if(index >= 0 && index < Constants.MAX_INDEX)
 			return chessboard[index];
 		else
-			return null;
+			return null; //TODO:FUMA: distinguere null di cella vuota da out of bound
 	}
 	//-----------------------------Public functions-----------------------------------------
 }
