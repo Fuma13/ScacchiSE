@@ -1,12 +1,15 @@
 package com.bifidoteam.util;
 
 import android.opengl.GLES20;
+import android.util.Log;
 
 public abstract class Shader {
 
 	protected String vertexShaderPrograms;
 	
 	protected String fragmentShaderPrograms;
+	
+	public abstract void setArguments(ShaderArguments args);
 	
 	public int loadVertexShader(){
 
@@ -37,5 +40,21 @@ public abstract class Shader {
 	    
 	    return shader;
 	}
+	
+
+	
+
+	// ***************************************************************************************
+	// ************************************** SUPPORT METHODS ********************************
+	// ***************************************************************************************
+
+    private final String TAG = "Shader";
+    protected void checkGlError(String glOperation) {
+        int error;
+        while ((error = GLES20.glGetError()) != GLES20.GL_NO_ERROR) {
+            Log.e(TAG, glOperation + ": glError " + error);
+            throw new RuntimeException(glOperation + ": glError " + error);
+        }
+    }
 	
 }
