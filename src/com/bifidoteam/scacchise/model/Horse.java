@@ -1,5 +1,6 @@
 package com.bifidoteam.scacchise.model;
 import com.bifidoteam.scacchise.util.Constants;
+import com.bifidoteam.util.MedusaTree;
 
 public class Horse extends Piece {
 

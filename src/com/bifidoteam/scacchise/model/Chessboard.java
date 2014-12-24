@@ -1,6 +1,7 @@
 package com.bifidoteam.scacchise.model;
 
 import com.bifidoteam.scacchise.util.Constants;
+import com.bifidoteam.util.MedusaTree;
 
 public class Chessboard
 {
@@ -14,6 +15,20 @@ public class Chessboard
 			return chessboard[index].GetReachableIndices();
 		}
 		return null;
+	}
+	
+	public MedusaTree GetEatableIndices(int index) {
+		if(IsPieceSpecial(index)) {
+			return ((PawnInterface)chessboard[index]).GetEatableIndices();
+		}
+		return null;
+	}
+	
+	public boolean IsPieceSpecial(int index){
+		if(index >= 0 && index < Constants.MAX_INDEX && chessboard[index] != null && chessboard[index] instanceof PawnInterface) {
+			return true;
+		}
+		return false;
 	}
 	
 	//Assume that index >= 0 && index < Constants.MAX_INDEX && chessboard[index] != null

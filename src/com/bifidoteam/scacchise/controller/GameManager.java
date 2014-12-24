@@ -3,9 +3,9 @@ package com.bifidoteam.scacchise.controller;
 import java.util.Iterator;
 
 import com.bifidoteam.scacchise.interfaces.ControllerInterface;
-import com.bifidoteam.scacchise.model.MedusaTree;
 import com.bifidoteam.scacchise.model.Chessboard;
 import com.bifidoteam.scacchise.util.Constants;
+import com.bifidoteam.util.MedusaTree;
 
 public class GameManager implements ControllerInterface{
 	
@@ -109,17 +109,43 @@ public class GameManager implements ControllerInterface{
 	private MedusaTree GetReachableIndices(int index)
 	{
 		MedusaTree reachebleIndices = chessboard.GetRealIndices(index);
-		//if is not special!!!!
-		Iterator<Integer> mtIterator = reachebleIndices.iterator();
-		while(mtIterator.hasNext()) {
-			Integer reachebleIndex = mtIterator.next();
-			if(chessboard.GetPiece(reachebleIndex) != null){
-				if(chessboard.IsPieceWhite(reachebleIndex) != whiteTurn) {//If is an opponent piece
-					//then the piece can eat it and can't continue on this way 
+		//If is not special (Not Pawn) then the cut is normal
+		if(!chessboard.IsPieceSpecial(index)) {
+			Iterator<Integer> mtIterator = reachebleIndices.iterator();
+			while(mtIterator.hasNext()) {
+				Integer reachebleIndex = mtIterator.next();
+				if(chessboard.GetPiece(reachebleIndex) != null){
+					if(chessboard.IsPieceWhite(reachebleIndex) != whiteTurn) {//If is an opponent piece
+						//then this piece can eat it and can't continue on this way 
+						reachebleIndices.CutAfter();
+					}
+					else {
+						//Else this piece can't arrive in this cell
+						reachebleIndices.CutBeforeAndAfter();
+					}
+				}
+			}
+		}
+		//If is special (Pawn) then the cut different
+		else {
+			MedusaTree eatableIndices = chessboard.GetEatableIndices(index);
+			Iterator<Integer> mtIterator = reachebleIndices.iterator();
+			Iterator<Integer> meEatableIterator = eatableIndices.iterator();
+			while(mtIterator.hasNext()) {
+				Integer reachebleIndex = mtIterator.next();
+				if(chessboard.GetPiece(reachebleIndex) != null){//If there is any piece
+					//then this piece can't arrive on this way 
+					reachebleIndices.CutBeforeAndAfter();
+				}
+			}
+			while(meEatableIterator.hasNext()) {
+				Integer eatableIndex = meEatableIterator.next();
+				if(chessboard.IsPieceWhite(eatableIndex) != whiteTurn) {//If is an opponent piece
+					//then this piece can eat it and can't continue on this way 
 					reachebleIndices.CutAfter();
 				}
 				else {
-					//Else the piece can't arrive in this cell
+					//Else this piece can't arrive in this cell
 					reachebleIndices.CutBeforeAndAfter();
 				}
 			}

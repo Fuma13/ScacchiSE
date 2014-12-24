@@ -7,7 +7,7 @@ import java.util.Iterator;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.bifidoteam.scacchise.model.MedusaTree;
+import com.bifidoteam.util.MedusaTree;
 
 public class MedusaTreeTest
 {

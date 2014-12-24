@@ -1,4 +1,4 @@
-package com.bifidoteam.scacchise.model;
+package com.bifidoteam.util;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -164,7 +164,7 @@ public class MedusaTree implements Iterable<Integer>,Iterator<Integer>{
 			currentLeaf = nearPositions.get(currentNearPos);
 			if(currentLeaf != null) {
 				if(!currentLeaf.IsCut()) {
-					nextIndex = currentLeaf.getIndexOnChessboard();
+					nextIndex = currentLeaf.getValue();
 				}
 				else {
 					nextIndex = NextChangeBranch();
@@ -175,7 +175,7 @@ public class MedusaTree implements Iterable<Integer>,Iterator<Integer>{
 			if(currentLeaf.getNext() != null){
 				//Next leaf in this branch
 				currentLeaf = currentLeaf.getNext();
-				nextIndex =  currentLeaf.getIndexOnChessboard();
+				nextIndex =  currentLeaf.getValue();
 			}
 			else {
 				nextIndex = NextChangeBranch();
@@ -195,7 +195,7 @@ public class MedusaTree implements Iterable<Integer>,Iterator<Integer>{
 			currentLeaf = nearPositions.get(currentNearPos);
 			//if this leaf is not cut 
 			if(!currentLeaf.IsCut()){
-				nextIndex = currentLeaf.getIndexOnChessboard();
+				nextIndex = currentLeaf.getValue();
 			}
 		}
 		return nextIndex;

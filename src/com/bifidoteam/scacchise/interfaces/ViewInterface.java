@@ -1,6 +1,6 @@
 package com.bifidoteam.scacchise.interfaces;
 
-import com.bifidoteam.scacchise.model.MedusaTree;
+import com.bifidoteam.util.MedusaTree;
 
 public interface ViewInterface
 {

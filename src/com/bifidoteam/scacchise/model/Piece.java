@@ -1,5 +1,7 @@
 package com.bifidoteam.scacchise.model;
 
+import com.bifidoteam.util.MedusaTree;
+
 
 abstract class Piece {	
 		
