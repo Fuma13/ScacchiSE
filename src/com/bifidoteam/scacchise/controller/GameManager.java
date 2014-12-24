@@ -21,13 +21,9 @@ public class GameManager implements ControllerInterface{
 	//-----------------------------Private Variables----------------------------------------
 	
 	//--------------------------------Costructors-------------------------------------------
-	private GameManager()
-	{
-		
-	}
+	private GameManager() {}
 	
-	public GameManager getInstance()
-	{
+	public GameManager getInstance() {
 		if(instance == null)
 			instance = new GameManager();
 		
@@ -35,7 +31,7 @@ public class GameManager implements ControllerInterface{
 	}
 	//--------------------------------Costructors-------------------------------------------
 	
-	//-----------------------------Public functions-----------------------------------------
+	//-----------------------------Controller Interface functions---------------------------
 	@Override
 	public void OnClick(int index) {
 		switch (gameState) {
@@ -48,9 +44,14 @@ public class GameManager implements ControllerInterface{
 			default:
 				break;
 		}
-		
 	}
-	//-----------------------------Public functions-----------------------------------------
+	
+	@Override
+	public void OnMoveDone()
+	{
+		ChangePlayerTurn();
+	}
+	//-----------------------------Controller Interface functions---------------------------
 	
 	//-----------------------------Private functions----------------------------------------
 	private void Waiting(int index) {
@@ -58,6 +59,7 @@ public class GameManager implements ControllerInterface{
 				lastSelectedIndex = index;
 				medusaTreeSelectedIndex = GetReachableIndices(index);
 				//TODO:FUMA: mandare alla view il MedusaTree da disegnare
+				//view.DrowReacheblePosition(medusaTreeSelectedIndex);
 				gameState = GameState.SELECTED;
 		}
 		else {
@@ -68,7 +70,9 @@ public class GameManager implements ControllerInterface{
 	private void SelectedPiece(int index) {
 		if(index >= 0 && index < Constants.MAX_INDEX && index != lastSelectedIndex) {
 			if(medusaTreeSelectedIndex != null && medusaTreeSelectedIndex.Contain(index)) {
+				chessboard.MovePieceFromStartIndexToEndIndex(lastSelectedIndex, index);
 				//TODO:FUMA: move the piece
+				//view.MoveFromIndexToIndex(lastSelectedIndex, index);
 				gameState = GameState.MOVING;
 			}
 			else {
@@ -77,6 +81,7 @@ public class GameManager implements ControllerInterface{
 			}
 		}
 		else {
+			//Deselect the piece
 			SetWaitingState();
 		}
 	}
@@ -87,10 +92,10 @@ public class GameManager implements ControllerInterface{
 		lastSelectedIndex = -1;
 	}
 	
-//	private void ChangePlayerTurn() {
-//		whiteTurn = !whiteTurn;
-//		SetWaitingState();
-//	}
+	private void ChangePlayerTurn() {
+		whiteTurn = !whiteTurn;
+		SetWaitingState();
+	}
 	
 	//-----------------------------Chessboard functions
 	private boolean IsPlayerPiece(int index)
