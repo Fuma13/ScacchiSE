@@ -1,9 +1,9 @@
-package com.bifidoteam.scacchise.model;
+package com.bifidoteam.util;
 
 public class MedusaLeaf {
 	
 	//-----------------------------Private Variables----------------------------------------
-	private int indexOnChessboard;
+	private int value;
 	private MedusaLeaf next;
 	private boolean isCut;
 	//-----------------------------Private Variables----------------------------------------
@@ -12,13 +12,19 @@ public class MedusaLeaf {
 	
 	//--------------------------------Costructors-------------------------------------------
 	public MedusaLeaf(){
-		this.indexOnChessboard = -1; 	//out of board
-		this.next = null;				//no next leaf
-		this.isCut = false;			//this leaf and next are cut
+		this.value = -1; 			//null value
+		this.next = null;			//no next leaf
+		this.isCut = false;			//this leaf and next are not cut
+	}
+	
+	public MedusaLeaf(int newIndex){
+		this.value = newIndex;
+		this.next = null;
+		this.isCut = false;
 	}
 	
 	public MedusaLeaf(int newIndex,MedusaLeaf newNext){
-		this.indexOnChessboard = newIndex;
+		this.value = newIndex;
 		this.next = newNext;
 		this.isCut = false;
 	}
@@ -28,18 +34,18 @@ public class MedusaLeaf {
 
 	//-----------------------------Public functions-----------------------------------------
 	public String toString(){
-		return "IndexOnBoard:"+indexOnChessboard+" NextLeaf:"+next;
+		return "Value:"+value+" NextLeaf:"+next;
 	}
 	//-----------------------------Public functions-----------------------------------------
 	
 	
 	
 	//--------------------------------Getter/Setter-----------------------------------------
-	public int getIndexOnChessboard() {
-		return indexOnChessboard;
+	public int getValue() {
+		return value;
 	}
-	public void setIndexOnChessboard(int indexOnChessboard) {
-		this.indexOnChessboard = indexOnChessboard;
+	public void setValue(int value) {
+		this.value = value;
 	}
 
 	public MedusaLeaf getNext() {
