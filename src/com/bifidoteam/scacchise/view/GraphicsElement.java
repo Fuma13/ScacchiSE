@@ -17,8 +17,6 @@ public class GraphicsElement {
 //	private FloatBuffer normalsCoords;
 //	private FloatBuffer uvCoords;
 //	
-	private ShortBuffer drawOrder;
-	private int drawOrderLength;
 	
 	int GLProgram;
 //	float[] color = new float[4];
@@ -36,10 +34,9 @@ public class GraphicsElement {
 		argumentsWrapped.setVertexCoords( fromArrayToFloatBuffer(mesh.vertexToFloatArray()) );
 		argumentsWrapped.setNormalsCoords( fromArrayToFloatBuffer(mesh.normalToFloatArray()) );
         argumentsWrapped.setUvCoords( fromArrayToFloatBuffer(mesh.uvToFloatArray()) );
+		argumentsWrapped.setColorBuffer(fromArrayToFloatBuffer(mesh.colorToFloatArray()));
         
-        drawOrderLength = mesh.getDrawOrder().length;
-        drawOrder = fromArrayToShortBuffer(mesh.getDrawOrder());
-        argumentsWrapped.setDrawOrder(drawOrder);
+        argumentsWrapped.setDrawOrder( fromArrayToShortBuffer(mesh.getDrawOrder()));
          
          
         selectedShader = shader;
@@ -62,19 +59,8 @@ public class GraphicsElement {
 	}
 	
 	public void draw(){
-		
-        // Add program to OpenGL ES environment
-        GLES20.glUseProgram(GLProgram); // TODO: c'è già nella funzione interna, lo tolgo?
+        selectedShader.draw(argumentsWrapped);
         
-        selectedShader.setArguments(argumentsWrapped);
-        
-        // Draw the triangle
-        // Draw the square
-        GLES20.glDrawElements(
-                GLES20.GL_TRIANGLES, drawOrderLength,
-                GLES20.GL_UNSIGNED_SHORT, drawOrder);
-
-        GLES20.glDisableVertexAttribArray(0); //TODO: trovare dove metterlo!!
 	}
 	
 	

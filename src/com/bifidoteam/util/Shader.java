@@ -5,11 +5,19 @@ import android.util.Log;
 
 public abstract class Shader {
 
-	protected String vertexShaderPrograms;
+	protected static final int SIZE_OF_FLOAT=4;
 	
+	protected String vertexShaderPrograms;
 	protected String fragmentShaderPrograms;
 	
-	public abstract void setArguments(ShaderArguments args);
+	public abstract void draw(ShaderArguments args);
+
+	
+
+	// ***************************************************************************************
+	// ************************************** LOADING METHODS ********************************
+	// ***************************************************************************************
+	
 	
 	public int loadVertexShader(){
 

@@ -5,12 +5,15 @@ import java.util.Vector;
 public class MeshInfo {
 	Vector<Vector3> vertex;
 	Vector<Vector3> normals;
+	Vector<Vector3> vertexColors;
+
 	Vector<Vector2> uvCoords;
 	
 	short[] drawOrder;
 
 	public static final int NUMBER_OF_COORDS_PER_VERTEX =3;
 	public static final int NUMBER_OF_COORDS_PER_NORMAL =3;
+	public static final int NUMBER_OF_COLOR_PER_VERTEX =3;
 	public static final int NUMBER_OF_UV_COORDS =2;
 	
 	public MeshInfo(){
@@ -54,7 +57,14 @@ public class MeshInfo {
 	public void setDrawOrder(short[] drawOrder) {
 		this.drawOrder = drawOrder;
 	}
+	
+	public Vector<Vector3> getVertexColors() {
+		return vertexColors;
+	}
 
+	public void setVertexColors(Vector<Vector3> vertexColor) {
+		this.vertexColors = vertexColor;
+	}
 
 	
 	// ************************************************************************************
@@ -77,20 +87,24 @@ public class MeshInfo {
 		return toFloatArray(normals, NUMBER_OF_COORDS_PER_NORMAL);
 	}
 	
+	public float[] colorToFloatArray(){
+
+		return toFloatArray(vertexColors, NUMBER_OF_COLOR_PER_VERTEX);
+	}
 	
 	private float[] toFloatArray(Vector<Vector3> actualElements, int numOfIterationForElement){
 		
 		if(actualElements == null)
 			return null;
 		
-		int count = vertex.size()*numOfIterationForElement;
+		int count = actualElements.size()*numOfIterationForElement;
 		
 		float[] toReturn = new float[count];
 		
 		float[] actualValues;
 		
-		for(int i=0; i<vertex.size(); i++){
-			actualValues = vertex.get(i).toArray();
+		for(int i=0; i<actualElements.size(); i++){
+			actualValues = actualElements.get(i).toArray();
 			
 			for(int j=0; j< numOfIterationForElement; j++)
 				toReturn[i*numOfIterationForElement + j] = actualValues[j];

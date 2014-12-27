@@ -5,8 +5,8 @@ import java.util.Vector;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
+import com.bifidoteam.util.ColorShader;
 import com.bifidoteam.util.MeshInfo;
-import com.bifidoteam.util.SimpleShader;
 import com.bifidoteam.util.Vector3;
 
 import android.opengl.GLES20;
@@ -40,12 +40,19 @@ public class MyGLRenderer implements Renderer{
         test.add(new Vector3(-1f, 1f, 0f));
         test.add(new Vector3(1f, -1f, 0f));
         rectInfo.setVertex(test);
+
+        Vector<Vector3> colorTest = new Vector<Vector3>();
+        colorTest.add(new Vector3(0f, 0f, 1f));
+        colorTest.add(new Vector3(0f, 0f, 1f));
+        colorTest.add(new Vector3(1f, 0f, 0f));
+        colorTest.add(new Vector3(1f, 0f, 0f));
+        rectInfo.setVertexColors(colorTest);
         
         rectInfo.setDrawOrder(new 
         					short[]{0, 1, 2, 
         							0, 3, 1});
         
-        testElement = new  GraphicsElement(rectInfo, new SimpleShader());
+        testElement = new  GraphicsElement(rectInfo, new ColorShader()); // è possibile provare anche il SimpleShader
 	}
 
 	@Override
@@ -93,7 +100,7 @@ public class MyGLRenderer implements Renderer{
         // for the matrix multiplication product to be correct.
         Matrix.multiplyMM(scratch, 0, mMVPMatrix, 0, mRotationMatrix, 0);
         
-        testElement.setGlobalMatrix(mMVPMatrix);
+        testElement.setGlobalMatrix(scratch);
         
         testElement.draw();
         

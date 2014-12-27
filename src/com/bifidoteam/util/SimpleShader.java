@@ -26,7 +26,7 @@ public class SimpleShader extends Shader {
 	}
 
 	@Override
-	public void setArguments(ShaderArguments args) {
+	public void draw(ShaderArguments args) {
 		
 		int GLProgram = args.getGLProgram();
 		
@@ -47,7 +47,7 @@ public class SimpleShader extends Shader {
         // Prepare the triangle coordinate data
         GLES20.glVertexAttribPointer(mPositionHandle, args.getNumOfCoords(),
                                      GLES20.GL_FLOAT, false,
-                                     args.getNumOfCoords(), args.getVertexCoords());
+                                     args.getNumOfCoords()*SIZE_OF_FLOAT, args.getVertexCoords());
 
         // ***********************************************
         // -----> SET VSHADER ARGUMENTS: uMVPMatrix <-----
@@ -63,9 +63,12 @@ public class SimpleShader extends Shader {
         // ***********************************************
         // ********************* END *********************
         // ***********************************************
-        
-        // Disable vertex array
-        //GLES20.glDisableVertexAttribArray(mPositionHandle);
+
+        GLES20.glDrawElements(
+                GLES20.GL_TRIANGLES, args.getDrawOrder().capacity(),
+                GLES20.GL_UNSIGNED_SHORT, args.getDrawOrder());
+
+        GLES20.glDisableVertexAttribArray(0);
         
 	}
 }

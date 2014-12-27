@@ -29,7 +29,7 @@ public class ColorShader extends Shader {
 			    "}";
 	}
 	
-	public void setArguments(ShaderArguments args){
+	public void draw(ShaderArguments args){
 
 		int GLProgram = args.getGLProgram();
 		
@@ -51,7 +51,7 @@ public class ColorShader extends Shader {
         // Prepare the triangle coordinate data
         GLES20.glVertexAttribPointer(mPositionHandle, args.getNumOfCoords(),
                                      GLES20.GL_FLOAT, false,
-                                     args.getNumOfCoords(), args.getVertexCoords());
+                                     args.getNumOfCoords()*SIZE_OF_FLOAT, args.getVertexCoords());
         
 
         // ***********************************************
@@ -67,7 +67,7 @@ public class ColorShader extends Shader {
         // Prepare the triangle coordinate data
         GLES20.glVertexAttribPointer(mColorHandle, args.getNumOfColors(),
                                      GLES20.GL_FLOAT, false,
-                                     args.getNumOfColors(), args.getColorBuffer());
+                                     args.getNumOfColors()*SIZE_OF_FLOAT, args.getColorBuffer());
 
 
         // ***********************************************
@@ -85,6 +85,10 @@ public class ColorShader extends Shader {
         // ********************* END *********************
         // ***********************************************
 
+        GLES20.glDrawElements(
+                GLES20.GL_TRIANGLES, args.getDrawOrder().capacity(),
+                GLES20.GL_UNSIGNED_SHORT, args.getDrawOrder());
+        
         // Disable vertex array
         GLES20.glDisableVertexAttribArray(mPositionHandle);
         GLES20.glDisableVertexAttribArray(mColorHandle);
