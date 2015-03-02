@@ -7,7 +7,7 @@ import java.lang.Math;
 public class Bishop extends Piece {
 
 	//--------------------------------Costructors-------------------------------------------
-	public Bishop(int startingIndex, boolean startingColor) {
+	public Bishop(int startingIndex, int startingColor) {
 		super(startingIndex, startingColor);
 	}
 	//--------------------------------Costructors-------------------------------------------

@@ -5,7 +5,7 @@ import com.bifidoteam.util.MedusaTree;
 public class Horse extends Piece {
 
 	//--------------------------------Costructors-------------------------------------------
-	public Horse(int startingIndex, boolean startingColor) {
+	public Horse(int startingIndex, int startingColor) {
 		super(startingIndex, startingColor);
 	}
 	//--------------------------------Costructors-------------------------------------------
