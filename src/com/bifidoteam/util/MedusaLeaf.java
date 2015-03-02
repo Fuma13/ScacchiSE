@@ -54,6 +54,11 @@ public class MedusaLeaf {
 		else
 			return next;
 	}
+	//Return also cutted leaf
+	public MedusaLeaf getRealNext(){
+		return next;
+	}
+	
 	public void setNext(MedusaLeaf next) {
 		this.next = next;
 	}
