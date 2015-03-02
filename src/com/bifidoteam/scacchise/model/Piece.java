@@ -7,13 +7,13 @@ abstract class Piece {
 		
 	//-----------------------------Private Variables----------------------------------------
 	protected int index;
-	protected boolean white;
+	protected int white; //0 white, 1 black
 	//private Graphic_Info gi; 								-> creare la classe Graphic_Info
 	//-----------------------------Private Variables----------------------------------------
 	
 	
 	//--------------------------------Costructors-------------------------------------------
-	protected Piece(int startingIndex,boolean startingColor){
+	protected Piece(int startingIndex,int startingColor){
 		this.index = startingIndex;
 		this.white = startingColor;
 	}
@@ -39,10 +39,10 @@ abstract class Piece {
 		this.index = index;
 	}
 
-	public boolean isWhite() {
+	public int isWhite() {
 		return white;
 	}
-	public void setWhite(boolean color) {
+	public void setWhite(int color) {
 		this.white = color;
 	}
 	//--------------------------------Getter/Setter-----------------------------------------

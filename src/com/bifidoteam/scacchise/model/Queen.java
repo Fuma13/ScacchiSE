@@ -6,7 +6,7 @@ import com.bifidoteam.util.MedusaTree;
 public class Queen extends Piece {
 
 	//--------------------------------Costructors-------------------------------------------
-	public Queen(int startingIndex, boolean startingColor) {
+	public Queen(int startingIndex, int startingColor) {
 		super(startingIndex, startingColor);
 	}
 	//--------------------------------Costructors-------------------------------------------

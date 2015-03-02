@@ -37,7 +37,7 @@ public class Chessboard
 	}
 	
 	//Assume that index >= 0 && index < Constants.MAX_INDEX && chessboard[index] != null
-	public boolean IsPieceWhite(int index) {
+	public int IsPieceWhite(int index) {
 			return chessboard[index].isWhite();
 	}
 	
@@ -62,22 +62,22 @@ public class Chessboard
 	private void InizializeChessboard() {
 		//TODO:FUMA: Togliere i magic numbers (ma mi sa che non si puo')
 		//Black Pieces
-		chessboard[0] = new Tower(0, false);
-		chessboard[1] = new Horse(1, false);
-		chessboard[2] = new Bishop(2, false);
-		chessboard[3] = new Queen(3, false);
-		chessboard[4] = new King(4, false);
-		chessboard[5] = new Bishop(5, false);
-		chessboard[6] = new Horse(6, false);
-		chessboard[7] = new Tower(7, false);
+		chessboard[0] = new Tower(0, 1);
+		chessboard[1] = new Horse(1, 1);
+		chessboard[2] = new Bishop(2, 1);
+		chessboard[3] = new Queen(3, 1);
+		chessboard[4] = new King(4, 1);
+		chessboard[5] = new Bishop(5, 1);
+		chessboard[6] = new Horse(6, 1);
+		chessboard[7] = new Tower(7, 1);
 		for(int row=1; row<Constants.MAX_INDEX_ROW-1; ++row) {
 			for(int column=0; column<Constants.MAX_INDEX_ROW; ++column){
 				if(row==1) {
 					//Row of Black Pawn
-					chessboard[row*Constants.MAX_INDEX_ROW + column] = new Pawn(8 + column, false);
+					chessboard[row*Constants.MAX_INDEX_ROW + column] = new Pawn(8 + column, 1);
 				} else if(row==Constants.MAX_INDEX_ROW-1) {
 					//Row of White Pawn
-					chessboard[row*Constants.MAX_INDEX_ROW + column] = new Pawn(48 + column, true);
+					chessboard[row*Constants.MAX_INDEX_ROW + column] = new Pawn(48 + column, 0);
 				}
 				else {
 					//Empty cells
@@ -86,14 +86,14 @@ public class Chessboard
 			}
 		}
 		//White Pieces
-		chessboard[56] = new Tower(56, true);
-		chessboard[57] = new Horse(57, true);
-		chessboard[58] = new Bishop(58, true);
-		chessboard[59] = new Queen(59, true);
-		chessboard[60] = new King(60, true);
-		chessboard[61] = new Bishop(61, true);
-		chessboard[62] = new Horse(62, true);
-		chessboard[63] = new Tower(63, true);
+		chessboard[56] = new Tower(56, 0);
+		chessboard[57] = new Horse(57, 0);
+		chessboard[58] = new Bishop(58, 0);
+		chessboard[59] = new Queen(59, 0);
+		chessboard[60] = new King(60, 0);
+		chessboard[61] = new Bishop(61, 0);
+		chessboard[62] = new Horse(62, 0);
+		chessboard[63] = new Tower(63, 0);
 	}
 	//-----------------------------Private functions----------------------------------------
 }
