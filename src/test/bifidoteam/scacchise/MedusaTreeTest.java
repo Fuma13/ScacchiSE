@@ -25,9 +25,9 @@ public class MedusaTreeTest
 		mt.AddBranch(0);
 		mt.AddBranch(1);
 		
-		Iterator<Integer> mtIterator = mt.iterator();
-		
-		assertTrue(mtIterator.hasNext());
+//		Iterator<Integer> mtIterator = mt.iterator();
+//		
+//		assertTrue(mtIterator.hasNext());
 	}
 	
 	// convention: use "should" and explanatory names

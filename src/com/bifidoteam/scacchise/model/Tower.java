@@ -5,7 +5,7 @@ import com.bifidoteam.util.MedusaTree;
 public class Tower extends Piece {
 
 	//--------------------------------Costructors-------------------------------------------
-	public Tower(int startingIndex, boolean startingColor) {
+	public Tower(int startingIndex, int startingColor) {
 		super(startingIndex, startingColor);
 	}
 	//--------------------------------Costructors-------------------------------------------
