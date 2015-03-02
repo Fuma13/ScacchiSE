@@ -1,6 +1,6 @@
 package com.bifidoteam.scacchise.controller;
 
-import java.util.Iterator;
+import java.util.Set;
 
 import com.bifidoteam.scacchise.interfaces.ControllerInterface;
 import com.bifidoteam.scacchise.model.Chessboard;
@@ -12,16 +12,25 @@ public class GameManager implements ControllerInterface{
 	//-----------------------------Private Variables----------------------------------------
 	private static GameManager instance = null;
 	private enum GameState{WAITING ,SELECTED,MOVING};
+	//private int MAX_PLAYER = 2;
 	
 	private Chessboard chessboard;
 	private int lastSelectedIndex; //-1 if there isn't a last index selected otherwise index form 0 to 64 (MAX_INDEX)
-	private boolean whiteTurn; //true if it is the white player turn, false otherwise
+	private int whiteTurn; //0 if it is the white player turn, 1 black
 	private GameState gameState;
 	private MedusaTree medusaTreeSelectedIndex;
+	
+	private Set<Integer>[] possibleCheck;
+	private Set<Integer>[] check;
+	private int[] kingPos;
 	//-----------------------------Private Variables----------------------------------------
 	
 	//--------------------------------Costructors-------------------------------------------
-	private GameManager() {}
+	private GameManager() {
+		possibleCheck = new Set[Constants.MAX_PLAYERS];
+		check = new Set[Constants.MAX_PLAYERS];
+		kingPos = new int[Constants.MAX_PLAYERS];
+	}
 	
 	public GameManager getInstance() {
 		if(instance == null)
@@ -93,11 +102,19 @@ public class GameManager implements ControllerInterface{
 	}
 	
 	private void ChangePlayerTurn() {
-		whiteTurn = !whiteTurn;
+		whiteTurn = OppositePlayer();
+		CheckCheck();
 		SetWaitingState();
 	}
 	
+	private int OppositePlayer() {
+		return (Constants.MAX_PLAYERS - 1) - whiteTurn;
+	}
+	
 	//-----------------------------Chessboard functions
+	private boolean CheckCheck(){
+		return false;
+	}
 	private boolean IsPlayerPiece(int index)
 	{
 		boolean isPlayerPiece = false;
@@ -114,47 +131,71 @@ public class GameManager implements ControllerInterface{
 	private MedusaTree GetReachableIndices(int index)
 	{
 		MedusaTree reachebleIndices = chessboard.GetRealIndices(index);
-		//If is not special (Not Pawn) then the cut is normal
-		if(!chessboard.IsPieceSpecial(index)) {
-			Iterator<Integer> mtIterator = reachebleIndices.iterator();
-			while(mtIterator.hasNext()) {
-				Integer reachebleIndex = mtIterator.next();
-				if(chessboard.GetPiece(reachebleIndex) != null){
-					if(chessboard.IsPieceWhite(reachebleIndex) != whiteTurn) {//If is an opponent piece
-						//then this piece can eat it and can't continue on this way 
-						reachebleIndices.CutAfter();
-					}
-					else {
-						//Else this piece can't arrive in this cell
-						reachebleIndices.CutBeforeAndAfter();
-					}
+		 
+		MedusaTree.CompleteIterator mtIterator = reachebleIndices.GetCompleteIterator();
+		while(mtIterator.hasNext()) {
+			Integer reachebleIndex = mtIterator.next();
+			if(chessboard.GetPiece(reachebleIndex) != null){
+				//If is special (Pawn) then the cut different or is a player piece
+				if(chessboard.IsPieceSpecial(index) || chessboard.IsPieceWhite(reachebleIndex) == whiteTurn) {
+					//This piece can't arrive in this cell
+					mtIterator.CutThisAndAfter();
+				}
+				else {
+					//Else is an opponent piece
+					//then this piece can eat it and can't continue on this way 
+					mtIterator.CutAfter();	
+				}
+			}
+			
+			
+			if(!chessboard.IsPieceSpecial(index) && reachebleIndex == kingPos[OppositePlayer()]){
+				if(mtIterator.IsThisCutted()) {
+					possibleCheck[OppositePlayer()].add(index);
+				}
+				else
+				{
+					check[OppositePlayer()].add(index);
 				}
 			}
 		}
-		//If is special (Pawn) then the cut different
-		else {
+		if(chessboard.IsPieceSpecial(index)){
+
 			MedusaTree eatableIndices = chessboard.GetEatableIndices(index);
-			Iterator<Integer> mtIterator = reachebleIndices.iterator();
-			Iterator<Integer> meEatableIterator = eatableIndices.iterator();
-			while(mtIterator.hasNext()) {
-				Integer reachebleIndex = mtIterator.next();
-				if(chessboard.GetPiece(reachebleIndex) != null){//If there is any piece
-					//then this piece can't arrive on this way 
-					reachebleIndices.CutBeforeAndAfter();
-				}
-			}
+			MedusaTree.CompleteIterator meEatableIterator = eatableIndices.GetCompleteIterator();
+
 			while(meEatableIterator.hasNext()) {
 				Integer eatableIndex = meEatableIterator.next();
 				if(chessboard.IsPieceWhite(eatableIndex) != whiteTurn) {//If is an opponent piece
 					//then this piece can eat it and can't continue on this way 
-					reachebleIndices.CutAfter();
+					meEatableIterator.CutAfter();
 				}
 				else {
 					//Else this piece can't arrive in this cell
-					reachebleIndices.CutBeforeAndAfter();
+					meEatableIterator.CutThisAndAfter();
+				}
+				
+				if(eatableIndex == kingPos[OppositePlayer()]){
+					if(mtIterator.IsThisCutted()) {
+						possibleCheck[OppositePlayer()].add(index);
+					}
+					else
+					{
+						check[OppositePlayer()].add(index);
+					}
 				}
 			}
+
+			reachebleIndices.MergeMedusaTreeNewBanch(eatableIndices);
 		}
+		
+		//Controllo che il re non sia in scacco (se c'e qualcosa nelle minacce vere)
+		//simulando la mossa e controllando che tt quelli nella lista ancora non possano arrivare
+		//se arrivano allora cancello la mossa se no e' valida
+		//Modificare i cut in modo che taglino tutte le foglie OK
+		//inserire un cut per tagliare la foglia intermedia OK 
+		//creare un iteratore che mi cicli anche quelle tagliate OK
+		//creare un iteratore che mi cicli solo quelle attive per la view OK
 		return reachebleIndices;
 	}
 	//-----------------------------Private functions----------------------------------------
