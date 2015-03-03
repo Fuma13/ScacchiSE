@@ -5,6 +5,8 @@ import com.bifidoteam.util.MedusaTree;
 import java.lang.Math;
 
 public class Bishop extends Piece {
+	
+	//prova commit
 
 	//--------------------------------Costructors-------------------------------------------
 	public Bishop(int startingIndex, int startingColor) {
