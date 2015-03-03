@@ -75,7 +75,7 @@ public class Chessboard
 				if(row==1) {
 					//Row of Black Pawn
 					chessboard[row*Constants.MAX_INDEX_ROW + column] = new Pawn(8 + column, 1);
-				} else if(row==Constants.MAX_INDEX_ROW-1) {
+				} else if(row==Constants.MAX_INDEX_ROW-2) {
 					//Row of White Pawn
 					chessboard[row*Constants.MAX_INDEX_ROW + column] = new Pawn(48 + column, 0);
 				}

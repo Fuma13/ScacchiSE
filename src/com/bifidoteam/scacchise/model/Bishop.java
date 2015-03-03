@@ -27,7 +27,7 @@ public class Bishop extends Piece {
 			mt.AddBranch(nextIndex);
 			feasableMoves--;
 			for(;feasableMoves>0;feasableMoves--){
-				nextIndex -= Constants.MAX_INDEX_ROW-1;
+				nextIndex = nextIndex - Constants.MAX_INDEX_ROW-1;
 				mt.AddLeafToLastBranch(nextIndex);
 			}
 		}
@@ -39,7 +39,7 @@ public class Bishop extends Piece {
 			mt.AddBranch(nextIndex);
 			feasableMoves--;
 			for(;feasableMoves>0;feasableMoves--){
-				nextIndex -= Constants.MAX_INDEX_ROW+1;
+				nextIndex = nextIndex - Constants.MAX_INDEX_ROW+1;
 				mt.AddLeafToLastBranch(nextIndex);
 			}
 		}

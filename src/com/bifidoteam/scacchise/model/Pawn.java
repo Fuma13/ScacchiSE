@@ -18,9 +18,10 @@ public class Pawn extends Piece implements PawnInterface {
 		MedusaTree mt = new MedusaTree();
 		
 		int j = this.index;
-		int segno = (this.isWhite() == 0)? 1:-1;
+		int segno = (this.isWhite() == 0)? -1:1;
 		
 		j += Constants.MAX_INDEX_ROW*segno;
+		System.out.println(j);
 		mt.AddBranch(j);
 		
 		return mt;
