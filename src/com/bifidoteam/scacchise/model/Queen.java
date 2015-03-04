@@ -119,7 +119,7 @@ public class Queen extends Piece {
 	//-----------------------------Public functions-----------------------------------------
 
 	@Override
-	char GetSymbol()
+	public char GetSymbol()
 	{
 		return 'Q';
 	}

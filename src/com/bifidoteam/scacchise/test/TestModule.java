@@ -4,6 +4,7 @@ import java.util.Iterator;
 
 import com.bifidoteam.scacchise.util.Constants;
 import com.bifidoteam.util.MedusaTree;
+import com.bifidoteam.scacchise.model.Piece;
 
 public class TestModule {
 
@@ -36,11 +37,25 @@ public class TestModule {
 		}
 		System.out.println("\n\n");
 	}
+
+	public TestModule(){
+		initMap(' ');
+	}
 	
 	public void initializeMapWithMedusa(MedusaTree informations, boolean completed){
 
 		initMap(' ');
+		writeMedusaOnMap(informations, completed);
 		
+	}
+	
+	public void writePieceOnMap(int pos, Piece x){
+		if(pos >= 0 && pos < Constants.MAX_INDEX)
+			map[pos] = (char) (x.isWhite() == 0 ? x.GetSymbol(): (x.GetSymbol() +32));
+	}
+	
+	public void writeMedusaOnMap(MedusaTree informations, boolean completed){
+
 		if(informations != null){
 			Iterator<Integer> medusaIterator = completed ? informations.GetCompleteIterator(): informations.GetCuttedIterator();
 
@@ -50,7 +65,6 @@ public class TestModule {
 		}
 		
 	}
-	
 	
 	
 	

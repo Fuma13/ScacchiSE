@@ -69,7 +69,7 @@ public class Horse extends Piece {
 	//-----------------------------Public functions-----------------------------------------
 
 	@Override
-	char GetSymbol()
+	public char GetSymbol()
 	{
 		return 'H';
 	}

@@ -58,7 +58,7 @@ public class Pawn extends Piece implements PawnInterface {
 
 
 	@Override
-	char GetSymbol()
+	public char GetSymbol()
 	{
 		return 'P';
 	}

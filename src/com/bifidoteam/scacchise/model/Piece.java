@@ -3,7 +3,7 @@ package com.bifidoteam.scacchise.model;
 import com.bifidoteam.util.MedusaTree;
 
 
-abstract class Piece {	
+public abstract class Piece {	
 		
 	//-----------------------------Private Variables----------------------------------------
 	protected int index;
@@ -24,7 +24,7 @@ abstract class Piece {
 	//-----------------------------Public functions-----------------------------------------
 	abstract MedusaTree GetReachableIndices();
 	
-	abstract char GetSymbol();
+	public abstract char GetSymbol();
 	
 	protected String ToString(){
 		return "IndexOnBoard:"+index+" White?"+white;
