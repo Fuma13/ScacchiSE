@@ -75,4 +75,10 @@ public class Bishop extends Piece {
 		return "Alfiere, " + super.toString();
 	}
 	//-----------------------------Public functions-----------------------------------------
+
+	@Override
+	char GetSymbol()
+	{
+		return 'B';
+	}
 }

@@ -75,4 +75,10 @@ public class Tower extends Piece {
 		return "Tower, " + super.toString();
 	}
 	//-----------------------------Public functions-----------------------------------------
+
+	@Override
+	char GetSymbol()
+	{
+		return 'T';
+	}
 }

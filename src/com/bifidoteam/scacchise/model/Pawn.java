@@ -54,4 +54,12 @@ public class Pawn extends Piece implements PawnInterface {
 		return "Pedone, " + super.toString();
 	}
 	//-----------------------------Public functions-----------------------------------------
+
+
+
+	@Override
+	char GetSymbol()
+	{
+		return 'P';
+	}
 }

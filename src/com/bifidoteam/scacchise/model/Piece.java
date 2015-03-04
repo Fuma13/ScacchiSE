@@ -24,6 +24,8 @@ abstract class Piece {
 	//-----------------------------Public functions-----------------------------------------
 	abstract MedusaTree GetReachableIndices();
 	
+	abstract char GetSymbol();
+	
 	protected String ToString(){
 		return "IndexOnBoard:"+index+" White?"+white;
 	}

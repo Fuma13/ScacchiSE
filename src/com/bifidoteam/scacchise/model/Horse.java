@@ -67,4 +67,10 @@ public class Horse extends Piece {
 		return "Horse, " + super.toString();
 	}
 	//-----------------------------Public functions-----------------------------------------
+
+	@Override
+	char GetSymbol()
+	{
+		return 'H';
+	}
 }
