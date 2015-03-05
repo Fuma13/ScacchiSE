@@ -1,5 +1,7 @@
 package com.bifidoteam.scacchise.test;
 
+import com.bifidoteam.scacchise.Game;
+import com.bifidoteam.scacchise.controller.GameManager;
 import com.bifidoteam.scacchise.model.Chessboard;
 import com.bifidoteam.scacchise.util.Constants;
 
@@ -148,16 +150,26 @@ public class DummyMain {
 		
 		// COMPLEX EXAMPLE:
 		tm = new TestModule();
+		TestModule tm2 = new TestModule();
 		for(int i=0; i<Constants.MAX_INDEX_ROW*2; ++i){
 			tm.writePieceOnMap(i, x.GetPiece(i));
+			tm2.writePieceOnMap(i, x.GetPiece(i));
 		}
 		for(int i=0; i<Constants.MAX_INDEX_ROW*2; ++i){
 			tm.writePieceOnMap(Constants.MAX_INDEX -1 - i, x.GetPiece(Constants.MAX_INDEX -1 - i));
+			tm2.writePieceOnMap(Constants.MAX_INDEX -1 - i, x.GetPiece(Constants.MAX_INDEX -1 - i));
 		}
 		
-		tm.writeMedusaOnMap(x.GetRealIndices(1), true);
+		GameManager gm = GameManager.getInstance(x);
 		
-		tm.printMap("Complex example = full chessboard + movement of the white horse");
+		int piece = 63;
+		int color = 0;
+		tm.writeMedusaOnMap(gm.GetReachebleIndicesDebug(piece,color), false);
+		tm2.writeMedusaOnMap(gm.GetReachebleIndicesDebug(piece,color), true);
+		
+		
+		tm2.printMap("Complex example = full chessboard + all movements");
+		tm.printMap("Complex example = full chessboard + possibile movements");
 		
 	}
 	
