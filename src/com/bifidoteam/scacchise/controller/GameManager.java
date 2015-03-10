@@ -1,7 +1,5 @@
 package com.bifidoteam.scacchise.controller;
 
-import java.util.Set;
-
 import com.bifidoteam.scacchise.interfaces.ControllerInterface;
 import com.bifidoteam.scacchise.interfaces.ViewInterface;
 import com.bifidoteam.scacchise.model.Chessboard;
@@ -13,7 +11,7 @@ public class GameManager implements ControllerInterface{
 	
 	//-----------------------------Private Variables----------------------------------------
 	private static GameManager instance = null;
-	private enum GameState{WAITING ,SELECTED,MOVING, WIN};
+	private enum GameState{WAITING ,SELECTED,MOVING, WIN, QUIT};
 	//private int MAX_PLAYER = 2;
 	
 	private Chessboard chessboard;
@@ -76,6 +74,12 @@ public class GameManager implements ControllerInterface{
 	}
 	
 	@Override
+	public void Quit() {
+		gameState = GameState.QUIT;
+		
+	}
+	
+	@Override
 	public void OnMoveDone()
 	{
 		ChangePlayerTurn();
@@ -112,11 +116,16 @@ public class GameManager implements ControllerInterface{
 	}
 	
 	public void GameLoop(){
-		int indexChosen = viewComponent.GetInput();
+		viewComponent.Init(chessboard);
 		
-		ManageInput(indexChosen);
-		
-		viewComponent.Render(null); //TODO: Marco: passare il medusa tree da renderizzare
+		while(gameState != GameState.QUIT){
+			
+			int indexChosen = viewComponent.GetInput();
+			
+			ManageInput(indexChosen);
+			
+			viewComponent.Render(medusaTreeSelectedIndex); //TODO: Marco: passare il medusa tree da renderizzare
+		}
 		
 	}
 	//-----------------------------Controller Interface functions---------------------------
