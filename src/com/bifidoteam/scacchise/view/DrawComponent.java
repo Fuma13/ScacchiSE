@@ -2,13 +2,15 @@ package com.bifidoteam.scacchise.view;
 
 import java.util.Iterator;
 
+import com.bifidoteam.scacchise.model.Chessboard;
 import com.bifidoteam.scacchise.model.Piece;
 import com.bifidoteam.scacchise.util.Constants;
 import com.bifidoteam.util.MedusaTree;
 
 public class DrawComponent {
 
-	private char[] map = new char[Constants.MAX_INDEX];
+	private Chessboard scacchiera;
+	//private char[] map = new char[Constants.MAX_INDEX];
 	private char[] medusaMap = new char[Constants.MAX_INDEX];
 	
 
@@ -27,12 +29,18 @@ public class DrawComponent {
 		System.out.println();
 		// ** END
 		
+		char actualSymbol = ' ';
+		
 		for(int i=0; i<Constants.MAX_INDEX_ROW; ++i){
 			
 			System.out.print(" " + i + " ");
 			
 			for(int j=0; j<Constants.MAX_INDEX_ROW; ++j){
-				writeChar(map[i*Constants.MAX_INDEX_ROW + j]);
+				actualSymbol = scacchiera.GetPiece(i*Constants.MAX_INDEX_ROW + j).GetSymbol();
+				if(medusaMap[i*Constants.MAX_INDEX_ROW + j] == 'X')
+					writeChar(actualSymbol);
+				else
+					writeSpecialChar(actualSymbol);
 			}
 			System.out.println();
 		}
@@ -41,15 +49,16 @@ public class DrawComponent {
 		initMedusaMap(' ');
 	}
 
-	public DrawComponent(){
-		initMap(' ');
+	public DrawComponent(Chessboard chessboardIn){
+		//initMap(' ');
+		scacchiera = chessboardIn;
 		initMedusaMap(' ');
 	}
 	
-	public void writePieceOnMap(int pos, Piece x){
-		if(pos >= 0 && pos < Constants.MAX_INDEX)
-			map[pos] = (char) (x.isWhite() == 0 ? x.GetSymbol(): (x.GetSymbol() +32));
-	}
+//	public void writePieceOnMap(int pos, Piece x){
+//		if(pos >= 0 && pos < Constants.MAX_INDEX)
+//			map[pos] = (char) (x.isWhite() == 0 ? x.GetSymbol(): (x.GetSymbol() +32));
+//	}
 	
 	public void writeMedusaOnMap(MedusaTree informations, boolean completed){
 		
@@ -80,11 +89,6 @@ public class DrawComponent {
 		F,
 		G,
 		H
-	}
-	
-	private void initMap(char initValue){
-		for(int i=0; i< map.length; ++i)
-			map[i] = initValue;
 	}
 	
 	private void initMedusaMap(char initValue){
