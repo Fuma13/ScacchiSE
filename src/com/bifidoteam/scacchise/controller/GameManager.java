@@ -16,7 +16,7 @@ public class GameManager implements ControllerInterface{
 	
 	private Chessboard chessboard;
 	private int lastSelectedIndex; //-1 if there isn't a last index selected otherwise index form 0 to 64 (MAX_INDEX)
-	private int whiteTurn; //TODO: MARCO: **** LASCIARE IL COLORE CHE VINCE **** 0 if it is the white player turn, 1 black
+	private int whiteTurn; //0 if it is the white player turn, 1 black
 	private GameState gameState;
 	private MedusaTree medusaTreeSelectedIndex;
 	
@@ -26,18 +26,6 @@ public class GameManager implements ControllerInterface{
 	//-----------------------------Private Variables----------------------------------------
 	
 	//--------------------------------Costructors-------------------------------------------
-	private GameManager() {
-//		kingPos = new int[Constants.MAX_PLAYERS];
-		chessboard = new Chessboard();
-		viewComponent = new GameConsoleView(); // TODO: Sostituirlo con un factory esterno al GM?
-	}
-	
-	private GameManager(Chessboard c) {
-//		kingPos = new int[Constants.MAX_PLAYERS];
-		chessboard = c;
-		viewComponent = new GameConsoleView(); // TODO: Sostituirlo con un factory esterno al GM?
-	}
-	
 	public static GameManager getInstance() {
 		if(instance == null)
 			instance = new GameManager();
@@ -50,6 +38,25 @@ public class GameManager implements ControllerInterface{
 			instance = new GameManager(c);
 		
 		return instance;
+	}
+	
+	private GameManager() {
+		InitGameManager(null);
+	}
+	
+	private GameManager(Chessboard c) {
+		InitGameManager(c);	
+	}
+	
+	private void InitGameManager(Chessboard c){
+		if(c == null){
+			chessboard = new Chessboard();
+		}
+		else {
+			chessboard = c;
+		}
+//		kingPos = new int[Constants.MAX_PLAYERS];
+		viewComponent = new GameConsoleView(); // TODO: Sostituirlo con un factory esterno al GM?
 	}
 	//--------------------------------Costructors-------------------------------------------
 	
@@ -69,7 +76,7 @@ public class GameManager implements ControllerInterface{
 	
 	@Override
 	public void Reset() {
-		// TODO: Marco: Auto-generated method stub
+		InitGameManager(null);
 		
 	}
 	
@@ -141,7 +148,7 @@ public class GameManager implements ControllerInterface{
 				SelectedPiece(index);
 				break;
 			case WIN:
-				//TODO: Dichiarare il vincitore
+				//TODO: Dichiarare il vincitore **** LASCIARE IL COLORE CHE VINCE **** 
 				viewComponent.EndGame(whiteTurn);
 				//ed attendere il reset
 			default:
@@ -169,7 +176,8 @@ public class GameManager implements ControllerInterface{
 				chessboard.MovePieceFromStartIndexToEndIndex(lastSelectedIndex, index);
 				
 				viewComponent.MoveFromStartIndexToEndIndex(lastSelectedIndex, index);
-				
+
+				ResetMoveState();
 				gameState = GameState.MOVING;
 			}
 			else {
@@ -185,6 +193,10 @@ public class GameManager implements ControllerInterface{
 	
 	private void SetWaitingState(){
 		gameState = GameState.WAITING;
+		ResetMoveState();
+	}
+	
+	private void ResetMoveState(){
 		medusaTreeSelectedIndex = null;
 		lastSelectedIndex = -1;
 	}
