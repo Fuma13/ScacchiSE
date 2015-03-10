@@ -7,6 +7,8 @@ import com.bifidoteam.scacchise.util.Constants;
 import com.bifidoteam.scacchise.view.GameConsoleView;
 import com.bifidoteam.util.MedusaTree;
 
+import java.util.*;
+
 public class GameManager implements ControllerInterface{
 	
 	//-----------------------------Private Variables----------------------------------------
@@ -270,5 +272,26 @@ public class GameManager implements ControllerInterface{
 		}
 		return reachebleIndices;
 	}
+	
+	
+	//--------------------------------Private method for game stream------------------------	
+	//check control for king "colorPlayer"
+	private boolean isCheck(int colorPlayer) throws Exception{
+		throw new Exception("Not Implemented yet");
+	}
+	
+	//return the index of valid tiles around the king where he can moves
+	private List<Integer> searchKingAdjacentSafe(int ColorPlayer) throws Exception{
+		throw new Exception("Not Implemented yet");
+	}
+	
+	//return the index of valid tiles usefull to block the check
+	private List<Integer> searchDistantSafeMoves(int colorPlayer) throws Exception{
+		throw new Exception("Not implemented yet");
+	}
+	//--------------------------------Private method for game stream------------------------
+	
+	
+	
 	//-----------------------------Private functions----------------------------------------
 }
