@@ -3,8 +3,10 @@ package com.bifidoteam.scacchise.controller;
 import java.util.Set;
 
 import com.bifidoteam.scacchise.interfaces.ControllerInterface;
+import com.bifidoteam.scacchise.interfaces.ViewInterface;
 import com.bifidoteam.scacchise.model.Chessboard;
 import com.bifidoteam.scacchise.util.Constants;
+import com.bifidoteam.scacchise.view.GameConsoleView;
 import com.bifidoteam.util.MedusaTree;
 
 public class GameManager implements ControllerInterface{
@@ -16,9 +18,11 @@ public class GameManager implements ControllerInterface{
 	
 	private Chessboard chessboard;
 	private int lastSelectedIndex; //-1 if there isn't a last index selected otherwise index form 0 to 64 (MAX_INDEX)
-	private int whiteTurn; //0 if it is the white player turn, 1 black
+	private int whiteTurn; //TODO: MARCO: **** LASCIARE IL COLORE CHE VINCE **** 0 if it is the white player turn, 1 black
 	private GameState gameState;
 	private MedusaTree medusaTreeSelectedIndex;
+	
+	private ViewInterface viewComponent;
 	
 //	private int[] kingPos;
 	//-----------------------------Private Variables----------------------------------------
@@ -27,11 +31,13 @@ public class GameManager implements ControllerInterface{
 	private GameManager() {
 //		kingPos = new int[Constants.MAX_PLAYERS];
 		chessboard = new Chessboard();
+		viewComponent = new GameConsoleView(); // TODO: Sostituirlo con un factory esterno al GM?
 	}
 	
 	private GameManager(Chessboard c) {
 //		kingPos = new int[Constants.MAX_PLAYERS];
 		chessboard = c;
+		viewComponent = new GameConsoleView(); // TODO: Sostituirlo con un factory esterno al GM?
 	}
 	
 	public static GameManager getInstance() {
@@ -58,21 +64,15 @@ public class GameManager implements ControllerInterface{
 	//-----------------------------Debug functions -----------------------------------------
 	
 	//-----------------------------Controller Interface functions---------------------------
+//	@Override
+//	public void OnClick(int index) {
+//		//TODO: Vedere cosa farne
+//	}
+	
 	@Override
-	public void OnClick(int index) {
-		switch (gameState) {
-			case WAITING:
-				Waiting(index);
-				break;
-			case SELECTED:
-				SelectedPiece(index);
-				break;
-			case WIN:
-				//TODO: Dichiarare il vincitore
-				//ed attendere il reset
-			default:
-				break;
-		}
+	public void Reset() {
+		// TODO: Marco: Auto-generated method stub
+		
 	}
 	
 	@Override
@@ -110,15 +110,43 @@ public class GameManager implements ControllerInterface{
 		}
 		return reachebleIndices;
 	}
+	
+	public void GameLoop(){
+		int indexChosen = viewComponent.GetInput();
+		
+		ManageInput(indexChosen);
+		
+		viewComponent.Render(null); //TODO: Marco: passare il medusa tree da renderizzare
+		
+	}
 	//-----------------------------Controller Interface functions---------------------------
 	
 	//-----------------------------Private functions----------------------------------------
+
+	void ManageInput(int index){
+		switch (gameState) {
+			case WAITING:
+				Waiting(index);
+				break;
+			case SELECTED:
+				SelectedPiece(index);
+				break;
+			case WIN:
+				//TODO: Dichiarare il vincitore
+				viewComponent.EndGame(whiteTurn);
+				//ed attendere il reset
+			default:
+				break;
+		}
+	}
+	
 	private void Waiting(int index) {
 		if(index >= 0 && index < Constants.MAX_INDEX && IsPlayerPiece(index)) {
 				lastSelectedIndex = index;
 				medusaTreeSelectedIndex = GetReachableIndices(index);
-				//TODO:FUMA: mandare alla view il MedusaTree da disegnare
-				//view.DrowReacheblePosition(medusaTreeSelectedIndex);
+				// TODO: vuoto
+				//viewComponent.DrowReacheblePosition(medusaTreeSelectedIndex);
+				
 				gameState = GameState.SELECTED;
 		}
 		else {
@@ -130,8 +158,9 @@ public class GameManager implements ControllerInterface{
 		if(index >= 0 && index < Constants.MAX_INDEX && index != lastSelectedIndex) {
 			if(medusaTreeSelectedIndex != null && medusaTreeSelectedIndex.Contain(index)) {
 				chessboard.MovePieceFromStartIndexToEndIndex(lastSelectedIndex, index);
-				//TODO:FUMA: move the piece
-				//view.MoveFromIndexToIndex(lastSelectedIndex, index);
+				
+				viewComponent.MoveFromStartIndexToEndIndex(lastSelectedIndex, index);
+				
 				gameState = GameState.MOVING;
 			}
 			else {
