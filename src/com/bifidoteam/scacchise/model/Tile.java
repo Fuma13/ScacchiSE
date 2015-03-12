@@ -1,6 +1,8 @@
 package com.bifidoteam.scacchise.model;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.Set;
 
 import com.bifidoteam.scacchise.util.Constants;
 
@@ -9,17 +11,15 @@ public class Tile {
 	
 	//Ho usato l'arraylist perchè non sapevo come usare il set
 	//in caso cambiate e sistemate i metodi =D
-	private ArrayList<LinkedList<Integer>> registered;
+	private Set<Integer> [] registered;
 	private int index;
 	
 	public Tile(){};		//serve il default?
 	public Tile(int index){
 		this.index = index;
-		
-		this.registered = new ArrayList<LinkedList<Integer>>(2);
-		
-		this.registered.add(new LinkedList<Integer>());
-		this.registered.add(new LinkedList<Integer>());
+		this.registered = new Set[Constants.MAX_PLAYERS];
+		this.registered[0] = new HashSet<Integer>();
+		this.registered[1] = new HashSet<Integer>();
 	}
 	
 	//return the index of the tile
@@ -28,14 +28,14 @@ public class Tile {
 	}
 	
 	//return the list of the registered pieces of color "Color"
-	public LinkedList<Integer> getColorListRegistered(int Color){
-		return this.registered.get(Color);
+	public Set<Integer> getColorListRegistered(int Color){
+		return this.registered[Color];
 	}
 	
 	//register a piece from his index and his color
 	public void registerPiece(int pieceIndex,int color){
-		if(!this.registered.get(color).contains(pieceIndex)){
-			this.registered.get(color).add(pieceIndex);
+		if(!this.registered[color].contains(pieceIndex)){
+			this.registered[color].add(pieceIndex);
 		}
 	}
 	
@@ -46,8 +46,8 @@ public class Tile {
 	
 	//unregister a piece from his index and color
 	public void unregisterPiece(int pieceIndex,int color){
-		if(this.registered.get(color).contains(pieceIndex)){
-			this.registered.get(color).remove(pieceIndex);
+		if(this.registered[color].contains(pieceIndex)){
+			this.registered[color].remove(pieceIndex);
 		}
 	}
 	

@@ -21,7 +21,6 @@ public class Pawn extends Piece implements PawnInterface {
 		int segno = (this.isWhite() == 0)? -1:1;
 		
 		j += Constants.MAX_INDEX_ROW*segno;
-		System.out.println(j);
 		mt.AddBranch(j);
 		
 		return mt;

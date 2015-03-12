@@ -6,7 +6,6 @@ import com.bifidoteam.scacchise.model.Chessboard;
 import com.bifidoteam.scacchise.model.Piece;
 import com.bifidoteam.scacchise.util.Constants;
 import com.bifidoteam.scacchise.view.GameConsoleView;
-import com.bifidoteam.util.MedusaLeaf;
 import com.bifidoteam.util.MedusaTree;
 import com.bifidoteam.util.MedusaTree.CuttedIterator;
 
@@ -62,13 +61,13 @@ public class GameManager implements ControllerInterface{
 			//Recupera la lista dei bianchi e li fa registrare sugli MT
 			this.registerPiecesOnTheirMT(this.chessboard.getColorList(Constants.WHITE));
 			this.generateAllMtOfColor(Constants.BLACK);
-			this.registerPiecesOnTheirMT(this.chessboard.getColorList(Constants.BLACK));
+			this.registerPiecesOnTheirMT(this.chessboard.getColorList(Constants.BLACK));		
 		}
 		else {
 			chessboard = c;
 		}
 //		kingPos = new int[Constants.MAX_PLAYERS];
-		viewComponent = new GameConsoleView(); // TODO: Sostituirlo con un factory esterno al GM?
+//		viewComponent = new GameConsoleView(); // TODO: Sostituirlo con un factory esterno al GM?
 	}
 	//--------------------------------Costructors-------------------------------------------
 	
@@ -104,7 +103,7 @@ public class GameManager implements ControllerInterface{
 		ChangePlayerTurn();
 	}
 	
-	public MedusaTree GetReachableIndicesPlus(int index)
+	private MedusaTree GetReachableIndicesPlus(int index)
 	{
 		MedusaTree reachebleIndices = chessboard.GetRealIndices(index);
 		if(reachebleIndices != null){
@@ -215,7 +214,7 @@ public class GameManager implements ControllerInterface{
 	
 	private void ChangePlayerTurn() {
 		whiteTurn = OppositePlayer();
-		CheckCheck();
+		CheckCheck(); //TODO: Vale: mettere il controllo sulllo scacco
 		SetWaitingState();
 	}
 	
@@ -289,14 +288,14 @@ public class GameManager implements ControllerInterface{
 	
 	//Generate all MT of pieces of color "colorPlayer"
 	public void generateAllMtOfColor(int colorPlayer){
-		LinkedList<Piece> piecesList;
-		Iterator<Piece> it;
+		Set<Integer> piecesList;
+		Iterator<Integer> it;
 		
 		piecesList = this.chessboard.getColorList(colorPlayer);
 		it = piecesList.iterator();
 		while(it.hasNext()){
-			Piece next = it.next();
-			next.setMedusaTree(this.GetReachableIndicesPlus(next.getIndex()));
+			int next = it.next();
+			this.chessboard.GetPiece(next).setMedusaTree(this.GetReachableIndicesPlus(next));
 		}
 	}
 	
@@ -306,18 +305,19 @@ public class GameManager implements ControllerInterface{
 	}
 	
 	//Generate MTs of a list of pieces
-	public void generatePiecesMt(LinkedList<Piece> piecesList){
-		Iterator<Piece> it = piecesList.iterator();
+	public void generatePiecesMt(LinkedList<Integer> piecesList){
+		Iterator<Integer> it = piecesList.iterator();
 		while(it.hasNext()){
-			this.generateMt(it.next().getIndex());
+			this.generateMt(it.next());
 		}
 	}
 	
 	//Register a list of pieces on their own MT
-	public void registerPiecesOnTheirMT(LinkedList<Piece> piecesList){
-		Iterator<Piece> it = piecesList.iterator();
+	public void registerPiecesOnTheirMT(Set<Integer> piecesList){
+		Iterator<Integer> it = piecesList.iterator();
 		while(it.hasNext()){
-			this.registerPieceOnHisMT(it.next().getIndex(),it.next().isWhite());
+			int i = it.next();
+			this.registerPieceOnHisMT(i,this.chessboard.IsPieceWhite(i));
 		}
 	}
 	
