@@ -3,9 +3,12 @@ package com.bifidoteam.scacchise.controller;
 import com.bifidoteam.scacchise.interfaces.ControllerInterface;
 import com.bifidoteam.scacchise.interfaces.ViewInterface;
 import com.bifidoteam.scacchise.model.Chessboard;
+import com.bifidoteam.scacchise.model.Piece;
 import com.bifidoteam.scacchise.util.Constants;
 import com.bifidoteam.scacchise.view.GameConsoleView;
+import com.bifidoteam.util.MedusaLeaf;
 import com.bifidoteam.util.MedusaTree;
+import com.bifidoteam.util.MedusaTree.CuttedIterator;
 
 import java.util.*;
 
@@ -53,6 +56,13 @@ public class GameManager implements ControllerInterface{
 	private void InitGameManager(Chessboard c){
 		if(c == null){
 			chessboard = new Chessboard();
+			
+			//Genera gli MT dei Bianchi
+			this.generateAllMtOfColor(Constants.WHITE);
+			//Recupera la lista dei bianchi e li fa registrare sugli MT
+			this.registerPiecesOnTheirMT(this.chessboard.getColorList(Constants.WHITE));
+			this.generateAllMtOfColor(Constants.BLACK);
+			this.registerPiecesOnTheirMT(this.chessboard.getColorList(Constants.BLACK));
 		}
 		else {
 			chessboard = c;
@@ -275,6 +285,51 @@ public class GameManager implements ControllerInterface{
 	
 	
 	//--------------------------------Private method for game stream------------------------	
+
+	
+	//Generate all MT of pieces of color "colorPlayer"
+	public void generateAllMtOfColor(int colorPlayer){
+		LinkedList<Piece> piecesList;
+		Iterator<Piece> it;
+		
+		piecesList = this.chessboard.getColorList(colorPlayer);
+		it = piecesList.iterator();
+		while(it.hasNext()){
+			Piece next = it.next();
+			next.setMedusaTree(this.GetReachableIndicesPlus(next.getIndex()));
+		}
+	}
+	
+	//Generate MT of a piece
+	public void generateMt(int pieceIndex){
+		this.chessboard.GetPiece(pieceIndex).setMedusaTree(this.GetReachableIndicesPlus(pieceIndex));
+	}
+	
+	//Generate MTs of a list of pieces
+	public void generatePiecesMt(LinkedList<Piece> piecesList){
+		Iterator<Piece> it = piecesList.iterator();
+		while(it.hasNext()){
+			this.generateMt(it.next().getIndex());
+		}
+	}
+	
+	//Register a list of pieces on their own MT
+	public void registerPiecesOnTheirMT(LinkedList<Piece> piecesList){
+		Iterator<Piece> it = piecesList.iterator();
+		while(it.hasNext()){
+			this.registerPieceOnHisMT(it.next().getIndex(),it.next().isWhite());
+		}
+	}
+	
+	//Register a piece on its own MT
+	public void registerPieceOnHisMT(int pieceIndex,int pieceColor){
+		CuttedIterator it = this.chessboard.GetPiece(pieceIndex).getMedusaTree().GetCuttedIterator();
+		while(it.hasNext()){
+			this.chessboard.getTile(it.next()).registerPiece(pieceIndex,pieceColor);
+		}
+	}
+	
+	
 	//check control for king "colorPlayer"
 	private boolean isCheck(int colorPlayer) throws Exception{
 		throw new Exception("Not Implemented yet");
