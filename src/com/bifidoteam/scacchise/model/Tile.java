@@ -55,4 +55,12 @@ public class Tile {
 	public void unregisterPiece(Piece piece){
 		this.unregisterPiece(piece.getIndex(), piece.isWhite());
 	}
+	
+	public int numberOfOpponentPiecesRegisteredOn(int colorPlayer) {
+		if(colorPlayer == Constants.BLACK){
+			return this.registered[Constants.WHITE].size();
+		}else{
+			return this.registered[Constants.BLACK].size();
+		}
+	}
 }

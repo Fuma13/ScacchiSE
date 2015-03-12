@@ -17,7 +17,7 @@ public class Chessboard
 	private Set<Integer> [] pieces;
 	
 	//TODO VALE: facciamo la verifica quando muoviamo che siamo un re ed aggiorniamo la pos o metto i piece che si portano la pos?
-	private int[] kingPos;	
+	private Piece[] kingPos;	
 	//-----------------------------Private Variables----------------------------------------
 	
 	//-----------------------------Public functions-----------------------------------------
@@ -32,11 +32,6 @@ public class Chessboard
 		
 		//populates chessboard with piece and null, populates colored lists 
 		InizializeChessboard();
-		
-		//Set initial king position, change manually to switch from standard initialization
-		this.kingPos = new int [Constants.MAX_PLAYERS];
-		this.kingPos[Constants.WHITE] = 60;
-		this.kingPos[Constants.BLACK] = 4;
 	}
 	
 	
@@ -98,12 +93,14 @@ public class Chessboard
 	}
 	
 	public int getKing(int colorPlayer){
-		return this.kingPos[colorPlayer];
+		return this.kingPos[colorPlayer].getIndex();
 	}
 	
-	public void setKing(int newKingPosIndex, int colorPlayer){
-		this.kingPos[colorPlayer] = newKingPosIndex;
+	//if you call setKing, it get the piece from the chessboard[index]
+	public void setKing(int colorPlayer,int index){
+		this.kingPos[colorPlayer] = this.chessboard[index];
 	}
+	
 	//-----------------------------Public functions-----------------------------------------
 	
 	//-----------------------------Private functions----------------------------------------
@@ -111,12 +108,16 @@ public class Chessboard
 		//TODO:FUMA: Togliere i magic numbers (ma mi sa che non si puo')
 		//VALE: No non credo, è la configurazione iniziale, ho messo i colori const
 		
+		//Set initial king position, change manually to switch from standard initialization
+		this.kingPos = new Piece [Constants.MAX_PLAYERS];
+		
 		//Black Pieces
 		chessboard[0] = new Tower(0, Constants.BLACK);
 		chessboard[1] = new Horse(1, Constants.BLACK);
 		chessboard[2] = new Bishop(2, Constants.BLACK);
 		chessboard[3] = new Queen(3, Constants.BLACK);
 		chessboard[4] = new King(4, Constants.BLACK);
+		this.kingPos[Constants.BLACK] = this.chessboard[4];
 		chessboard[5] = new Bishop(5, Constants.BLACK);
 		chessboard[6] = new Horse(6, Constants.BLACK);
 		chessboard[7] = new Tower(7, Constants.BLACK);
@@ -151,6 +152,7 @@ public class Chessboard
 		chessboard[58] = new Bishop(58, Constants.WHITE);
 		chessboard[59] = new Queen(59, Constants.WHITE);
 		chessboard[60] = new King(60, Constants.WHITE);
+		this.kingPos[Constants.WHITE] = this.chessboard[60];
 		chessboard[61] = new Bishop(61, Constants.WHITE);
 		chessboard[62] = new Horse(62, Constants.WHITE);
 		chessboard[63] = new Tower(63, Constants.WHITE);

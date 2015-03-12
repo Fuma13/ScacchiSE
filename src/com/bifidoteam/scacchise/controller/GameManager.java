@@ -19,7 +19,7 @@ public class GameManager implements ControllerInterface{
 	
 	private Chessboard chessboard;
 	private int lastSelectedIndex; //-1 if there isn't a last index selected otherwise index form 0 to 64 (MAX_INDEX)
-	private int whiteTurn; //0 if it is the white player turn, 1 black
+	private int colorTurn; //0 if it is the white player turn, 1 black
 	private GameState gameState;
 	private MedusaTree medusaTreeSelectedIndex;
 	
@@ -71,7 +71,7 @@ public class GameManager implements ControllerInterface{
 	//-----------------------------Debug functions -----------------------------------------
 	public MedusaTree GetReachebleIndicesDebug(int index, int whiteTurn)
 	{
-		this.whiteTurn = whiteTurn;
+		this.colorTurn = whiteTurn;
 		return GetReachableIndices(index);
 	}
 	//-----------------------------Debug functions -----------------------------------------
@@ -157,7 +157,7 @@ public class GameManager implements ControllerInterface{
 				break;
 			case WIN:
 				//TODO: Dichiarare il vincitore **** LASCIARE IL COLORE CHE VINCE **** 
-				viewComponent.EndGame(whiteTurn);
+				viewComponent.EndGame(colorTurn);
 				//ed attendere il reset
 			default:
 				break;
@@ -210,25 +210,22 @@ public class GameManager implements ControllerInterface{
 	}
 	
 	private void ChangePlayerTurn() {
-		whiteTurn = OppositePlayer();
-		CheckCheck(); //TODO: Vale: mettere il controllo sulllo scacco
+		colorTurn = OppositePlayer();
+		CheckCheck(this.colorTurn); //TODO: Vale: mettere il controllo sullo scacco
 		SetWaitingState();
 	}
 	
 	private int OppositePlayer() {
-		return (Constants.MAX_PLAYERS - 1) - whiteTurn;
+		return (Constants.MAX_PLAYERS - 1) - colorTurn;
 	}
 	
 	//-----------------------------Chessboard functions
-	private boolean CheckCheck(){
-		return false;
-	}
 	private boolean IsPlayerPiece(int index)
 	{
 		boolean isPlayerPiece = false;
 		if(index >= 0 && index < Constants.MAX_INDEX)
 		{
-			if(chessboard.GetPiece(index) != null && chessboard.IsPieceWhite(index) == whiteTurn) {
+			if(chessboard.GetPiece(index) != null && chessboard.IsPieceWhite(index) == colorTurn) {
 					isPlayerPiece = true;
 			}
 		}
@@ -245,7 +242,7 @@ public class GameManager implements ControllerInterface{
 				Integer reachebleIndex = mtIterator.next();
 				if(chessboard.GetPiece(reachebleIndex) != null){
 					//If is special (Pawn) then the cut different or is a player piece
-					if(chessboard.IsPieceSpecial(index) || chessboard.IsPieceWhite(reachebleIndex) == whiteTurn) {
+					if(chessboard.IsPieceSpecial(index) || chessboard.IsPieceWhite(reachebleIndex) == colorTurn) {
 						//This piece can't arrive in this cell
 						mtIterator.CutThisAndAfter();
 					}
@@ -263,7 +260,7 @@ public class GameManager implements ControllerInterface{
 	
 				while(meEatableIterator.hasNext()) {
 					Integer eatableIndex = meEatableIterator.next();
-					if(chessboard.IsPieceWhite(eatableIndex) != whiteTurn) {//If is an opponent piece
+					if(chessboard.IsPieceWhite(eatableIndex) != colorTurn) {//If is an opponent piece
 						//then this piece can eat it and can't continue on this way 
 						meEatableIterator.CutAfter();
 					}
@@ -326,15 +323,27 @@ public class GameManager implements ControllerInterface{
 		}
 	}
 	
-	
-	//check control for king "colorPlayer"
-	private boolean isCheck(int colorPlayer) throws Exception{
-		throw new Exception("Not Implemented yet");
+	private boolean CheckCheck(int colorPlayer){
+		//get the king pos
+		int kingPos = this.chessboard.getKing(colorPlayer);
+		
+		int numberOfOpponent = this.chessboard.getTile(kingPos).numberOfOpponentPiecesRegisteredOn(colorPlayer);
+		//check if there is an opponent piece registered on the kingPos
+		if(numberOfOpponent >0){
+			LinkedList<Integer> validMoves = new LinkedList<Integer>();
+			validMoves.addAll(this.searchKingAdjacentSafe(colorPlayer));
+			//TODO to continue after implement searchKingAdjacentSafe
+			return true;
+		}else{
+			//NO check/checkMate on the king
+			return false;
+		}
 	}
 	
 	//return the index of valid tiles around the king where he can moves
-	private List<Integer> searchKingAdjacentSafe(int ColorPlayer) throws Exception{
-		throw new Exception("Not Implemented yet");
+	private List<Integer> searchKingAdjacentSafe(int ColorPlayer){
+		//TODO to continue
+		return new LinkedList<Integer>();
 	}
 	
 	//return the index of valid tiles usefull to block the check
