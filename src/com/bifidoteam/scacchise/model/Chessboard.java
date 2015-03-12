@@ -3,9 +3,7 @@ package com.bifidoteam.scacchise.model;
 import com.bifidoteam.scacchise.util.Constants;
 import com.bifidoteam.util.MedusaTree;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.Set;
 
 public class Chessboard
@@ -13,11 +11,13 @@ public class Chessboard
 	//-----------------------------Private Variables----------------------------------------
 	private Piece[] chessboard = new Piece[Constants.MAX_INDEX];
 	
-	//VALE: Aggiunta la lista delle tile
 	private Tile[] tiles = new Tile[Constants.MAX_INDEX];
 	
-	//VALE: Ho aggiunto le liste dei soli pezzi bianchi e neri.
+	//Liste dei soli pezzi bianchi e neri.
 	private Set<Integer> [] pieces;
+	
+	//TODO VALE: facciamo la verifica quando muoviamo che siamo un re ed aggiorniamo la pos o metto i piece che si portano la pos?
+	private int[] kingPos;	
 	//-----------------------------Private Variables----------------------------------------
 	
 	//-----------------------------Public functions-----------------------------------------
@@ -30,8 +30,13 @@ public class Chessboard
 		this.pieces[0] = new HashSet<Integer>();
 		this.pieces[1] = new HashSet<Integer>();
 		
-		
+		//populates chessboard with piece and null, populates colored lists 
 		InizializeChessboard();
+		
+		//Set initial king position, change manually to switch from standard initialization
+		this.kingPos = new int [Constants.MAX_PLAYERS];
+		this.kingPos[Constants.WHITE] = 60;
+		this.kingPos[Constants.BLACK] = 4;
 	}
 	
 	
@@ -87,8 +92,17 @@ public class Chessboard
 			this.pieces[pieceColor].add(pieceIndex);
 		}
 	}
+	
 	public Tile getTile(int index){
 		return this.tiles[index];
+	}
+	
+	public int getKing(int colorPlayer){
+		return this.kingPos[colorPlayer];
+	}
+	
+	public void setKing(int newKingPosIndex, int colorPlayer){
+		this.kingPos[colorPlayer] = newKingPosIndex;
 	}
 	//-----------------------------Public functions-----------------------------------------
 	

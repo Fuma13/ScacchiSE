@@ -3,7 +3,6 @@ package com.bifidoteam.scacchise.controller;
 import com.bifidoteam.scacchise.interfaces.ControllerInterface;
 import com.bifidoteam.scacchise.interfaces.ViewInterface;
 import com.bifidoteam.scacchise.model.Chessboard;
-import com.bifidoteam.scacchise.model.Piece;
 import com.bifidoteam.scacchise.util.Constants;
 import com.bifidoteam.scacchise.view.GameConsoleView;
 import com.bifidoteam.util.MedusaTree;
@@ -24,9 +23,7 @@ public class GameManager implements ControllerInterface{
 	private GameState gameState;
 	private MedusaTree medusaTreeSelectedIndex;
 	
-	private ViewInterface viewComponent;
-	
-//	private int[] kingPos;
+	private ViewInterface viewComponent;		
 	//-----------------------------Private Variables----------------------------------------
 	
 	//--------------------------------Costructors-------------------------------------------
