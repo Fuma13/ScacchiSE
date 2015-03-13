@@ -416,9 +416,17 @@ public class GameManager implements ControllerInterface{
 		Iterator<Integer> it = registeredOpponents.iterator();
 		opponentIndex = it.next();
 		
-		MedusaTree mtBetweenOpponentAndKing = this.GetBranchToKing(opponentIndex,kingIndex); //int start,int end
-		
-		
+		//found the index of tiles between the rival and the king
+		MedusaTree mtBetweenOpponentAndKing = this.GetBranchToKing(opponentIndex,kingIndex);
+		CuttedIterator it2 = mtBetweenOpponentAndKing.GetCuttedIterator();
+		while(it.hasNext()){
+			int tempoPos = it2.next();
+			//if the tile in that index contains a friend piece, that piece can move and stop king's check
+			if(this.chessboard.getTile(tempoPos).getColorListRegistered(colorTurn).size() > 0){
+				validMoves.add(tempoPos);
+			}
+		}
+				
 		return validMoves;
 	}
 	
