@@ -331,7 +331,7 @@ public class GameManager implements ControllerInterface{
 		//check if there is an opponent piece registered on the kingPos
 		if(numberOfOpponent >0){
 			LinkedList<Integer> validMoves = new LinkedList<Integer>();
-			validMoves.addAll(this.searchKingAdjacentSafe(colorPlayer));
+			validMoves.addAll(this.chessboard.searchKingAdjacentSafe(colorPlayer));
 			//TODO to continue after implement searchKingAdjacentSafe
 			return true;
 		}else{
@@ -340,16 +340,6 @@ public class GameManager implements ControllerInterface{
 		}
 	}
 	
-	//return the index of valid tiles around the king where he can moves
-	private List<Integer> searchKingAdjacentSafe(int ColorPlayer){
-		//TODO to continue
-		return new LinkedList<Integer>();
-	}
-	
-	//return the index of valid tiles usefull to block the check
-	private List<Integer> searchDistantSafeMoves(int colorPlayer) throws Exception{
-		throw new Exception("Not implemented yet");
-	}
 	//--------------------------------Private method for game stream------------------------
 	
 	

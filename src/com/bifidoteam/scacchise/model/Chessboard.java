@@ -4,6 +4,8 @@ import com.bifidoteam.scacchise.util.Constants;
 import com.bifidoteam.util.MedusaTree;
 
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
 
 public class Chessboard
@@ -75,6 +77,17 @@ public class Chessboard
 			return true;
 		}	
 		return false;
+	}
+	
+	//return the index of valid tiles around the king where he can moves
+	public List<Integer> searchKingAdjacentSafe(int ColorPlayer){
+		//TODO to continue
+		return new LinkedList<Integer>();
+	}
+	
+	//return the index of valid tiles usefull to block the check
+	public List<Integer> searchDistantSafeMoves(int colorPlayer) throws Exception{
+		throw new Exception("Not implemented yet");
 	}
 	
 	//return the list of pieces of color "Color"
