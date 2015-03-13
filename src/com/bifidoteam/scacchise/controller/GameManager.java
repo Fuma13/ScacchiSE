@@ -159,6 +159,7 @@ public class GameManager implements ControllerInterface{
 				//TODO: Dichiarare il vincitore **** LASCIARE IL COLORE CHE VINCE **** 
 				viewComponent.EndGame(colorTurn);
 				//ed attendere il reset
+			//When is in MOVING state the GameManager wait the callback function OnMoveDone
 			default:
 				break;
 		}
@@ -282,6 +283,7 @@ public class GameManager implements ControllerInterface{
 		Boolean kingFind = false;
 		while(it.hasNext() && !kingFind){
 			if(it.next() == kingIndex){
+				it.CutThisAndAfter();
 				it.CutOtherBranches();
 				kingFind = true;
 			}
