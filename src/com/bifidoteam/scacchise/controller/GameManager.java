@@ -5,6 +5,7 @@ import com.bifidoteam.scacchise.interfaces.ViewInterface;
 import com.bifidoteam.scacchise.model.Chessboard;
 import com.bifidoteam.scacchise.util.Constants;
 import com.bifidoteam.util.MedusaTree;
+import com.bifidoteam.util.MedusaTree.CuttableCuttedIterator;
 import com.bifidoteam.util.MedusaTree.CuttedIterator;
 
 import java.util.*;
@@ -275,6 +276,24 @@ public class GameManager implements ControllerInterface{
 		return reachebleIndices;
 	}
 	
+	MedusaTree GetBranchToKing(int opponentIndex,int kingIndex){
+		MedusaTree mt = GetReachableIndices(opponentIndex);
+		CuttableCuttedIterator it = mt.GetCuttableCuttedIterator();
+		Boolean kingFind = false;
+		while(it.hasNext() && !kingFind){
+			if(it.next() == kingIndex){
+				it.CutOtherBranches();
+				kingFind = true;
+			}
+		}
+		
+		if(!kingFind){
+			it.CutAllBranches();
+		}
+		
+		return mt;
+	}
+	
 	
 	//--------------------------------Private method for game stream------------------------	
 
@@ -397,7 +416,7 @@ public class GameManager implements ControllerInterface{
 		Iterator<Integer> it = registeredOpponents.iterator();
 		opponentIndex = it.next();
 		
-//		MedusaTree mtBetweenOpponentAndKing = this.GetBranchToKing(opponentIndex,kingIndex); //int start,int end
+		MedusaTree mtBetweenOpponentAndKing = this.GetBranchToKing(opponentIndex,kingIndex); //int start,int end
 		
 		
 		return validMoves;

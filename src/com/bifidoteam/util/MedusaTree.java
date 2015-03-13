@@ -288,6 +288,16 @@ public class MedusaTree {//implements Iterable<Integer>,Iterator<Integer>{
 			super.iterator();
 			return this;
 		}
+		
+		public void CutAllBranches(){
+			int tempCurrentNearPos = 0;
+			MedusaLeaf tempCurrentLeaf;
+			do{
+					tempCurrentLeaf = nearPositions.get(tempCurrentNearPos);
+					if(tempCurrentLeaf != null)
+						CutThisBranch(tempCurrentLeaf);
+			}while(tempCurrentNearPos < nearPositions.size());
+		}
 	}
 	
 	public class CompleteIterator implements Iterable<Integer>,Iterator<Integer>{
