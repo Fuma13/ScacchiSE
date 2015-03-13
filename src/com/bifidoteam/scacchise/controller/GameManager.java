@@ -398,6 +398,7 @@ public class GameManager implements ControllerInterface{
 				}
 			}
 		}
+		
 		return kingValidMoves;
 	}
 	
