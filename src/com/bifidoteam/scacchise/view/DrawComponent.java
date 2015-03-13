@@ -30,14 +30,20 @@ public class DrawComponent {
 		// ** END
 		
 		char actualSymbol = ' ';
+		Piece actualPiece = null;
 		
 		for(int i=0; i<Constants.MAX_INDEX_ROW; ++i){
 			
 			System.out.print(" " + i + " ");
 			
 			for(int j=0; j<Constants.MAX_INDEX_ROW; ++j){
-				actualSymbol = scacchiera.GetPiece(i*Constants.MAX_INDEX_ROW + j).GetSymbol();
-				if(medusaMap[i*Constants.MAX_INDEX_ROW + j] == 'X')
+				actualPiece = scacchiera.GetPiece(i*Constants.MAX_INDEX_ROW + j);
+				if(actualPiece != null)
+					actualSymbol = actualPiece.GetSymbol();
+				else 
+					actualSymbol =  ' ';
+				
+				if(medusaMap[i*Constants.MAX_INDEX_ROW + j] != 'X')
 					writeChar(actualSymbol);
 				else
 					writeSpecialChar(actualSymbol);
@@ -46,7 +52,7 @@ public class DrawComponent {
 		}
 		System.out.println("\n\n");
 		
-		initMedusaMap(' ');
+		initMedusaMap(' '); // Consuma il medusa map che ho stampato
 	}
 
 	public DrawComponent(Chessboard chessboardIn){

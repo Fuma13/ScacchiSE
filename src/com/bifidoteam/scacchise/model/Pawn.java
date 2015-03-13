@@ -59,6 +59,6 @@ public class Pawn extends Piece implements PawnInterface {
 	@Override
 	public char GetSymbol()
 	{
-		return 'P';
+		return white == Constants.WHITE ? 'P' : 'p';
 	}
 }

@@ -1,13 +1,17 @@
 package com.bifidoteam.scacchise.controller;
 
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
+
 import com.bifidoteam.scacchise.interfaces.ControllerInterface;
 import com.bifidoteam.scacchise.interfaces.ViewInterface;
 import com.bifidoteam.scacchise.model.Chessboard;
 import com.bifidoteam.scacchise.util.Constants;
+import com.bifidoteam.scacchise.view.GameConsoleView;
 import com.bifidoteam.util.MedusaTree;
 import com.bifidoteam.util.MedusaTree.CuttedIterator;
-
-import java.util.*;
 
 public class GameManager implements ControllerInterface{
 	
@@ -57,13 +61,15 @@ public class GameManager implements ControllerInterface{
 			//Recupera la lista dei bianchi e li fa registrare sugli MT
 			this.registerPiecesOnTheirMT(this.chessboard.getColorList(Constants.WHITE));
 			this.generateAllMtOfColor(Constants.BLACK);
-			this.registerPiecesOnTheirMT(this.chessboard.getColorList(Constants.BLACK));		
+			this.registerPiecesOnTheirMT(this.chessboard.getColorList(Constants.BLACK));	
+			
 		}
 		else {
 			chessboard = c;
 		}
 //		kingPos = new int[Constants.MAX_PLAYERS];
-//		viewComponent = new GameConsoleView(); // TODO: Sostituirlo con un factory esterno al GM?
+		this.gameState = GameState.WAITING;
+		viewComponent = new GameConsoleView(); // TODO: Sostituirlo con un factory esterno al GM?
 	}
 	//--------------------------------Costructors-------------------------------------------
 	
@@ -182,10 +188,14 @@ public class GameManager implements ControllerInterface{
 			if(medusaTreeSelectedIndex != null && medusaTreeSelectedIndex.Contain(index)) {
 				chessboard.MovePieceFromStartIndexToEndIndex(lastSelectedIndex, index);
 				
-				viewComponent.MoveFromStartIndexToEndIndex(lastSelectedIndex, index);
-
+				// ** NOTA PER MARCO: ho spostato queste 2 righe sopra la chiamata alla view perche',
+				// 		non essendo su diversi thread, viene chiamato prima il onMoveDone che setta il GameState.Waiting
+				//		prima di raggiungere queste due righe. Su multi thread ok, in single thread no >.<
 				ResetMoveState();
 				gameState = GameState.MOVING;
+				
+				viewComponent.MoveFromStartIndexToEndIndex(lastSelectedIndex, index);
+
 			}
 			else {
 				//Check if is another 

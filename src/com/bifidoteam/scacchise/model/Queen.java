@@ -121,7 +121,7 @@ public class Queen extends Piece {
 	@Override
 	public char GetSymbol()
 	{
-		return 'Q';
+		return white == Constants.WHITE ? 'Q' : 'q';
 	}
 
 }

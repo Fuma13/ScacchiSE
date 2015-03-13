@@ -73,6 +73,7 @@ public class Chessboard
 	public boolean MovePieceFromStartIndexToEndIndex(int startIndex, int endIndex) {
 		if(startIndex >= 0 && startIndex < Constants.MAX_INDEX && endIndex >= 0 && endIndex < Constants.MAX_INDEX) {
 			chessboard[endIndex] = chessboard[startIndex];
+			chessboard[endIndex].index = endIndex;
 			chessboard[startIndex] = null;
 			return true;
 		}	
