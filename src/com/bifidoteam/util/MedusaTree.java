@@ -31,9 +31,9 @@ public class MedusaTree {//implements Iterable<Integer>,Iterator<Integer>{
 	//--------------------------------Getter/Setter-----------------------------------------
 	
 	//-----------------------------Private functions----------------------------------------
-	private BranchIterator GetBranchIterator()
+	private SurfaceIterator GetBranchIterator()
 	{
-		return new BranchIterator().iterator();
+		return new SurfaceIterator().iterator();
 	}
 	//-----------------------------Private functions----------------------------------------
 	
@@ -61,6 +61,7 @@ public class MedusaTree {//implements Iterable<Integer>,Iterator<Integer>{
 		lastLeaf = newLeaf;
 	}
 	
+	//Add an existing branch as a new branch to the mt
 	public void AddExistingBranch(MedusaLeaf leaf) {
 		nearPositions.add(leaf);
 		while(leaf.getNext() != null)
@@ -81,9 +82,10 @@ public class MedusaTree {//implements Iterable<Integer>,Iterator<Integer>{
 		return found;
 	}
 
+	//Merge two mt adding the other branches to the this mt
 	public void MergeMedusaTreeNewBanch(MedusaTree other){
 		
-		BranchIterator bi = other.GetBranchIterator();
+		SurfaceIterator bi = other.GetBranchIterator();
 		
 		while(bi.hasNext())
 		{
@@ -102,9 +104,15 @@ public class MedusaTree {//implements Iterable<Integer>,Iterator<Integer>{
 		return new CuttedIterator().iterator();
 	}
 	
+	public CuttableCuttedIterator GetCuttableCuttedIterator()
+	{
+		return (CuttableCuttedIterator) new CuttableCuttedIterator().iterator();
+	}
+	
 	//-----------------------------Public functions-----------------------------------------
 
 	//--------------------------------Iterator functions------------------------------------
+	//
 	public class CuttedIterator implements Iterable<Integer>,Iterator<Integer>{
 		//-----------------------------Iterator variables
 		private int currentNearPos;
@@ -246,6 +254,38 @@ public class MedusaTree {//implements Iterable<Integer>,Iterator<Integer>{
 		public CuttedIterator iterator() {
 			currentNearPos = -1;
 			currentLeaf = null;
+			return this;
+		}
+	}
+	
+	
+	public class CuttableCuttedIterator extends CuttedIterator {
+		
+		public void CutOtherBranches(){
+			int tempCurrentNearPos = 0;
+			MedusaLeaf tempCurrentLeaf;
+			do{
+				if(tempCurrentNearPos != super.currentNearPos) {
+					tempCurrentLeaf = nearPositions.get(tempCurrentNearPos);
+					if(tempCurrentLeaf != null)
+						CutThisBranch(tempCurrentLeaf);
+				}
+				
+			}while(tempCurrentNearPos < nearPositions.size());
+		}
+		
+		private void CutThisBranch(MedusaLeaf currentLeaf)
+		{
+			do
+			{
+				currentLeaf.setIsCut(true);
+				currentLeaf = currentLeaf.getRealNext();
+			}while(currentLeaf != null);
+		}
+		
+		@Override
+		public CuttedIterator iterator() {
+			super.iterator();
 			return this;
 		}
 	}
@@ -400,7 +440,8 @@ public class MedusaTree {//implements Iterable<Integer>,Iterator<Integer>{
 	
 	}
 	
-	private class BranchIterator implements Iterable<MedusaLeaf>,Iterator<MedusaLeaf>{
+	//Iterate on the top of the branch
+	private class SurfaceIterator implements Iterable<MedusaLeaf>,Iterator<MedusaLeaf>{
 
 		private int currentNearPos;
 		private MedusaLeaf currentLeaf;
@@ -454,7 +495,7 @@ public class MedusaTree {//implements Iterable<Integer>,Iterator<Integer>{
 		}
 
 		@Override
-		public BranchIterator iterator()
+		public SurfaceIterator iterator()
 		{
 			currentNearPos = -1;
 			currentLeaf = null;
