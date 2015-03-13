@@ -1,7 +1,5 @@
 package com.bifidoteam.scacchise.model;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.Set;
 
 import com.bifidoteam.scacchise.util.Constants;
@@ -15,6 +13,8 @@ public class Tile {
 	private int index;
 	
 	public Tile(){};		//serve il default?
+	
+	@SuppressWarnings("unchecked")
 	public Tile(int index){
 		this.index = index;
 		this.registered = new Set[Constants.MAX_PLAYERS];
@@ -39,7 +39,7 @@ public class Tile {
 		}
 	}
 	
-	//register a piece, added if usefull
+	//register a piece, added if useful
 	public void registerPiece(Piece piece){
 		this.registerPiece(piece.getIndex(), piece.isWhite());
 	}
@@ -51,7 +51,7 @@ public class Tile {
 		}
 	}
 	
-	//unregister a piece, added if usefull
+	//unregister a piece, added if useful
 	public void unregisterPiece(Piece piece){
 		this.unregisterPiece(piece.getIndex(), piece.isWhite());
 	}

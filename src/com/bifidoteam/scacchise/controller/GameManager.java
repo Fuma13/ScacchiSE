@@ -4,7 +4,6 @@ import com.bifidoteam.scacchise.interfaces.ControllerInterface;
 import com.bifidoteam.scacchise.interfaces.ViewInterface;
 import com.bifidoteam.scacchise.model.Chessboard;
 import com.bifidoteam.scacchise.util.Constants;
-import com.bifidoteam.scacchise.view.GameConsoleView;
 import com.bifidoteam.util.MedusaTree;
 import com.bifidoteam.util.MedusaTree.CuttedIterator;
 
@@ -211,7 +210,7 @@ public class GameManager implements ControllerInterface{
 	
 	private void ChangePlayerTurn() {
 		colorTurn = OppositePlayer();
-		CheckCheck(this.colorTurn); //TODO: Vale: mettere il controllo sullo scacco
+		CheckCheck();
 		SetWaitingState();
 	}
 	
@@ -323,21 +322,62 @@ public class GameManager implements ControllerInterface{
 		}
 	}
 	
-	private boolean CheckCheck(int colorPlayer){
+	private boolean CheckCheck(){
 		//get the king pos
-		int kingPos = this.chessboard.getKing(colorPlayer);
+		int kingPos = this.chessboard.getKing(this.colorTurn);
 		
-		int numberOfOpponent = this.chessboard.getTile(kingPos).numberOfOpponentPiecesRegisteredOn(colorPlayer);
+		int numberOfOpponent = this.chessboard.getTile(kingPos).numberOfOpponentPiecesRegisteredOn(this.colorTurn);
 		//check if there is an opponent piece registered on the kingPos
 		if(numberOfOpponent >0){
 			LinkedList<Integer> validMoves = new LinkedList<Integer>();
-			validMoves.addAll(this.chessboard.searchKingAdjacentSafe(colorPlayer));
+			validMoves.addAll(this.searchKingAdjacentSafe());
 			//TODO to continue after implement searchKingAdjacentSafe
 			return true;
 		}else{
 			//NO check/checkMate on the king
 			return false;
 		}
+	}
+	
+	//return the index of valid tiles around the king where he can moves
+	public List<Integer> searchKingAdjacentSafe(){
+		//list of valid moves for the king
+		LinkedList<Integer> kingValidMoves = new LinkedList<Integer>();
+		
+		//get the king mt
+		MedusaTree kingMt = this.GetReachableIndices(this.chessboard.getKing(this.colorTurn));
+		
+		//for each leaf gets the tile and checks how many opponents are registered on
+		CuttedIterator it = kingMt.GetCuttedIterator(); //TODO ritorna l'mt completo del re?
+		while(it.hasNext()){
+			int leafIndex = it.next();
+			int numOpponentsRegisteredOnLeaf = this.chessboard.getTile(leafIndex).numberOfOpponentPiecesRegisteredOn(this.colorTurn);
+			
+			//at least on enemy is registered on that tile
+			if(numOpponentsRegisteredOnLeaf > 0){
+				//if is exactly one, king can eat if the opponent piece is there
+				if(numOpponentsRegisteredOnLeaf == 1){
+					
+					//Only one Opponent expected
+					Set<Integer> registeredOpponents = this.chessboard.getTile(leafIndex).getColorListRegistered(OppositePlayer());					
+					if(registeredOpponents.contains(leafIndex)){
+						kingValidMoves.add(leafIndex);	
+					}
+				}
+			}else{
+				//check if there is a friend
+				Set<Integer> registeredFriends = this.chessboard.getTile(leafIndex).getColorListRegistered(this.colorTurn);
+				if(registeredFriends.size() == 0 ){
+					kingValidMoves.add(leafIndex);
+				}
+			}
+		}
+		return kingValidMoves;
+	}
+	
+	//return the index of valid tiles usefull to block the check
+	public List<Integer> searchDistantSafeMoves(int colorPlayer) throws Exception{
+		throw new Exception("Not implemented yet");
 	}
 	
 	//--------------------------------Private method for game stream------------------------

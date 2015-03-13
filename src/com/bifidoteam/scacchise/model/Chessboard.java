@@ -79,17 +79,6 @@ public class Chessboard
 		return false;
 	}
 	
-	//return the index of valid tiles around the king where he can moves
-	public List<Integer> searchKingAdjacentSafe(int ColorPlayer){
-		//TODO to continue
-		return new LinkedList<Integer>();
-	}
-	
-	//return the index of valid tiles usefull to block the check
-	public List<Integer> searchDistantSafeMoves(int colorPlayer) throws Exception{
-		throw new Exception("Not implemented yet");
-	}
-	
 	//return the list of pieces of color "Color"
 	public Set<Integer> getColorList(int Color){
 		return this.pieces[Color];
