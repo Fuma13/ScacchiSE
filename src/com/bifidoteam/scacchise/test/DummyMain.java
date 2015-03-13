@@ -1,6 +1,5 @@
 package com.bifidoteam.scacchise.test;
 
-import com.bifidoteam.scacchise.Game;
 import com.bifidoteam.scacchise.controller.GameManager;
 import com.bifidoteam.scacchise.model.Chessboard;
 import com.bifidoteam.scacchise.util.Constants;
