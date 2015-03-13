@@ -330,8 +330,14 @@ public class GameManager implements ControllerInterface{
 		//check if there is an opponent piece registered on the kingPos
 		if(numberOfOpponent >0){
 			LinkedList<Integer> validMoves = new LinkedList<Integer>();
+			
+			//add king's valid moves
 			validMoves.addAll(this.searchKingAdjacentSafe());
-			//TODO to continue after implement searchKingAdjacentSafe
+			
+			//if N = 1 it's possible eat/intercept the opponent piece checking the king
+			if(numberOfOpponent == 1){
+				validMoves.addAll(this.searchDistantSafeMoves());
+			}
 			return true;
 		}else{
 			//NO check/checkMate on the king
@@ -348,7 +354,8 @@ public class GameManager implements ControllerInterface{
 		MedusaTree kingMt = this.GetReachableIndices(this.chessboard.getKing(this.colorTurn));
 		
 		//for each leaf gets the tile and checks how many opponents are registered on
-		CuttedIterator it = kingMt.GetCuttedIterator(); //TODO ritorna l'mt completo del re?
+		CuttedIterator it = kingMt.GetCuttedIterator();
+		
 		while(it.hasNext()){
 			int leafIndex = it.next();
 			int numOpponentsRegisteredOnLeaf = this.chessboard.getTile(leafIndex).numberOfOpponentPiecesRegisteredOn(this.colorTurn);
@@ -376,8 +383,24 @@ public class GameManager implements ControllerInterface{
 	}
 	
 	//return the index of valid tiles usefull to block the check
-	public List<Integer> searchDistantSafeMoves(int colorPlayer) throws Exception{
-		throw new Exception("Not implemented yet");
+	public List<Integer> searchDistantSafeMoves(){
+		//list of valid moves
+		LinkedList<Integer> validMoves = new LinkedList<Integer>();
+		
+		int kingIndex = this.chessboard.getKing(this.colorTurn);
+		
+		//Only one Opponent expected
+		Set<Integer> registeredOpponents = this.chessboard.getTile(kingIndex).getColorListRegistered(OppositePlayer());
+		
+		//found opponentIndex
+		int opponentIndex;
+		Iterator<Integer> it = registeredOpponents.iterator();
+		opponentIndex = it.next();
+		
+//		MedusaTree mtBetweenOpponentAndKing = this.GetBranchToKing(opponentIndex,kingIndex); //int start,int end
+		
+		
+		return validMoves;
 	}
 	
 	//--------------------------------Private method for game stream------------------------
