@@ -79,6 +79,6 @@ public class Bishop extends Piece {
 	@Override
 	public	char GetSymbol()
 	{
-		return 'B';
+		return white == Constants.WHITE ? 'B' : 'b';
 	}
 }

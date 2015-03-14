@@ -1,9 +1,14 @@
 package com.bifidoteam.scacchise.view;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
 import com.bifidoteam.scacchise.controller.GameManager;
 import com.bifidoteam.scacchise.interfaces.ControllerInterface;
 import com.bifidoteam.scacchise.interfaces.ViewInterface;
 import com.bifidoteam.scacchise.model.Chessboard;
+import com.bifidoteam.scacchise.util.Constants;
 import com.bifidoteam.util.MedusaTree;
 
 public class GameConsoleView implements ViewInterface {
@@ -11,13 +16,17 @@ public class GameConsoleView implements ViewInterface {
 	DrawComponent drawingClass;
 	ControllerInterface gm;
 	
-	public GameConsoleView() {
-		gm = GameManager.getInstance();
-	}
+	final private int A_ASCII_NUMBER = 65;
+	final private int ZERO_ASCII_NUMBER= 48;
+	
+	public GameConsoleView() {	}
 	
 	@Override
 	public void Init(Chessboard base) {
+		gm = GameManager.getInstance();
 		drawingClass = new DrawComponent(base);
+		
+		drawingClass.printMap("Test print:");
 	}
 	
 	@Override
@@ -39,9 +48,22 @@ public class GameConsoleView implements ViewInterface {
 	public int GetInput() {
 		
 		System.out.println("Write next Move: (Syntax: \"king\" or \"A4\")");
-		String in = System.console().readLine();
+		String in = null;
+		int toReturn = -1;
+	    InputStreamReader streamReader = new InputStreamReader(System.in);
+	    BufferedReader bufferedReader = new BufferedReader(streamReader);
+
+		try {
+			while(toReturn < 0){
+					in = bufferedReader.readLine();
+				toReturn = ParseInput(in);
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
-		return ParseInput(in);
+		return toReturn;
 	}
 
 	@Override
@@ -53,8 +75,29 @@ public class GameConsoleView implements ViewInterface {
 	
 	
 	private int ParseInput(String input){
-		// TODO: Implement the parser
-		return 0;
+		int toReturn = -1;
+		char[] toParse = input.toCharArray();
+		
+		// Mossa diretta: Da cella dove sono a celladove voglio andare. Esempio A1 B6
+		if(input.contains(" ")){
+			// TODO: Vedere se gestire il movimento senza medusa
+		}
+		// Mossa indiretta: Scelgo il pezzo con cui mostrare il medusa tree. Esempio A1 
+		else{
+			if(input.length() == 2){
+				int row = ((int) toParse[0]) - A_ASCII_NUMBER;
+				int col = ((int) toParse[1]) - ZERO_ASCII_NUMBER;
+				
+				toReturn = col*Constants.MAX_INDEX_ROW + row;
+				
+				// Check se e' out of bound
+				if(toReturn < 0 || toReturn > Constants.MAX_INDEX){
+					toReturn = -1;
+				}
+			}
+		}
+		
+		return toReturn;
 	}
 
 }

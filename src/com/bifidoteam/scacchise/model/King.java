@@ -44,6 +44,6 @@ public class King extends Piece {
 	@Override
 	public char GetSymbol()
 	{
-		return 'K';
+		return white == Constants.WHITE ? 'K' : 'k';
 	}
 }

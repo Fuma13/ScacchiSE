@@ -71,6 +71,6 @@ public class Horse extends Piece {
 	@Override
 	public char GetSymbol()
 	{
-		return 'H';
+		return white == Constants.WHITE ? 'H' : 'h';
 	}
 }

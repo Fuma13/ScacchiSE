@@ -79,6 +79,6 @@ public class Tower extends Piece {
 	@Override
 	public char GetSymbol()
 	{
-		return 'T';
+		return white == Constants.WHITE ? 'T' : 't';
 	}
 }
