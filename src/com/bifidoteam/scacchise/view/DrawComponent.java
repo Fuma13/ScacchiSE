@@ -107,6 +107,6 @@ public class DrawComponent {
 	}
 
 	private void writeSpecialChar(char c){
-		System.out.print("(" + c + ")");
+		System.out.print("(" + (c == ' ' ? '.': c) + ")");
 	}
 }
