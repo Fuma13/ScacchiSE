@@ -1,5 +1,6 @@
 package com.bifidoteam.scacchise.controller;
 
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -26,6 +27,10 @@ public class GameManager implements ControllerInterface{
 	private int colorTurn; //0 if it is the white player turn, 1 black
 	private GameState gameState;
 	private MedusaTree medusaTreeSelectedIndex;
+	
+	//store the forecast <piecePosIndex,hisMedusaTree> where the index is the piece
+	//owner of the mt
+	private HashMap<Integer,MedusaTree> forecastMts;
 	
 	private ViewInterface viewComponent;		
 	//-----------------------------Private Variables----------------------------------------
@@ -56,6 +61,9 @@ public class GameManager implements ControllerInterface{
 	private void InitGameManager(Chessboard c){
 		if(c == null){
 			chessboard = new Chessboard();
+			
+			//TODO: suggerimento a cambiare struttura per Android O_o cosa ne pensate?
+			this.forecastMts = new HashMap<Integer,MedusaTree>();
 			
 			//Genera gli MT dei Bianchi
 			this.generateAllMtOfColor(Constants.WHITE);
@@ -173,12 +181,12 @@ public class GameManager implements ControllerInterface{
 	
 	private void Waiting(int index) {
 		if(index >= 0 && index < Constants.MAX_INDEX && IsPlayerPiece(index)) {
-				lastSelectedIndex = index;
-				medusaTreeSelectedIndex = GetReachableIndices(index);
-				// TODO: vuoto
-				//viewComponent.DrowReacheblePosition(medusaTreeSelectedIndex);
+			lastSelectedIndex = index;
+			medusaTreeSelectedIndex = GetReachableIndices(index);
+			// TODO: vuoto
+			//viewComponent.DrowReacheblePosition(medusaTreeSelectedIndex);
 				
-				gameState = GameState.SELECTED;
+			gameState = GameState.SELECTED;
 		}
 		else {
 			SetWaitingState();
@@ -222,7 +230,7 @@ public class GameManager implements ControllerInterface{
 	
 	private void ChangePlayerTurn() {
 		colorTurn = OppositePlayer();
-		CheckCheck();
+		isUnderCheckmate();
 		SetWaitingState();
 	}
 	
@@ -287,7 +295,7 @@ public class GameManager implements ControllerInterface{
 		return reachebleIndices;
 	}
 	
-	MedusaTree GetBranchToKing(int opponentIndex,int kingIndex){
+	private MedusaTree GetBranchToKing(int opponentIndex,int kingIndex){
 		MedusaTree mt = GetReachableIndices(opponentIndex);
 		CuttableCuttedIterator it = mt.GetCuttableCuttedIterator();
 		Boolean kingFind = false;
@@ -311,7 +319,7 @@ public class GameManager implements ControllerInterface{
 
 	
 	//Generate all MT of pieces of color "colorPlayer"
-	public void generateAllMtOfColor(int colorPlayer){
+	private void generateAllMtOfColor(int colorPlayer){
 		Set<Integer> piecesList;
 		Iterator<Integer> it;
 		
@@ -324,12 +332,12 @@ public class GameManager implements ControllerInterface{
 	}
 	
 	//Generate MT of a piece
-	public void generateMt(int pieceIndex){
+	private void generateMt(int pieceIndex){
 		this.chessboard.GetPiece(pieceIndex).setMedusaTree(this.GetReachableIndicesPlus(pieceIndex));
 	}
 	
 	//Generate MTs of a list of pieces
-	public void generatePiecesMt(LinkedList<Integer> piecesList){
+	private void generatePiecesMt(LinkedList<Integer> piecesList){
 		Iterator<Integer> it = piecesList.iterator();
 		while(it.hasNext()){
 			this.generateMt(it.next());
@@ -337,7 +345,7 @@ public class GameManager implements ControllerInterface{
 	}
 	
 	//Register a list of pieces on their own MT
-	public void registerPiecesOnTheirMT(Set<Integer> piecesList){
+	private void registerPiecesOnTheirMT(Set<Integer> piecesList){
 		Iterator<Integer> it = piecesList.iterator();
 		while(it.hasNext()){
 			int i = it.next();
@@ -346,14 +354,15 @@ public class GameManager implements ControllerInterface{
 	}
 	
 	//Register a piece on its own MT
-	public void registerPieceOnHisMT(int pieceIndex,int pieceColor){
+	private void registerPieceOnHisMT(int pieceIndex,int pieceColor){
 		CuttedIterator it = this.chessboard.GetPiece(pieceIndex).getMedusaTree().GetCuttedIterator();
 		while(it.hasNext()){
 			this.chessboard.getTile(it.next()).registerPiece(pieceIndex,pieceColor);
 		}
 	}
 	
-	private boolean CheckCheck(){
+	//check if king of ColorTurn is under checkMate
+	private boolean isUnderCheckmate(){
 		//get the king pos
 		int kingPos = this.chessboard.getKing(this.colorTurn);
 		
@@ -369,15 +378,29 @@ public class GameManager implements ControllerInterface{
 			if(numberOfOpponent == 1){
 				validMoves.addAll(this.searchDistantSafeMoves());
 			}
-			return true;
-		}else{
-			//NO check/checkMate on the king
-			return false;
+			
+			if(validMoves.size() == 0){
+				return true;
+			}
 		}
+		//NO checkMate on the king
+		return false;
+	}
+	
+	//Check if king of color turn is under check
+	private boolean isUnderCheck(){
+		//get the king pos
+		int kingPos = this.chessboard.getKing(this.colorTurn);
+		int numberOfOpponent = this.chessboard.getTile(kingPos).numberOfOpponentPiecesRegisteredOn(this.colorTurn);
+		if(numberOfOpponent >0){
+			return true;
+		}
+		return false;
 	}
 	
 	//return the index of valid tiles around the king where he can moves
-	public List<Integer> searchKingAdjacentSafe(){
+	//TODO: se da cambiare con il nuovo algoritmo potrebbe tornare un int soltanto
+	private List<Integer> searchKingAdjacentSafe(){
 		//list of valid moves for the king
 		LinkedList<Integer> kingValidMoves = new LinkedList<Integer>();
 		
@@ -415,7 +438,8 @@ public class GameManager implements ControllerInterface{
 	}
 	
 	//return the index of valid tiles usefull to block the check
-	public List<Integer> searchDistantSafeMoves(){
+	//TODO: se da cambiare con il nuovo algoritmo potrebbe tornare un int soltanto
+	private List<Integer> searchDistantSafeMoves(){
 		//list of valid moves
 		LinkedList<Integer> validMoves = new LinkedList<Integer>();
 		
@@ -442,6 +466,17 @@ public class GameManager implements ControllerInterface{
 				
 		return validMoves;
 	}
+	
+	
+	private void ValidateForecastMts(){
+		Set<Integer> keys = this.forecastMts.keySet();
+		Iterator<Integer> it = keys.iterator();
+		while(it.hasNext()){
+			int key = it.next();
+			this.chessboard.setPieceMt(key,this.forecastMts.get(key));
+		}
+	}
+	 
 	
 	//--------------------------------Private method for game stream------------------------
 	

@@ -4,8 +4,6 @@ import com.bifidoteam.scacchise.util.Constants;
 import com.bifidoteam.util.MedusaTree;
 
 import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Set;
 
 public class Chessboard
@@ -104,13 +102,15 @@ public class Chessboard
 		this.kingPos[colorPlayer] = this.chessboard[index];
 	}
 	
+	//TODO: vale: aggiorniamo l'mt del pezzo soltanto? o dobbiamo aggiornare altre cose?
+	public void setPieceMt(int pieceIndex,MedusaTree newMt){
+		this.chessboard[pieceIndex].setMedusaTree(newMt);
+	}
+	
 	//-----------------------------Public functions-----------------------------------------
 	
 	//-----------------------------Private functions----------------------------------------
 	private void InizializeChessboard() {
-		//TODO:FUMA: Togliere i magic numbers (ma mi sa che non si puo')
-		//VALE: No non credo, è la configurazione iniziale, ho messo i colori const
-		
 		//Set initial king position, change manually to switch from standard initialization
 		this.kingPos = new Piece [Constants.MAX_PLAYERS];
 		
