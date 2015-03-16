@@ -14,7 +14,7 @@ public class Chessboard
 	private Tile[] tiles = new Tile[Constants.MAX_INDEX];
 	
 	//Liste dei soli pezzi bianchi e neri.
-	private Set<Integer> [] pieces;
+	private HashSet<Integer> [] pieces;
 	
 	//TODO VALE: facciamo la verifica quando muoviamo che siamo un re ed aggiorniamo la pos o metto i piece che si portano la pos?
 	private Piece[] kingPos;	
@@ -26,7 +26,7 @@ public class Chessboard
 		this.InizializeTiles();
 		
 		//init the sets
-		this.pieces = new Set[Constants.MAX_PLAYERS];
+		this.pieces = new HashSet[Constants.MAX_PLAYERS];
 		this.pieces[0] = new HashSet<Integer>();
 		this.pieces[1] = new HashSet<Integer>();
 		
@@ -58,14 +58,17 @@ public class Chessboard
 	
 	//Assume that index >= 0 && index < Constants.MAX_INDEX && chessboard[index] != null
 	public int IsPieceWhite(int index) {
-			return chessboard[index].isWhite();
+		if(chessboard[index] == null)
+			throw new NullPointerException("Try to get color of empty position");
+		
+		return chessboard[index].isWhite();
 	}
 	
 	public Piece GetPiece(int index) {
 		if(index >= 0 && index < Constants.MAX_INDEX)
 			return chessboard[index];
 		else
-			return null; //TODO:FUMA: distinguere null di cella vuota da out of bound
+			return null;
 	}
 	
 	public boolean MovePieceFromStartIndexToEndIndex(int startIndex, int endIndex) {
