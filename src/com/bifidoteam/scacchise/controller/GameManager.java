@@ -169,6 +169,55 @@ public class GameManager implements ControllerInterface{
 	private void MovePiece(int index) {
 		if(index >= 0 && index < Constants.MAX_INDEX && index != lastSelectedIndex) {
 			if(medusaTreeSelectedIndex != null && medusaTreeSelectedIndex.Contain(index)) {
+				
+				if(this.isUnderCheck()){
+					//TODO VALE:
+					//Se N > 1
+					//devo controllare se sia stato selezionato il re ( solo lui si può tirare fuori)
+					//se si ->
+						// che si muove in una tile valida
+						// del suo MTQ+H (senza opponent registrati sulle tile)
+						// se si -> muove e cambio stato in WAITING e turnColor
+					//cambio stato in WAITING per una nuova selezione di pezzo. TODO notifichiamo al giocatore?
+					// se N = 1
+						//devo controllare se sia stato selezionato il re ( lui si potrebbe spostare)
+						//se si ->
+							// che si muove in una tile valida del suo MT
+							// se si -> muove e cambio stato in WAITING e turnColor
+						//se no ->
+							//deregistro pezzoSelezionato da sua posOriginale
+							//prendo i nemici registrati sulla tile.
+							// X ognuno creo l'MT e se contiene kingPos di colorTurn
+							// se si -> //registro nuovamente il pezzoSelezionato nella sua vecchia pos
+										//cambio stato in WAITING per una nuova selezione di pezzo. TODO notifichiamo al giocatore?
+										//fa cmq una mossa che mette in scacco il re
+							// se no -> //prendo l'index del pezzo che scacca il re ( lo sò da tile)
+										//destIndex = opponentIndex
+										//se si -> 	//mangia il pezzo che scacca il re (che non dovrebbe essere più in scacco)
+												   	//deregistra il pezzo dalle tile del suo MT
+												   	//Per ogni pezzo registrato si calcola il nuovo MT e si registra nelle tile nuovi
+													//muove e cambio stato in WAITING e turnColor
+										//se no ->	//intercetta il path al re
+													//creo il MTQ+H del re
+													//Tile[destIndex].getOpponentRegistered().contains(pezzo_scaccante)?
+													//se si -> 	il pezzo ha intercettato il pezzo scaccante
+																//aggiorna chessboard,mt e registrazione dei pezzi coinvolti(tutti quelli sulla tile d'arrivo e di partenza)
+													//se no -> 	//annulla mossa
+																//registro nuovamente il pezzoSelezionato nella sua vecchia pos
+																//non è stato intercettato il pezzo che scacca il re
+				}else{
+					//NO SOTTO SCACCO
+					//deregistro pezzoSelezionato da sua posOriginale
+					//prendo i nemici registrati sulla tile.
+					// X ognuno creo l'MT e se contiene kingPos di colorTurn
+					// se si -> //registro nuovamente il pezzoSelezionato nella sua vecchia pos
+								//cambio stato in WAITING per una nuova selezione di pezzo. TODO notifichiamo al giocatore?
+								//fa cmq una mossa che mette in scacco il re
+					// se no -> 
+								//aggiorna chessboard,mt e registrazione dei pezzi coinvolti(tutti quelli sulla tile d'arrivo e di partenza)
+				}
+				
+				//Lascio per vedere il movimento
 				chessboard.MovePieceFromStartIndexToEndIndex(lastSelectedIndex, index);
 				//TODO:VALE: inserire il controllo mossa valida e il possibile revert
 				
