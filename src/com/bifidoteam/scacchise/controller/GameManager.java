@@ -170,69 +170,79 @@ public class GameManager implements ControllerInterface{
 		if(index >= 0 && index < Constants.MAX_INDEX && index != lastSelectedIndex) {
 			if(medusaTreeSelectedIndex != null && medusaTreeSelectedIndex.Contain(index)) {
 				
-				if(this.isUnderCheck()){ //**Se lo mettiamo qui e' inutile ad inizio turno
-					//TODO VALE:
-					//Se N > 1
-						//devo controllare se sia stato selezionato il re ( solo lui si puu' tirare fuori)
-						//se si ->
-							// che si muove in una tile valida del suo MTQ+H 
-							//** (senza opponent registrati sulle tile)?? questo dovrebbe essere il suo normale MT
-								//** se si -> muove e SetMovingState (cambio stato in MOVING e turnColor)
-						//se no ->
-							//**SetWaitingState (cambio stato in WAITING per una nuova selezione di pezzo.) 
-							//**TODO notifichiamo al giocatore? (dovremmo ma ora non abbiamo il modo)
-					// se N = 1
-						//devo controllare se sia stato selezionato il re ( lui si potrebbe spostare)
-						//**questo controllo lo mettiamo prima a prescindere dall'N cosi facciamo questa cosa una
-						//**volta sola (anche prima del controllo se e' sotto scacco)
-						//se si ->
-							// che si muove in una tile valida del suo MT
-							//** se si -> muove e SetMovingState (cambio stato in MOVING e turnColor)
-						//se no ->
-							//deregistro pezzoSelezionato da sua posOriginale
-							//prendo i nemici registrati sulla tile.
-							// X ognuno creo l'MT e se contiene kingPos di colorTurn
-							//** come taglio l'MT? se bisogna farlo in base alla nuova configurazione della scacchiera
-							//** dobbiamo simulare la mossa sulla scacchiera reale, fare i calcoli, e se va male fare rollback
-							//** da ricordarsi il pezzo vecchio sulla posizione nuova (in caso si mangi qualcosa)
-							// se si -> //registro nuovamente il pezzoSelezionato nella sua vecchia pos
-										//**SetWaitingState (cambio stato in WAITING per una nuova selezione di pezzo.)  TODO notifichiamo al giocatore?
-										//fa cmq una mossa che mette in scacco il re
-							//** se no non ho gia' bloccato lo scacco?? e quindi la mossa e' valida??
-							// se no -> //prendo l'index del pezzo che scacca il re ( lo sa' da tile)
-										//destIndex = opponentIndex
-										//se si -> 	//mangia il pezzo che scacca il re (che non dovrebbe essere piu' in scacco)
-												   	//deregistra il pezzo dalle tile del suo MT
-												   	//Per ogni pezzo registrato si calcola il nuovo MT e si registra nelle tile nuovi
-													//** muove e SetMovingState (cambio stato in MOVING e turnColor)
-										//** questa parte faccio veramente fatica a seguirla.. :/
-										//se no ->	//intercetta il path al re
-													//creo il MTQ+H del re
-													//Tile[destIndex].getOpponentRegistered().contains(pezzo_scaccante)?
-													//se si -> 	il pezzo ha intercettato il pezzo scaccante
-																//aggiorna chessboard,mt e registrazione dei pezzi coinvolti(tutti quelli sulla tile d'arrivo e di partenza)
-													//se no -> 	//annulla mossa
-																//registro nuovamente il pezzoSelezionato nella sua vecchia pos
-																//non e' stato intercettato il pezzo che scacca il re
-				}else{
-					//** penso che tra N=1 ed N=0 non cambi molto
-					//** se dopo la mossa di un pezzo diverso dal re il controllo mi dice che sono
-					//** (ancora) sotto scacco allora in entrambi i casi non e' valida
-					//NO SOTTO SCACCO
-					//deregistro pezzoSelezionato da sua posOriginale
-					//prendo i nemici registrati sulla tile.
-					// X ognuno creo l'MT e se contiene kingPos di colorTurn
-					// se si -> //registro nuovamente il pezzoSelezionato nella sua vecchia pos
-								//**SetWaitingState (cambio stato in WAITING per una nuova selezione di pezzo.)  TODO notifichiamo al giocatore?
-								//fa cmq una mossa che mette in scacco il re
-					// se no -> 
-								//aggiorna chessboard,mt e registrazione dei pezzi coinvolti(tutti quelli sulla tile d'arrivo e di partenza)
-								//** muove e SetMovingState (cambio stato in MOVING e turnColor)
-				}
+				//TODO**** MARCO: vuoi dilettarti con questa parte?
+				//if( è stato selezionato il re)
+				//devo controllare se sia stato selezionato il re ( lui si potrebbe spostare)
+				
+				//**questo controllo lo mettiamo prima a prescindere dall'N cosi facciamo questa cosa una
+				//**volta sola (anche prima del controllo se e' sotto scacco)
+				//****Si ci ottimizza!
+				//****Se non è sotto scacco e voglio muovere il re devo controllare il suo MT,
+				//****Solo che l'mt va tagliato anche con le tile che hanno un qualsiasi opponent registrato
+				//****la destinazione è in quel che resta l'mt?
+					//if(KingMt.Contains(destIndex)){
+						
+						//se N>1 e non ho selezionato il re la mossa
+						//è sicuramente invalida
+						//ma anche che fosse N=1, dal momento che ho selezionato il re
+						
+						//calcolo gli MT di tutti i registrati sulla tile di partenza
+						//calcolo gli MT di tutti i registrati sulla dest
+						//deregistro sulle tile dai vecchi MT
+						//registro i pezzi sulle tile coerentemente con i nuovi mt
+						////SetMovingState (cambio stato in MOVING e turnColor)
+					//}
+					//else{
+						//Entrambe confluiscono qui
+						//SetWaitingState (cambio stato in WAITING per una nuova selezione di pezzo.) 
+						//**TODO notifichiamo al giocatore? (dovremmo ma ora non abbiamo il modo)
+					//}
+				//}
+				
+				//TODO:Vale
+				//So di avere ancora mosse perchè se fosse stato N>1 dovevo avere selezionato il re
+				//sono al più in N=1 perchè altrimenti sarebbe scaccoMatto!
+				//se avessi voluto muovere il re non sarei in questo branch
+				//
+				//else(pezzo selezionato non è il re){
+					//Metto a null la posizione del pezzo registrato sulla chessboard e controllo se nuovi pezzi sccaccano
+					//Per Ogni Opponent registrato sulla vechia tile[lastIndexSelected]:
+					//calcolo MTipotetico e lo salvo in una hashmap<index,mtIpotetico>
+					//IF(MTIpotetico contiene re){
+						//annulla mossa, ora un nuovo pezzo scacca il re, e vale sia per N = 0 che N = 1
+						//registra di nuovo il pezzo su chessBoard[lastTileSelected]
+						//cambia stato e torna a selezione
+					//}else{
+						//OpponentIndex = l'index del pezzo che scacca il re ( lo sa' dalla tile del re)
+						//If( destIndex == opponentIndex){
+							//mossa:valida mangia il pezzo che scacca il re (che non dovrebbe essere piu' in scacco)
+							//setto in chessBoard la dest del pezzo
+							//calcolo gli MT degli amici registrati sulla tile di partenza
+							//calcolo gli MT di tutti i registrati sulla dest
+							//deregistro sulle tile dai vecchi MT
+							//registro tutti i pezzi coinvolti coerentemente con i nuovi mt
+							//SetMovingState (cambio stato in MOVING e turnColor)
+							//forse ci viene già con il ramo else....se il pezzo è registrato sulla tile dove sta si.
+						//}else{
+								//Mi basta controllare che ho intercettato chi scacca
+								//IF( la tile[destIndex].getOpponents().contains(opponentIndex)){
+									//mossa valida: il pezzo ha perlomeno intercettato il pezzo scaccante
+									//setto in chessBoard la dest del pezzo
+									//calcolo gli MT degli amici registrati sulla tile di partenza
+									//calcolo gli MT di tutti i registrati sulla dest
+									//deregistro sulle tile dai vecchi MT
+									//registro tutti i pezzi coinvolti coerentemente con i nuovi mt
+									////SetMovingState (cambio stato in MOVING e turnColor)
+								//}else{
+									//annulla mossa, pezzo scaccante non mangiato/intercettato
+									//registra di nuovo il pezzo su chessBoard[lastTileSelected]
+									//cambia stato e torna a selezione
+								//}
+						//}
+					//}
 				
 				//Lascio per vedere il movimento
 				chessboard.MovePieceFromStartIndexToEndIndex(lastSelectedIndex, index);
-				//TODO:VALE: inserire il controllo mossa valida e il possibile revert
 				
 				//Se la mossa e' valida continuo
 				ResetMoveState();
@@ -269,6 +279,7 @@ public class GameManager implements ControllerInterface{
 	
 	private void ChangePlayerTurn() {
 		colorTurn = OppositePlayer();
+		//TODO: vedi che isUnderChekmate è un boolean, se torna true allora l'altro ha vinto!
 		isUnderCheckmate();
 		SetWaitingState();
 	}
@@ -462,14 +473,10 @@ public class GameManager implements ControllerInterface{
 	}
 	
 	//Check if king of color turn is under check
-	private boolean isUnderCheck(){
+	private int isUnderCheck(){
 		//get the king pos
 		int kingPos = this.chessboard.getKing(this.colorTurn);
-		int numberOfOpponent = this.chessboard.getTile(kingPos).numberOfOpponentPiecesRegisteredOn(this.colorTurn);
-		if(numberOfOpponent >0){
-			return true;
-		}
-		return false;
+		return this.chessboard.getTile(kingPos).numberOfOpponentPiecesRegisteredOn(this.colorTurn);
 	}
 	
 	//return the index of valid tiles around the king where he can moves
