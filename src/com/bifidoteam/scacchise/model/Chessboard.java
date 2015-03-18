@@ -144,6 +144,10 @@ public class Chessboard
 		this.chessboard[pieceIndex].setMedusaTree(newMt);
 	}
 	
+	public void setPiece(int pieceIndex, Piece piece) {
+		this.chessboard[pieceIndex] = piece;
+	}
+	
 	//-----------------------------Public functions-----------------------------------------
 	
 	//-----------------------------Private functions----------------------------------------
