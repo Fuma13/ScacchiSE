@@ -301,8 +301,8 @@ public class GameManager implements ControllerInterface{
 							//forse ci viene gia' con il ramo else....se il pezzo e' registrato sulla tile dove sta si.
 						//}else{
 								//Mi basta controllare che ho intercettato chi scacca
-								//**** non e' detto perche' forse mi metto su una cella laterale dove anche
-								//**** opponent ci arriva ma non e' la strada con cui fa scacco
+								//Ritorna il mt con solo il ramo verso il re
+								//MedusaTree mt = opponent.GetBranchToWantedIndex(opponent.indice, chessboard.getKing(this.colorTurn));
 								//IF( la tile[destIndex].getOpponents().contains(opponentIndex)){
 									//mossa valida: il pezzo ha perlomeno intercettato il pezzo scaccante
 									//setto in chessBoard la dest del pezzo
