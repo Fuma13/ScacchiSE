@@ -2,8 +2,8 @@ package com.bifidoteam.scacchise.interfaces;
 
 public interface ControllerInterface
 {
-	void OnMoveDone();
-	void Reset();
-	void Quit();
+	void onMoveDone();
+	void reset();
+	void quit();
 	//void OnClick(int index);
 }

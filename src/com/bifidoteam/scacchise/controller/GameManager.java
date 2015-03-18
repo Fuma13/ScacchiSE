@@ -51,14 +51,14 @@ public class GameManager implements ControllerInterface{
 	}
 	
 	private GameManager() {
-		InitGameManager(null);
+		initGameManager(null);
 	}
 	
 	private GameManager(Chessboard c) {
-		InitGameManager(c);	
+		initGameManager(c);	
 	}
 	
-	private void InitGameManager(Chessboard c){
+	private void initGameManager(Chessboard c){
 		if(c == null){
 			chessboard = new Chessboard();	
 		}
@@ -82,10 +82,10 @@ public class GameManager implements ControllerInterface{
 	//--------------------------------Costructors-------------------------------------------
 	
 	//-----------------------------Debug functions -----------------------------------------
-	public MedusaTree GetReachebleIndicesDebug(int index, int whiteTurn)
+	public MedusaTree getReachebleIndicesDebug(int index, int whiteTurn)
 	{
 		this.colorTurn = whiteTurn;
-		return GetPossibleMoves(index);
+		return getPossibleMoves(index);
 	}
 	//-----------------------------Debug functions -----------------------------------------
 	
@@ -97,31 +97,31 @@ public class GameManager implements ControllerInterface{
 	
 	//TODO: Rivedere il reset con ricky
 	@Override
-	public void Reset() {
-		InitGameManager(null);
+	public void reset() {
+		initGameManager(null);
 		
 	}
 	
 	@Override
-	public void Quit() {
+	public void quit() {
 		gameState = GameState.QUIT;
 		
 	}
 	
 	@Override
-	public void OnMoveDone()
+	public void onMoveDone()
 	{
-		ChangePlayerTurn();
+		changePlayerTurn();
 	}
 	
-	public void GameLoop(){
+	public void gameLoop(){
 		viewComponent.Init(chessboard);
 		
 		while(gameState != GameState.QUIT){
 			
 			int indexChosen = viewComponent.GetInput();
 			
-			ManageInput(indexChosen);
+			manageInput(indexChosen);
 
 			viewComponent.Render(medusaTreeSelectedIndex);
 		}
@@ -131,17 +131,15 @@ public class GameManager implements ControllerInterface{
 	
 	//-----------------------------Private functions----------------------------------------
 
-	void ManageInput(int index){
+	private void manageInput(int index){
 		switch (gameState) {
 			case WAITING:
-				SelectPiece(index);
+				selectPiece(index);
 				break;
 			case SELECTED:
-				MovePiece(index);
+				movePiece(index);
 				break;
 			case WIN:
-				//TODO: Dichiarare il vincitore **** LASCIARE IL COLORE CHE VINCE **** 
-				viewComponent.EndGame(colorTurn);
 				//ed attendere il reset
 			//When is in MOVING state the GameManager wait the callback function OnMoveDone
 			default:
@@ -151,39 +149,105 @@ public class GameManager implements ControllerInterface{
 	
 	//Check if the new index is valid, if true set the selected piece and generate its mt
 	//and pass to the selected state, otherwise reset the state and return in waiting
-	private void SelectPiece(int index) {
-		if(index >= 0 && index < Constants.MAX_INDEX && IsPlayerPiece(index)) {
+	private void selectPiece(int index) {
+		if(index >= 0 && index < Constants.MAX_INDEX && isPlayerPiece(index, this.colorTurn)) {
 			lastSelectedIndex = index;
-			medusaTreeSelectedIndex = GetPossibleMoves(index);
+			medusaTreeSelectedIndex = getPossibleMoves(index);
 				
 			gameState = GameState.SELECTED;
 		}
 		else {
-			SetWaitingState();
+			setWaitingState();
 		}
 	}
 	
 	//Check if the new index is a possible move for the selected piece
 	//if true update the chessboard, check if the move is valid, update the view and
 	//set the state in Moving that wait the view
-	private void MovePiece(int index) {
-		if(index >= 0 && index < Constants.MAX_INDEX && index != lastSelectedIndex) {
-			if(medusaTreeSelectedIndex != null && medusaTreeSelectedIndex.Contain(index)) {
+	private void movePiece(int index) {
+		if(index >= 0 && index < Constants.MAX_INDEX && index != this.lastSelectedIndex) {
+			
+			if(this.medusaTreeSelectedIndex != null && this.medusaTreeSelectedIndex.Contain(index)) {
 				
+				if(this.chessboard.isKingPiece(this.lastSelectedIndex, this.colorTurn)){
+					
+					int numberOfOpponent = this.chessboard.getTile(index).numberOfOpponentPiecesRegisteredOn(this.colorTurn);
+					//If the tile is free and no opponent can arrive here, the king can move
+					if(numberOfOpponent == 0){
+						chessboard.movePieceFromStartIndexToEndIndex(this.lastSelectedIndex, index);
+						updateTilesUpdateStateUpdateView(this.lastSelectedIndex, index);
+					}
+					else{
+						setWaitingState();
+					}
+				}
+				//Is not the king
+				else {
+					
+					//If there is only one piece that put under checkmate the king
+					//I can move another piece
+					if(isUnderCheck() == 1){
+/*						chessboard.SimulateMovePieceFromStartToEnd(this.lastSelectedIndex, index);
+						
+						boolean nonSottoScacco = true;
+						foreach(opponent registrato su lastSelectedIndex){
+							//Ritorna il mt con solo il ramo verso il re
+							MedusaTree mt = opponent.GetBranchToWantedIndex(opponent.indice, chessboard.getKing(this.colorTurn));
+							//quindi se non e' vuoto ha il re sotto scacco
+							if(!mt.IsEmpty())
+								nonSottoScacco = false;
+						}
+						
+						//Mossa di partenza valida (la cella che lascio libera non fa fare scacco)
+						if(nonSottoScacco){
+							//Ora controllo se toglo lo scacco
+							if(chiMiFaScacco.index != index){
+								foreach(opponent registrato su index){
+									//Ritorna il mt con solo il ramo verso il re
+									MedusaTree mt = opponent.GetBranchToWantedIndex(opponent.indice, chessboard.getKing(this.colorTurn));
+									//quindi se non e' vuoto ha il re sotto scacco
+									if(!mt.IsEmpty())
+										nonSottoScacco = false;
+								}
+							}
+							else {
+								//L'ho mangiato, quindi non faccio nulla perche' rimango nonSottoScacco
+								//else inutile
+							}
+						}	
+							
+						//Se dopo i controlli non sono sotto scacco faccio la mossa
+						if(nonSottoScacco){
+							chessboard.ConfirmMovePiece();
+							updateTilesUpdateStateUpdateView(this.lastSelectedIndex, index);
+						}
+						//altrimenti la annullo
+						else{
+							chessboard.RollbackMovePiece(this.lastSelectedIndex, index);
+							setWaitingState();
+						}
+*/						
+					}
+					//There are no possible moves of another piece that can safe the king
+					else{
+						setWaitingState();
+					}
+					
+				}
 				//TODO**** MARCO: vuoi dilettarti con questa parte?
-				//if( è stato selezionato il re)
+				//if( e' stato selezionato il re)
 				//devo controllare se sia stato selezionato il re ( lui si potrebbe spostare)
 				
 				//**questo controllo lo mettiamo prima a prescindere dall'N cosi facciamo questa cosa una
 				//**volta sola (anche prima del controllo se e' sotto scacco)
 				//****Si ci ottimizza!
-				//****Se non è sotto scacco e voglio muovere il re devo controllare il suo MT,
+				//****Se non e' sotto scacco e voglio muovere il re devo controllare il suo MT,
 				//****Solo che l'mt va tagliato anche con le tile che hanno un qualsiasi opponent registrato
-				//****la destinazione è in quel che resta l'mt?
+				//****la destinazione e' in quel che resta l'mt?
 					//if(KingMt.Contains(destIndex)){
 						
 						//se N>1 e non ho selezionato il re la mossa
-						//è sicuramente invalida
+						//e' sicuramente invalida
 						//ma anche che fosse N=1, dal momento che ho selezionato il re
 						
 						//calcolo gli MT di tutti i registrati sulla tile di partenza
@@ -198,13 +262,25 @@ public class GameManager implements ControllerInterface{
 						//**TODO notifichiamo al giocatore? (dovremmo ma ora non abbiamo il modo)
 					//}
 				//}
-				
 				//TODO:Vale
-				//So di avere ancora mosse perchè se fosse stato N>1 dovevo avere selezionato il re
-				//sono al più in N=1 perchè altrimenti sarebbe scaccoMatto!
+/*				ESEMPI DI MOSSA
+ * 				1)mossa subito valida:
+ * 					chessboard.MovePieceFromStartIndexToEndIndex(this.lastSelectedIndex, index);
+ * 					updateTilesUpdateStateUpdateView(this.lastSelectedIndex, index);
+ * 				2)mossa da simulare:
+ * 					chessboard.SimulateMovePieceFromStartToEnd(this.lastSelectedIndex, index);
+ * 					a)poi bisogna confermarla:
+ * 						chessboard.ConfirmMovePiece();
+ * 						updateTilesUpdateStateUpdateView(this.lastSelectedIndex, index);
+ * 					b)o annullarla
+ * 						chessboard.RollbackMovePiece(this.lastSelectedIndex, index);
+ * 						setWaitingState();
+*/
+				//So di avere ancora mosse perche' se fosse stato N>1 dovevo avere selezionato il re
+				//sono al piu' in N=1 perche' altrimenti sarebbe scaccoMatto!
 				//se avessi voluto muovere il re non sarei in questo branch
 				//
-				//else(pezzo selezionato non è il re){
+				//else(pezzo selezionato non e' il re){
 					//Metto a null la posizione del pezzo registrato sulla chessboard e controllo se nuovi pezzi sccaccano
 					//Per Ogni Opponent registrato sulla vechia tile[lastIndexSelected]:
 					//calcolo MTipotetico e lo salvo in una hashmap<index,mtIpotetico>
@@ -222,9 +298,11 @@ public class GameManager implements ControllerInterface{
 							//deregistro sulle tile dai vecchi MT
 							//registro tutti i pezzi coinvolti coerentemente con i nuovi mt
 							//SetMovingState (cambio stato in MOVING e turnColor)
-							//forse ci viene già con il ramo else....se il pezzo è registrato sulla tile dove sta si.
+							//forse ci viene gia' con il ramo else....se il pezzo e' registrato sulla tile dove sta si.
 						//}else{
 								//Mi basta controllare che ho intercettato chi scacca
+								//**** non e' detto perche' forse mi metto su una cella laterale dove anche
+								//**** opponent ci arriva ma non e' la strada con cui fa scacco
 								//IF( la tile[destIndex].getOpponents().contains(opponentIndex)){
 									//mossa valida: il pezzo ha perlomeno intercettato il pezzo scaccante
 									//setto in chessBoard la dest del pezzo
@@ -241,60 +319,65 @@ public class GameManager implements ControllerInterface{
 						//}
 					//}
 				
-				//Lascio per vedere il movimento
-				chessboard.MovePieceFromStartIndexToEndIndex(lastSelectedIndex, index);
 				
-				//Se la mossa e' valida continuo
-				ResetMoveState();
-				gameState = GameState.MOVING;
-				
-				viewComponent.MoveFromStartIndexToEndIndex(lastSelectedIndex, index);
 
 			}
 			else {
 				//Check if is another 
-				SelectPiece(index);
+				selectPiece(index);
 			}
 		}
 		else {
 			//Deselect the piece
-			SetWaitingState();
+			setWaitingState();
 		}
 	}
 	
-	private void SetWaitingState(){
+	private void updateTiles(int startIndex, int endIndex)
+	{
+		// TODO VALE: mossa valida quindi devo aggiornare le tile
+		
+	}
+
+	private void setWaitingState(){
 		gameState = GameState.WAITING;
-		ResetMoveState();
+		resetMoveState();
 	}
 	
-	private void ResetMoveState(){
+	private void resetMoveState(){
 		medusaTreeSelectedIndex = null;
 		lastSelectedIndex = -1;
 	}
 	
-	private void SetMovingState(){
+	private void setMovingState(){
 		gameState = GameState.MOVING;
-		ResetMoveState();
+		resetMoveState();
 	}
 	
-	private void ChangePlayerTurn() {
-		colorTurn = OppositePlayer();
-		//TODO: vedi che isUnderChekmate è un boolean, se torna true allora l'altro ha vinto!
-		isUnderCheckmate();
-		SetWaitingState();
+	private void setWinState(){
+		gameState = GameState.WIN;
+		viewComponent.EndGame(oppositePlayer());
 	}
 	
-	private int OppositePlayer() {
+	private void changePlayerTurn() {
+		colorTurn = oppositePlayer();
+		//TODO: vedi che isUnderChekmate e' un boolean, se torna true allora l'altro ha vinto!
+		if(isUnderCheckmate())
+			setWinState();
+		setWaitingState();
+	}
+	
+	private int oppositePlayer() {
 		return (Constants.MAX_PLAYERS - 1) - colorTurn;
 	}
 	
 	//-----------------------------Chessboard functions
-	private boolean IsPlayerPiece(int index)
+	private boolean isPlayerPiece(int index, int colorTurn)
 	{
 		boolean isPlayerPiece = false;
 		if(index >= 0 && index < Constants.MAX_INDEX)
 		{
-			if(chessboard.GetPiece(index) != null && chessboard.IsPieceWhite(index) == colorTurn) {
+			if(chessboard.getPiece(index) != null && chessboard.isPieceWhite(index) == colorTurn) {
 					isPlayerPiece = true;
 			}
 		}
@@ -304,16 +387,16 @@ public class GameManager implements ControllerInterface{
 	
 	//Cut the mt of the piece in that index
 	//Valid positions are: free positions and enemy positions that the piece can eat
-	private MedusaTree GetPossibleMoves(int index)
+	private MedusaTree getPossibleMoves(int index)
 	{
-		MedusaTree reachebleIndices = chessboard.GetRealIndices(index);
+		MedusaTree reachebleIndices = chessboard.getPossibleMovementIndices(index);
 		if(reachebleIndices != null){
 			MedusaTree.CompleteIterator mtIterator = reachebleIndices.GetCompleteIterator();
 			while(mtIterator.hasNext()) {
 				Integer reachebleIndex = mtIterator.next();
-				if(chessboard.GetPiece(reachebleIndex) != null){
+				if(chessboard.getPiece(reachebleIndex) != null){
 					//If is special (Pawn) then the cut different or is a player piece
-					if(chessboard.IsPieceSpecial(index) || chessboard.IsPieceWhite(reachebleIndex) == colorTurn) {
+					if(chessboard.isPieceSpecial(index) || isPlayerPiece(reachebleIndex, this.colorTurn)) {
 						//This piece can't arrive in this cell
 						mtIterator.CutThisAndAfter();
 					}
@@ -324,14 +407,14 @@ public class GameManager implements ControllerInterface{
 					}
 				}
 			}
-			if(chessboard.IsPieceSpecial(index)){
+			if(chessboard.isPieceSpecial(index)){
 	
-				MedusaTree eatableIndices = chessboard.GetEatableIndices(index);
+				MedusaTree eatableIndices = chessboard.getPossibleEatIndices(index);
 				MedusaTree.CompleteIterator meEatableIterator = eatableIndices.GetCompleteIterator();
 	
 				while(meEatableIterator.hasNext()) {
 					Integer eatableIndex = meEatableIterator.next();
-					if(chessboard.GetPiece(eatableIndex) != null && chessboard.IsPieceWhite(eatableIndex) == OppositePlayer()) {//If is an opponent piece
+					if(chessboard.getPiece(eatableIndex) != null && isPlayerPiece(eatableIndex, oppositePlayer())) {//If is an opponent piece
 						//then this piece can eat it and can't continue on this way 
 						meEatableIterator.CutAfter();
 					}
@@ -349,26 +432,26 @@ public class GameManager implements ControllerInterface{
 	
 	//Cut the mt of the piece in that index
 	//Valid positions are: free positions, enemy positions and friend positions
-	private MedusaTree GetPossibleMovesPlusFirstOccupated(int index)
+	private MedusaTree getPossibleMovesPlusFirstOccupated(int index)
 	{
-		MedusaTree reachebleIndices = chessboard.GetRealIndices(index);
+		MedusaTree reachebleIndices = chessboard.getPossibleMovementIndices(index);
 		if(reachebleIndices != null){
 			MedusaTree.CompleteIterator mtIterator = reachebleIndices.GetCompleteIterator();
 			while(mtIterator.hasNext()) {
 				Integer reachebleIndex = mtIterator.next();
 				//If there is another piece I leave this and cut after
-				if(chessboard.GetPiece(reachebleIndex) != null){
+				if(chessboard.getPiece(reachebleIndex) != null){
 						mtIterator.CutAfter();	
 				}
 			}
-			if(chessboard.IsPieceSpecial(index)){
+			if(chessboard.isPieceSpecial(index)){
 	
-				MedusaTree eatableIndices = chessboard.GetEatableIndices(index);
+				MedusaTree eatableIndices = chessboard.getPossibleEatIndices(index);
 				MedusaTree.CompleteIterator meEatableIterator = eatableIndices.GetCompleteIterator();
 	
 				while(meEatableIterator.hasNext()) {
 					Integer eatableIndex = meEatableIterator.next();
-					if(chessboard.GetPiece(eatableIndex) != null) {
+					if(chessboard.getPiece(eatableIndex) != null) {
 						meEatableIterator.CutAfter();
 					}
 				}
@@ -380,8 +463,8 @@ public class GameManager implements ControllerInterface{
 	}
 	
 	//Return a mt that have as valid only a branch that connect the movingPiece with the wantedIndex
-	private MedusaTree GetBranchToWantedIndex(int movingPieceIndex,int wantedIndex){
-		MedusaTree mt = GetPossibleMoves(movingPieceIndex);
+	private MedusaTree getBranchToWantedIndex(int movingPieceIndex,int wantedIndex){
+		MedusaTree mt = getPossibleMoves(movingPieceIndex);
 		CuttableCuttedIterator it = mt.GetCuttableCuttedIterator();
 		Boolean kingFind = false;
 		while(it.hasNext() && !kingFind){
@@ -399,6 +482,12 @@ public class GameManager implements ControllerInterface{
 		return mt;
 	}
 	
+	private void updateTilesUpdateStateUpdateView(int from, int to){
+		updateTiles(from,to);
+		setMovingState();
+		viewComponent.MoveFromStartIndexToEndIndex(from, to);
+	}
+	
 	
 	//--------------------------------Private method for game stream------------------------	
 
@@ -412,13 +501,13 @@ public class GameManager implements ControllerInterface{
 		it = piecesList.iterator();
 		while(it.hasNext()){
 			int next = it.next();
-			this.chessboard.GetPiece(next).setMedusaTree(this.GetPossibleMovesPlusFirstOccupated(next));
+			this.chessboard.getPiece(next).setMedusaTree(this.getPossibleMovesPlusFirstOccupated(next));
 		}
 	}
 	
 	//Generate MT of a piece
 	private void generateMt(int pieceIndex){
-		this.chessboard.GetPiece(pieceIndex).setMedusaTree(this.GetPossibleMovesPlusFirstOccupated(pieceIndex));
+		this.chessboard.getPiece(pieceIndex).setMedusaTree(this.getPossibleMovesPlusFirstOccupated(pieceIndex));
 	}
 	
 	//Generate MTs of a list of pieces
@@ -434,13 +523,13 @@ public class GameManager implements ControllerInterface{
 		Iterator<Integer> it = piecesList.iterator();
 		while(it.hasNext()){
 			int i = it.next();
-			this.registerPieceOnHisMT(i,this.chessboard.IsPieceWhite(i));
+			this.registerPieceOnHisMT(i,this.chessboard.isPieceWhite(i));
 		}
 	}
 	
 	//Register a piece on its own MT
 	private void registerPieceOnHisMT(int pieceIndex,int pieceColor){
-		CuttedIterator it = this.chessboard.GetPiece(pieceIndex).getMedusaTree().GetCuttedIterator();
+		CuttedIterator it = this.chessboard.getPiece(pieceIndex).getMedusaTree().GetCuttedIterator();
 		while(it.hasNext()){
 			this.chessboard.getTile(it.next()).registerPiece(pieceIndex,pieceColor);
 		}
@@ -486,7 +575,7 @@ public class GameManager implements ControllerInterface{
 		LinkedList<Integer> kingValidMoves = new LinkedList<Integer>();
 		
 		//get the king mt
-		MedusaTree kingMt = this.GetPossibleMoves(this.chessboard.getKing(this.colorTurn));
+		MedusaTree kingMt = this.getPossibleMoves(this.chessboard.getKing(this.colorTurn));
 		
 		//for each leaf gets the tile and checks how many opponents are registered on
 		CuttedIterator it = kingMt.GetCuttedIterator();
@@ -501,7 +590,7 @@ public class GameManager implements ControllerInterface{
 				if(numOpponentsRegisteredOnLeaf == 1){
 					
 					//Only one Opponent expected
-					Set<Integer> registeredOpponents = this.chessboard.getTile(leafIndex).getColorListRegistered(OppositePlayer());					
+					Set<Integer> registeredOpponents = this.chessboard.getTile(leafIndex).getColorListRegistered(oppositePlayer());					
 					if(registeredOpponents.contains(leafIndex)){
 						kingValidMoves.add(leafIndex);	
 					}
@@ -527,7 +616,7 @@ public class GameManager implements ControllerInterface{
 		int kingIndex = this.chessboard.getKing(this.colorTurn);
 		
 		//Only one Opponent expected
-		Set<Integer> registeredOpponents = this.chessboard.getTile(kingIndex).getColorListRegistered(OppositePlayer());
+		Set<Integer> registeredOpponents = this.chessboard.getTile(kingIndex).getColorListRegistered(oppositePlayer());
 		
 		//found opponentIndex
 		int opponentIndex;
@@ -535,7 +624,7 @@ public class GameManager implements ControllerInterface{
 		opponentIndex = it.next();
 		
 		//found the index of tiles between the rival and the king
-		MedusaTree mtBetweenOpponentAndKing = this.GetBranchToWantedIndex(opponentIndex,kingIndex);
+		MedusaTree mtBetweenOpponentAndKing = this.getBranchToWantedIndex(opponentIndex,kingIndex);
 		CuttedIterator it2 = mtBetweenOpponentAndKing.GetCuttedIterator();
 		while(it.hasNext()){
 			int tempoPos = it2.next();
@@ -549,7 +638,7 @@ public class GameManager implements ControllerInterface{
 	}
 	
 	
-	private void ValidateForecastMts(){
+	private void validateForecastMts(){
 		Set<Integer> keys = this.forecastMts.keySet();
 		Iterator<Integer> it = keys.iterator();
 		while(it.hasNext()){

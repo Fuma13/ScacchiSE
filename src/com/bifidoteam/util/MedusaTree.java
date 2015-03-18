@@ -81,6 +81,14 @@ public class MedusaTree {//implements Iterable<Integer>,Iterator<Integer>{
 		}
 		return found;
 	}
+	
+	public boolean IsEmpty(){
+		CuttedIterator mtIterator = GetCuttedIterator();
+		if(mtIterator.hasNext())
+			return false;
+		
+		return true;
+	}
 
 	//Merge two mt adding the other branches to the this mt
 	public void MergeMedusaTreeNewBanch(MedusaTree other){

@@ -37,7 +37,7 @@ public class DrawComponent {
 			System.out.print(" " + i + " ");
 			
 			for(int j=0; j<Constants.MAX_INDEX_ROW; ++j){
-				actualPiece = scacchiera.GetPiece(i*Constants.MAX_INDEX_ROW + j);
+				actualPiece = scacchiera.getPiece(i*Constants.MAX_INDEX_ROW + j);
 				if(actualPiece != null)
 					actualSymbol = actualPiece.GetSymbol();
 				else 
