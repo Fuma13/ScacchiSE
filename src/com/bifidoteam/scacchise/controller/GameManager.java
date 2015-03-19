@@ -457,6 +457,8 @@ public class GameManager implements ControllerInterface{
 		Iterator<Integer> it = pieces.iterator();
 		while(it.hasNext()){
 			int i = it.next();
+			System.out.println("piece index =" + i);
+			//TODO fix, il pezzo si è mosso, ora è in destpos!
 			this.deregisterPieceFromTileInMt(i,this.chessboard.isPieceWhite(i));
 		}
 	}
@@ -627,6 +629,8 @@ public class GameManager implements ControllerInterface{
 		
 		//merge also the list of opponent on starting index with the list of piece involved
 		involvedPieces.addAll(opponents);
+		
+		System.out.println("PieceInvolved :" +involvedPieces.size());
 		
 		//deregister all piece from their tile using old MT
 		if(involvedPieces.size() > 0){
