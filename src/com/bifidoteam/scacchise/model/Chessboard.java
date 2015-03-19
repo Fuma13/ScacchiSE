@@ -2,8 +2,10 @@ package com.bifidoteam.scacchise.model;
 
 import com.bifidoteam.scacchise.util.Constants;
 import com.bifidoteam.util.MedusaTree;
+import com.bifidoteam.util.MedusaTree.CuttedIterator;
 
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 public class Chessboard
@@ -144,6 +146,7 @@ public class Chessboard
 		this.chessboard[pieceIndex].setMedusaTree(newMt);
 	}
 	
+	//set the piece in pieceIndex
 	public void setPiece(int pieceIndex, Piece piece) {
 		this.chessboard[pieceIndex] = piece;
 	}
@@ -216,4 +219,5 @@ public class Chessboard
 		}
 	}
 	//-----------------------------Private functions----------------------------------------
+
 }

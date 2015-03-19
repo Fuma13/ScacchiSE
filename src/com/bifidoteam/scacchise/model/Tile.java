@@ -18,8 +18,8 @@ public class Tile {
 	public Tile(int index){
 		this.index = index;
 		this.registered = new Set[Constants.MAX_PLAYERS];
-		this.registered[0] = new HashSet<Integer>();
-		this.registered[1] = new HashSet<Integer>();
+		this.registered[Constants.WHITE] = new HashSet<Integer>();
+		this.registered[Constants.BLACK] = new HashSet<Integer>();
 	}
 	
 	//return the index of the tile
@@ -54,6 +54,12 @@ public class Tile {
 	//unregister a piece, added if useful
 	public void unregisterPiece(Piece piece){
 		this.unregisterPiece(piece.getIndex(), piece.isWhite());
+	}
+	
+	//unregister a piece
+	public void unregisterPiece(int pieceIndex){
+		this.registered[Constants.WHITE].remove(pieceIndex);
+		this.registered[Constants.BLACK].remove(pieceIndex);
 	}
 	
 	public int numberOfOpponentPiecesRegisteredOn(int colorPlayer) {
