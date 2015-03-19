@@ -457,8 +457,7 @@ public class GameManager implements ControllerInterface{
 		Iterator<Integer> it = pieces.iterator();
 		while(it.hasNext()){
 			int i = it.next();
-			System.out.println("piece index =" + i);
-			//TODO fix, il pezzo si è mosso, ora è in destpos!
+			System.out.println("Deregister piece index = " + i);
 			this.deregisterPieceFromTileInMt(i,this.chessboard.isPieceWhite(i));
 		}
 	}
@@ -607,12 +606,24 @@ public class GameManager implements ControllerInterface{
 		//prendo la lista degli avversari e cancello il pezzo
 		this.chessboard.getColorList(this.oppositePlayer()).remove(destIndex);
 		
+		//TODO Bug1 piece moved so start is empty and must valorize piece with new index and new mt
+		//bug1 fix
+		this.chessboard.setPiece(this.lastSelectedIndex, piece);
+		this.deregisterPieceFromTileInMt(piece.getIndex(), piece.isWhite());
+		this.chessboard.setPiece(this.lastSelectedIndex,null);
+		//bug1 fix
 		
 		//TODO dubbio x Marco:  avendolo settato prima a null con lo stesso metodo che ho aggiunto in chessboard
 		//chiamo dopo il tuo metodo? mi sembra che faccia la stessa cosa
 		//this.chessboard.movePieceFromStartIndexToEndIndex(this.lastSelectedIndex, index);
 		//setto in chessBoard la dest del pezzo, cancella il pezzo avversario da chessboard
 		this.chessboard.setPiece(destIndex, piece); 
+		//bug1 fix
+		MedusaTree forecastPieceMoved = this.getPossibleMovesPlusFirstOccupated(destIndex);
+		this.chessboard.getPiece(destIndex).setMedusaTree(forecastPieceMoved);
+		this.chessboard.getPiece(destIndex).setIndex(destIndex);
+		this.registerPieceOnHisMT(piece.getIndex(), piece.isWhite());
+		//bug1 fix
 		
 		//get friend pieces on starting index
 		Set<Integer> involvedPieces = this.chessboard.getTile(this.lastSelectedIndex).getColorListRegistered(this.colorTurn);
@@ -620,6 +631,10 @@ public class GameManager implements ControllerInterface{
 		involvedPieces.addAll(this.chessboard.getTile(destIndex).getColorListRegistered(this.colorTurn));
 		//get friend pieces on dest index
 		involvedPieces.addAll(this.chessboard.getTile(destIndex).getColorListRegistered(this.oppositePlayer()));
+		
+		//bugFix
+		involvedPieces.remove(destIndex);
+		//bugfix
 		
 		Iterator<Integer> it = involvedPieces.iterator();
 		while(it.hasNext()){
