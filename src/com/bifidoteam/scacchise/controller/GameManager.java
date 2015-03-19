@@ -199,30 +199,13 @@ public class GameManager implements ControllerInterface{
 						//controllo se nuovi pezzi sccaccano dalla vecchia pos.
 						this.forecastMts.clear();
 						
-						//Per Ogni Opponent registrato sulla vechia tile[lastIndexSelected]:
-						boolean contin = true;
+						//get all opponents pieces index from starting move position
 						Set<Integer> opponents = this.chessboard.getTile(this.lastSelectedIndex).getColorListRegistered(this.oppositePlayer());
-						Iterator<Integer> it = opponents.iterator();
-						while(it.hasNext() && contin){
-							int oppositeIndex = it.next();
-							//calcolo MTipotetico e lo salvo in hashmap
-							MedusaTree forecastMt = this.getPossibleMovesPlusFirstOccupated(oppositeIndex);
-							if(forecastMt.Contain(this.chessboard.getKing(this.colorTurn))){
-								contin = false;
-								//annulla mossa, ora un nuovo pezzo scacca il re, e vale sia per N = 0 che N = 1
-								//registra di nuovo il pezzo su chessBoard
-								this.chessboard.setPiece(this.lastSelectedIndex, piece);
-								//cambia stato e torna a selezione
-								this.setWaitingState();
-							}else{
-								//aggiungo l'mt ipotetico,potrei usarlo dopo per la nuova configurazione sulle tile
-								this.forecastMts.put(oppositeIndex, forecastMt);
-							}
-						}
-						if(contin){
+						//check if the moving piece creates new check when leaving the starting position
+						if(!this.thereAreNewCheckFromMovingPiece(opponents)){
 							//Prendo l'indice del pezzo scaccante
 							Set<Integer> checkingPieceSet = this.chessboard.getTile(index).getColorListRegistered(this.oppositePlayer());
-							it = checkingPieceSet.iterator();
+							Iterator<Integer> it = checkingPieceSet.iterator();
 							int checkingPieceIndex = it.next();
 							
 							//controllo se la destinazione è il pezzo che scacca
@@ -233,54 +216,42 @@ public class GameManager implements ControllerInterface{
 								this.chessboard.getColorList(this.oppositePlayer()).remove(index);
 								
 								
-								//TODO dubbio x Marco:  avendolo settato prima a null con lo stesso metodo che ho aggiunto
+								//TODO dubbio x Marco:  avendolo settato prima a null con lo stesso metodo che ho aggiunto in chessboard
 								//chiamo dopo il tuo metodo? mi sembra che faccia la stessa cosa
 								//this.chessboard.movePieceFromStartIndexToEndIndex(this.lastSelectedIndex, index);
 								//setto in chessBoard la dest del pezzo, cancella il pezzo avversario da chessboard
 								this.chessboard.setPiece(index, piece); 
 								
-								//Prendo gli amici sulla tile di partenza
-								Set<Integer> friendsOnStartIndex = this.chessboard.getTile(this.lastSelectedIndex).getColorListRegistered(this.colorTurn);
-								
 								//calcolo gli MT degli amici registrati sulla tile di partenza
 								//TODO dubbio x Marco: devo rifare anche quelli dei nemici che erano sulla tile di partenza?
-								//sembrerebbe che dalla tile di partenza con il pezzo già a null l'mt dei nemici sia giusto.
-								it = friendsOnStartIndex.iterator();
+								//sembrerebbe che dalla tile di partenza con il pezzo già a null l'mtPlus dei nemici sia giusto.
+								//get friend pieces on starting index
+								Set<Integer> involvedPieces = this.chessboard.getTile(this.lastSelectedIndex).getColorListRegistered(this.colorTurn);
+								//get opposite pieces on dest index
+								involvedPieces.addAll(this.chessboard.getTile(index).getColorListRegistered(colorTurn));
+								//get friend pieces on dest index
+								involvedPieces.addAll(this.chessboard.getTile(index).getColorListRegistered(this.oppositePlayer()));
+								
+								it = involvedPieces.iterator();
 								while(it.hasNext()){
-									int friendIndex = it.next();
-									this.forecastMts.put(friendIndex, this.getPossibleMovesPlusFirstOccupated(friendIndex));
-								}
-								//calcolo gli MT di tutti i pezzi amici registrati sulla dest
-								Set<Integer> friendsOnDestIndex = this.chessboard.getTile(index).getColorListRegistered(colorTurn);
-								it = friendsOnDestIndex.iterator();
-								while(it.hasNext()){
-									int friendIndex = it.next();
-									this.forecastMts.put(friendIndex, this.getPossibleMovesPlusFirstOccupated(friendIndex));
-								}
-								//calcolo gli MT di tutti i pezzi nemii registrati sulla dest
-								Set<Integer> opponentsOnDestIndex = this.chessboard.getTile(index).getColorListRegistered(this.oppositePlayer());
-								it = opponentsOnDestIndex.iterator();
-								while(it.hasNext()){
-									int enemyIndex = it.next();
-									this.forecastMts.put(enemyIndex, this.getPossibleMovesPlusFirstOccupated(enemyIndex));
+									int involvedPieceIndex = it.next();
+									this.forecastMts.put(involvedPieceIndex, this.getPossibleMovesPlusFirstOccupated(involvedPieceIndex));
 								}
 								
-								//Unsco i set dovendo fare tutte le liste le stesse operazioni
-								opponents.addAll(opponentsOnDestIndex);
-								opponents.addAll(friendsOnStartIndex);
-								opponents.addAll(friendsOnDestIndex);
+								//merge also the list of opponent on starting index with the list of piece involved
+								involvedPieces.addAll(opponents);
 								
-								//deregistro dalle tile usando i vecchi MT
-								if(opponents.size() > 0){
-									this.deregisterPiecesFromTileInMt(opponents);
+								//deregister all piece from their tile using old MT
+								if(involvedPieces.size() > 0){
+									this.deregisterPiecesFromTileInMt(involvedPieces);
 								}
 								
-								//aggiorno gli mt vecchi con i nuovi:
+								//update old mt with forecast ones
 								this.updateForecastMt();
 								
-								//registro tutti i pezzi coinvolti coerentemente con i nuovi mt
+								//register all pieces using their new MT
 								if(opponents.size() > 0){
-									this.registerPiecesOnTheirMT(opponents);
+									this.registerPiecesOnTheirMT(involvedPieces);
 								}
 								
 								//cambio stato in MOVING e turnColor
@@ -311,6 +282,8 @@ public class GameManager implements ControllerInterface{
 								}
 							}
 						}else{
+							//register again the moving piece on chessBoard
+							this.chessboard.setPiece(this.lastSelectedIndex, piece);
 							this.setWaitingState();
 						}
 					}else{
@@ -661,6 +634,25 @@ public class GameManager implements ControllerInterface{
 		return validMoves;
 	}
 	
+	public boolean thereAreNewCheckFromMovingPiece(Set<Integer> opponentPiecesIndexOnStartingMovePosition){
+		//for each opponent registered on starting index position
+		boolean newCheck = false;
+		Iterator<Integer> it = opponentPiecesIndexOnStartingMovePosition.iterator();
+		while(it.hasNext() && newCheck){
+			int oppositeIndex = it.next();
+			//create the forecast mt
+			MedusaTree forecastMt = this.getPossibleMovesPlusFirstOccupated(oppositeIndex);
+			//check if forecast mt contain king position
+			if(forecastMt.Contain(this.chessboard.getKing(this.colorTurn))){
+				newCheck = true;
+				//break, new check on king, is it valid either N = 0 either N = 1
+			}else{
+				//add forecast mt on hashmap, will be used later or deleted
+				this.forecastMts.put(oppositeIndex, forecastMt);
+			}
+		}
+		return newCheck;
+	}
 	
 	private void validateForecastMts(){
 		Set<Integer> keys = this.forecastMts.keySet();
