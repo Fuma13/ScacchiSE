@@ -41,8 +41,8 @@ public class Pawn extends Piece implements PawnInterface {
 		for(;count<2;count++){
 			if(j>0 && j<Constants.MAX_INDEX && (j / Constants.MAX_INDEX_ROW == actualRowIndex + segno)){
 				mt.AddBranch(j);
-				j += 2;
 			}
+			j += 2;
 		}
 		
 		return mt;

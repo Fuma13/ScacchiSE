@@ -1,6 +1,7 @@
 package com.bifidoteam.scacchise.controller;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -172,19 +173,29 @@ public class GameManager implements ControllerInterface{
 				
 				if(this.chessboard.isKingPiece(this.lastSelectedIndex, this.colorTurn)){
 					
-					int numberOfOpponent = this.chessboard.getTile(index).numberOfOpponentPiecesRegisteredOn(this.colorTurn);
+					int numberOfOpponentOnDestIndex = this.chessboard.getTile(index).numberOfOpponentPiecesRegisteredOn(this.colorTurn);
 					//If the tile is free and no opponent can arrive here, the king can move
-					if(numberOfOpponent == 0){
+					if(numberOfOpponentOnDestIndex == 0){
 						//Valid move
 						//he tile is free and no opponent can arrive here, the king can move
 						//get all opponents pieces index from starting move position
+						
+						System.out.println("King moves safely");
+						
+						//update chessboad
+						this.chessboard.simulateMovePieceFromStartToEnd(this.lastSelectedIndex, index);
+						
+						//King could eat a piece. if exist need to deregister from Tile and colorList
+						MedusaTree possibleAtePiece = this.chessboard.confirmMovePiece();
+						this.deregisterPieceFromTileInMt(possibleAtePiece,index,this.oppositePlayer());
+						
 						Set<Integer> opponents = this.chessboard.getTile(this.lastSelectedIndex).getColorListRegistered(this.oppositePlayer());
 						
-						Piece movingPiece = this.chessboard.getPiece(this.lastSelectedIndex);
-						chessboard.setPiece(this.lastSelectedIndex, null);
-						this.SetPieceDestAndValidateMt(index,movingPiece,opponents);
+						this.SetPieceDestAndValidateMt(index,opponents);
+						this.EndValidMove(this.lastSelectedIndex, index);
 					}
 					else{
+						System.out.println("King DOESN'T move safely");
 						setWaitingState();
 					}
 				}
@@ -194,13 +205,9 @@ public class GameManager implements ControllerInterface{
 						//if was N>1 can only select king
 						//if want move king i'm in the wrong branch
 						
-						//TODO dubbio per marco:
-						//Salvo il pezzo temporaneamente.
-						//se lo salvassi dentro chessboard non romperei la separazione controller-gameManager/model-chessboard
-						//ma non è una merda?
-						Piece piece = this.chessboard.getPiece(this.lastSelectedIndex);
-						//null old index position on chessboard
-						this.chessboard.setPiece(this.lastSelectedIndex, null);
+						//simulate the move
+						this.chessboard.simulateMovePieceFromStartToEnd(this.lastSelectedIndex, index);
+
 						//clear old forecastMt
 						this.forecastMts.clear();
 						
@@ -221,33 +228,61 @@ public class GameManager implements ControllerInterface{
 							//check if destination is the checking piece
 							if(checkingPieceIndex == index){
 								//valid move: the moved piece eat the checking piece
-								this.SetPieceDestAndValidateMt(index,piece,opponents);
+								
+								System.out.println("NOT king, eats Checking Piece");
+								
+								//Piece eat a piece. Need to deregister from Tile and colorList
+								MedusaTree possibleAtePiece = this.chessboard.confirmMovePiece();
+								this.deregisterPieceFromTileInMt(possibleAtePiece,index,this.oppositePlayer());
+								
+								this.SetPieceDestAndValidateMt(index,opponents);
+								this.EndValidMove(this.lastSelectedIndex, index);
 							}else{
 								if(this.isUnderCheck()==1){
 									//get the branch of mt that is between checking piece and king
 									MedusaTree mtBranchToKing = this.getBranchToWantedIndex(checkingPieceIndex, chessboard.getKing(this.colorTurn));
 									//need to check if moving piece intercept the checking one
-									if( mtBranchToKing.Contain(checkingPieceIndex)){
+									if( mtBranchToKing.IsEmpty()){
 										//Valid move: the piece moved at least has intercepted the checking piece
-										this.SetPieceDestAndValidateMt(index,piece,opponents);
+										System.out.println("NOT king, intercepts Checking Piece");
+										
+										//TODO can be removed?
+										//Piece could eat a piece checking the king.
+										MedusaTree possibleAtePiece = this.chessboard.confirmMovePiece();
+										this.deregisterPieceFromTileInMt(possibleAtePiece,index,this.oppositePlayer());
+										
+										this.SetPieceDestAndValidateMt(index,opponents);
+										this.EndValidMove(this.lastSelectedIndex, index);
 									}else{
 										//Invalid move, checking piece not eat/intercepted
 										//register again the moving piece on chessBoard
-										this.chessboard.setPiece(this.lastSelectedIndex, piece);
+										System.out.println("NOT king, DOESN'T eat/intercept Checking Piece");
+										
+										this.chessboard.rollbackMovePiece(this.lastSelectedIndex, index);
 										this.setWaitingState();
 									}
 								}else{
 									//Valid moves of a piece (not the king) that doesn't leave the king under check
-									this.SetPieceDestAndValidateMt(index,piece,opponents);
+									System.out.println("NOT king moves without leave king under check");
+									
+									//Piece could eat an opposite piece. if exist need to deregister from Tile and colorList
+									MedusaTree possibleAtePiece = this.chessboard.confirmMovePiece();
+									this.deregisterPieceFromTileInMt(possibleAtePiece,index,this.oppositePlayer());
+									
+									this.SetPieceDestAndValidateMt(index,opponents);
+									this.EndValidMove(this.lastSelectedIndex, index);
 								}
 							}
 						}else{
+							System.out.println("Moving peace creates a new check");
 							//register again the moving piece on chessBoard
-							this.chessboard.setPiece(this.lastSelectedIndex, piece);
+							this.chessboard.rollbackMovePiece(this.lastSelectedIndex, index);
 							this.setWaitingState();
 						}
 					}else{
 						//There are no possible moves of another piece that can safe the king
+						System.out.println("N>1 but king wasn't selected");
+						
 						setWaitingState();
 					}					
 				}
@@ -262,7 +297,7 @@ public class GameManager implements ControllerInterface{
 			setWaitingState();
 		}
 	}
-	
+
 	private void updateTiles(int startIndex, int endIndex)
 	{
 		// TODO VALE: mossa valida quindi devo aggiornare le tile
@@ -440,6 +475,7 @@ public class GameManager implements ControllerInterface{
 		Iterator<Integer> it = piecesList.iterator();
 		while(it.hasNext()){
 			int i = it.next();
+			System.out.println("Register piece index = " + i);
 			this.registerPieceOnHisMT(i,this.chessboard.isPieceWhite(i));
 		}
 	}
@@ -448,7 +484,9 @@ public class GameManager implements ControllerInterface{
 	private void registerPieceOnHisMT(int pieceIndex,int pieceColor){
 		CuttedIterator it = this.chessboard.getPiece(pieceIndex).getMedusaTree().GetCuttedIterator();
 		while(it.hasNext()){
-			this.chessboard.getTile(it.next()).registerPiece(pieceIndex,pieceColor);
+			int i = it.next();
+			System.out.println(pieceIndex+" registering in " +i);
+			this.chessboard.getTile(i).registerPiece(pieceIndex,pieceColor);
 		}
 	}
 	
@@ -464,9 +502,15 @@ public class GameManager implements ControllerInterface{
 	
 	//deregister a piece from the tile of his own mt
 	private void deregisterPieceFromTileInMt(int pieceIndex,int pieceColor) {
-		CuttedIterator it = this.chessboard.getPiece(pieceIndex).getMedusaTree().GetCuttedIterator();
+		this.deregisterPieceFromTileInMt(this.chessboard.getMedusaTree(pieceIndex), pieceIndex, pieceColor);
+	}
+	
+	private void deregisterPieceFromTileInMt(MedusaTree confirmMovePiece,int index,int color) {
+		CuttedIterator it = confirmMovePiece.GetCuttedIterator();
 		while(it.hasNext()){
-			this.chessboard.getTile(it.next()).unregisterPiece(pieceIndex,pieceColor);
+			int tileIndex = it.next();
+			System.out.println(index+" deregistering from " +tileIndex);
+			this.chessboard.getTile(tileIndex).unregisterPiece(index,color);
 		}
 	}
 	
@@ -491,7 +535,7 @@ public class GameManager implements ControllerInterface{
 			LinkedList<Integer> validMoves = new LinkedList<Integer>();
 			
 			//add king's valid moves
-			validMoves.addAll(this.searchKingAdjacentSafe());
+			validMoves.addAll(this.searchKingAdjacentSafe());//diventa booleano, se true heckmate = false, else controllo le distanti
 			
 			//if N = 1 it's possible eat/intercept the opponent piece checking the king
 			if(numberOfOpponent == 1){
@@ -527,26 +571,34 @@ public class GameManager implements ControllerInterface{
 		
 		while(it.hasNext()){
 			int leafIndex = it.next();
+			
+			//checking if covering pieces exist
 			int numOpponentsRegisteredOnLeaf = this.chessboard.getTile(leafIndex).numberOfOpponentPiecesRegisteredOn(this.colorTurn);
 			
-			//at least on enemy is registered on that tile
-			if(numOpponentsRegisteredOnLeaf > 0){
-				//if is exactly one, king can eat if the opponent piece is there
-				if(numOpponentsRegisteredOnLeaf == 1){
-					
-					//Only one Opponent expected
-					Set<Integer> registeredOpponents = this.chessboard.getTile(leafIndex).getColorListRegistered(oppositePlayer());					
-					if(registeredOpponents.contains(leafIndex)){
-						kingValidMoves.add(leafIndex);	
-					}
-				}
-			}else{
-				//check if there is a friend
-				Set<Integer> registeredFriends = this.chessboard.getTile(leafIndex).getColorListRegistered(this.colorTurn);
-				if(registeredFriends.size() == 0 ){
-					kingValidMoves.add(leafIndex);
-				}
+			//no covering pieces or tile empty
+			if(numOpponentsRegisteredOnLeaf == 0){
+				
+				kingValidMoves.add(leafIndex);
+				
+//				//if is exactly one, king can eat if the opponent piece is there
+//				if(numOpponentsRegisteredOnLeaf == 1){
+//					
+//					//Only one Opponent expected
+//					Set<Integer> registeredOpponents = this.chessboard.getTile(leafIndex).getColorListRegistered(oppositePlayer());					
+//					if(registeredOpponents.contains(leafIndex)){
+//						kingValidMoves.add(leafIndex);	
+//					}
+//				}
 			}
+//			else{
+				
+				
+//				//check if there is a friend
+//				Set<Integer> registeredFriends = this.chessboard.getTile(leafIndex).getColorListRegistered(this.colorTurn);
+//				if(registeredFriends.size() == 0 ){
+//					kingValidMoves.add(leafIndex);
+//				}
+//			}
 		}
 		
 		return kingValidMoves;
@@ -602,41 +654,34 @@ public class GameManager implements ControllerInterface{
 		return newCheck;
 	}
 	
-	private void SetPieceDestAndValidateMt(int destIndex,Piece piece,Set<Integer> opponents){
-		//prendo la lista degli avversari e cancello il pezzo
-		this.chessboard.getColorList(this.oppositePlayer()).remove(destIndex);
+	private void SetPieceDestAndValidateMt(int destIndex,Set<Integer> opponents){
 		
 		//TODO Bug1 piece moved so start is empty and must valorize piece with new index and new mt
 		//bug1 fix
-		this.chessboard.setPiece(this.lastSelectedIndex, piece);
-		this.deregisterPieceFromTileInMt(piece.getIndex(), piece.isWhite());
-		this.chessboard.setPiece(this.lastSelectedIndex,null);
-		//bug1 fix
 		
-		//TODO dubbio x Marco:  avendolo settato prima a null con lo stesso metodo che ho aggiunto in chessboard
-		//chiamo dopo il tuo metodo? mi sembra che faccia la stessa cosa
-		//this.chessboard.movePieceFromStartIndexToEndIndex(this.lastSelectedIndex, index);
-		//setto in chessBoard la dest del pezzo, cancella il pezzo avversario da chessboard
-		this.chessboard.setPiece(destIndex, piece); 
-		//bug1 fix
+		this.chessboard.simulateMovePieceFromStartToEnd(destIndex, this.lastSelectedIndex);
+		this.deregisterPieceFromTileInMt(this.lastSelectedIndex, this.chessboard.isPieceWhite(this.lastSelectedIndex));
+		this.chessboard.simulateMovePieceFromStartToEnd(this.lastSelectedIndex, destIndex);
 		MedusaTree forecastPieceMoved = this.getPossibleMovesPlusFirstOccupated(destIndex);
 		this.chessboard.getPiece(destIndex).setMedusaTree(forecastPieceMoved);
-		this.chessboard.getPiece(destIndex).setIndex(destIndex);
-		this.registerPieceOnHisMT(piece.getIndex(), piece.isWhite());
+		this.registerPieceOnHisMT(this.chessboard.getPiece(destIndex).getIndex(), this.chessboard.getPiece(destIndex).isWhite());
 		//bug1 fix
 		
-		//get friend pieces on starting index
-		Set<Integer> involvedPieces = this.chessboard.getTile(this.lastSelectedIndex).getColorListRegistered(this.colorTurn);
-		//get opposite pieces on dest index
-		involvedPieces.addAll(this.chessboard.getTile(destIndex).getColorListRegistered(this.colorTurn));
+		//get friend pieces on starting index 
+		Set<Integer> temp = this.chessboard.getTile(this.lastSelectedIndex).getColorListRegistered(this.colorTurn);
 		//get friend pieces on dest index
-		involvedPieces.addAll(this.chessboard.getTile(destIndex).getColorListRegistered(this.oppositePlayer()));
+		temp.addAll(this.chessboard.getTile(destIndex).getColorListRegistered(this.colorTurn));
+		//get opposite pieces registered on dest index
+		temp.addAll(this.chessboard.getTile(destIndex).getColorListRegistered(this.oppositePlayer()));
 		
-		//bugFix
-		involvedPieces.remove(destIndex);
-		//bugfix
+		Set<Integer> involvedPieces = new HashSet<Integer>(temp);
+		
+		//bug1 Fix
+		involvedPieces.remove(this.lastSelectedIndex);
+		//bug1 fix
 		
 		Iterator<Integer> it = involvedPieces.iterator();
+		
 		while(it.hasNext()){
 			int involvedPieceIndex = it.next();
 			this.forecastMts.put(involvedPieceIndex, this.getPossibleMovesPlusFirstOccupated(involvedPieceIndex));
@@ -656,13 +701,16 @@ public class GameManager implements ControllerInterface{
 		this.updateForecastMt();
 		
 		//register all pieces using their new MT
-		if(opponents.size() > 0){
+		if(involvedPieces.size() > 0){
 			this.registerPiecesOnTheirMT(involvedPieces);
 		}
 		
+	}
+	
+	private void EndValidMove(int startIndex,int endIndex){
 		//cambio stato in MOVING e turnColor
 		this.setMovingState();
-		viewComponent.MoveFromStartIndexToEndIndex(this.lastSelectedIndex, destIndex);
+		viewComponent.MoveFromStartIndexToEndIndex(startIndex, endIndex);
 	}
 	 
 	

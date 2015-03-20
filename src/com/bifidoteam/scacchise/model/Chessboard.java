@@ -87,14 +87,11 @@ public class Chessboard
 			return null;
 	}
 	
-	public boolean movePieceFromStartIndexToEndIndex(int startIndex, int endIndex) {
-		if(startIndex >= 0 && startIndex < Constants.MAX_INDEX && endIndex >= 0 && endIndex < Constants.MAX_INDEX) {
-			chessboard[endIndex] = chessboard[startIndex];
-			chessboard[endIndex].index = endIndex;
-			chessboard[startIndex] = null;
-			return true;
-		}	
-		return false;
+	public MedusaTree getMedusaTree(int pieceIndex){
+		if(pieceIndex >= 0 && pieceIndex < Constants.MAX_INDEX && this.chessboard[pieceIndex] != null)
+			return chessboard[pieceIndex].getMedusaTree();
+		else
+			return new MedusaTree();
 	}
 	
 	//This move operation can rollbacked if is wrong and confirmed if is right
@@ -113,8 +110,15 @@ public class Chessboard
 		}
 	}
 	
-	public void confirmMovePiece(){
+	public MedusaTree confirmMovePiece(){
+		MedusaTree tempMt = new MedusaTree();
+		if(tempSimulateMove!= null){
+			tempMt = this.tempSimulateMove.getMedusaTree();
+			this.getTile(tempSimulateMove.index).unregisterPiece(tempSimulateMove.index,tempSimulateMove.isWhite());
+			this.pieces[tempSimulateMove.isWhite()].remove(tempSimulateMove);
+		}
 		tempSimulateMove = null;
+		return tempMt;
 	}
 	
 	//return the list of pieces of color "Color"
@@ -217,6 +221,16 @@ public class Chessboard
 		for(int i=0; i<Constants.MAX_INDEX; i++){
 			this.tiles[i] = new Tile(i);
 		}
+	}
+	
+	private boolean movePieceFromStartIndexToEndIndex(int startIndex, int endIndex) {
+		if(startIndex >= 0 && startIndex < Constants.MAX_INDEX && endIndex >= 0 && endIndex < Constants.MAX_INDEX) {
+			chessboard[endIndex] = chessboard[startIndex];
+			chessboard[endIndex].index = endIndex;
+			chessboard[startIndex] = null;
+			return true;
+		}	
+		return false;
 	}
 	//-----------------------------Private functions----------------------------------------
 
