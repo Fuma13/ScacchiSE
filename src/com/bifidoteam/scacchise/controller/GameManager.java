@@ -87,7 +87,7 @@ public class GameManager implements ControllerInterface{
 	public MedusaTree getReachebleIndicesDebug(int index, int whiteTurn)
 	{
 		this.colorTurn = whiteTurn;
-		return getPossibleMoves(index);
+		return getPossibleMoves(index,whiteTurn);
 	}
 	//-----------------------------Debug functions -----------------------------------------
 	
@@ -154,7 +154,7 @@ public class GameManager implements ControllerInterface{
 	private void selectPiece(int index) {
 		if(index >= 0 && index < Constants.MAX_INDEX && isPlayerPiece(index, this.colorTurn)) {
 			lastSelectedIndex = index;
-			medusaTreeSelectedIndex = getPossibleMoves(index);
+			medusaTreeSelectedIndex = getPossibleMoves(index,this.colorTurn);
 				
 			gameState = GameState.SELECTED;
 		}
@@ -240,7 +240,7 @@ public class GameManager implements ControllerInterface{
 							}else{
 								if(this.isUnderCheck()==1){
 									//get the branch of mt that is between checking piece and king
-									MedusaTree mtBranchToKing = this.getBranchToWantedIndex(checkingPieceIndex, chessboard.getKing(this.colorTurn));
+									MedusaTree mtBranchToKing = this.getBranchToWantedIndex(checkingPieceIndex,this.oppositePlayer(), chessboard.getKing(this.colorTurn));
 									//need to check if moving piece intercept the checking one
 									if( mtBranchToKing.IsEmpty()){
 										//Valid move: the piece moved at least has intercepted the checking piece
@@ -352,7 +352,7 @@ public class GameManager implements ControllerInterface{
 	
 	//Cut the mt of the piece in that index
 	//Valid positions are: free positions and enemy positions that the piece can eat
-	private MedusaTree getPossibleMoves(int index)
+	private MedusaTree getPossibleMoves(int index, int colorPiece)
 	{
 		MedusaTree reachebleIndices = chessboard.getPossibleMovementIndices(index);
 		if(reachebleIndices != null){
@@ -361,7 +361,7 @@ public class GameManager implements ControllerInterface{
 				Integer reachebleIndex = mtIterator.next();
 				if(chessboard.getPiece(reachebleIndex) != null){
 					//If is special (Pawn) then the cut different or is a player piece
-					if(chessboard.isPieceSpecial(index) || isPlayerPiece(reachebleIndex, this.colorTurn)) {
+					if(chessboard.isPieceSpecial(index) || isPlayerPiece(reachebleIndex, colorPiece)) {
 						//This piece can't arrive in this cell
 						mtIterator.CutThisAndAfter();
 					}
@@ -428,8 +428,8 @@ public class GameManager implements ControllerInterface{
 	}
 	
 	//Return a mt that have as valid only a branch that connect the movingPiece with the wantedIndex
-	private MedusaTree getBranchToWantedIndex(int movingPieceIndex,int wantedIndex){
-		MedusaTree mt = getPossibleMoves(movingPieceIndex);
+	private MedusaTree getBranchToWantedIndex(int movingPieceIndex,int movingPieceColor,int wantedIndex){
+		MedusaTree mt = getPossibleMoves(movingPieceIndex,movingPieceColor);
 		CuttableCuttedIterator it = mt.GetCuttableCuttedIterator();
 		Boolean kingFind = false;
 		while(it.hasNext() && !kingFind){
@@ -526,28 +526,21 @@ public class GameManager implements ControllerInterface{
 	
 	//check if king of ColorTurn is under checkMate
 	private boolean isUnderCheckmate(){
+		boolean result = false;
+		
 		//get the king pos
 		int kingPos = this.chessboard.getKing(this.colorTurn);
 		
 		int numberOfOpponent = this.chessboard.getTile(kingPos).numberOfOpponentPiecesRegisteredOn(this.colorTurn);
 		//check if there is an opponent piece registered on the kingPos
-		if(numberOfOpponent >0){
-			LinkedList<Integer> validMoves = new LinkedList<Integer>();
-			
-			//add king's valid moves
-			validMoves.addAll(this.searchKingAdjacentSafe());//diventa booleano, se true heckmate = false, else controllo le distanti
-			
+		if(numberOfOpponent >0 && !this.searchKingAdjacentSafe()){
 			//if N = 1 it's possible eat/intercept the opponent piece checking the king
-			if(numberOfOpponent == 1){
-				validMoves.addAll(this.searchDistantSafeMoves());
-			}
-			
-			if(validMoves.size() == 0){
-				return true;
+			if(numberOfOpponent != 1 || !this.searchDistantSafeMoves()){
+				result = true;
 			}
 		}
 		//NO checkMate on the king
-		return false;
+		return result;
 	}
 	
 	//Check if king of color turn is under check
@@ -559,17 +552,16 @@ public class GameManager implements ControllerInterface{
 	
 	//return the index of valid tiles around the king where he can moves
 	//TODO: se da cambiare con il nuovo algoritmo potrebbe tornare un int soltanto
-	private List<Integer> searchKingAdjacentSafe(){
-		//list of valid moves for the king
-		LinkedList<Integer> kingValidMoves = new LinkedList<Integer>();
+	private boolean searchKingAdjacentSafe(){
+		boolean existValidMove = false;
 		
 		//get the king mt
-		MedusaTree kingMt = this.getPossibleMoves(this.chessboard.getKing(this.colorTurn));
+		MedusaTree kingMt = this.getPossibleMoves(this.chessboard.getKing(this.colorTurn),this.colorTurn);
 		
 		//for each leaf gets the tile and checks how many opponents are registered on
 		CuttedIterator it = kingMt.GetCuttedIterator();
 		
-		while(it.hasNext()){
+		while(it.hasNext() && !existValidMove){
 			int leafIndex = it.next();
 			
 			//checking if covering pieces exist
@@ -578,7 +570,7 @@ public class GameManager implements ControllerInterface{
 			//no covering pieces or tile empty
 			if(numOpponentsRegisteredOnLeaf == 0){
 				
-				kingValidMoves.add(leafIndex);
+				existValidMove = true;
 				
 //				//if is exactly one, king can eat if the opponent piece is there
 //				if(numOpponentsRegisteredOnLeaf == 1){
@@ -601,14 +593,13 @@ public class GameManager implements ControllerInterface{
 //			}
 		}
 		
-		return kingValidMoves;
+		return existValidMove;
 	}
 	
 	//return the index of valid tiles usefull to block the check
 	//TODO: se da cambiare con il nuovo algoritmo potrebbe tornare un int soltanto
-	private List<Integer> searchDistantSafeMoves(){
-		//list of valid moves
-		LinkedList<Integer> validMoves = new LinkedList<Integer>();
+	private boolean searchDistantSafeMoves(){
+		boolean existValidMove = false;
 		
 		int kingIndex = this.chessboard.getKing(this.colorTurn);
 		
@@ -620,18 +611,24 @@ public class GameManager implements ControllerInterface{
 		Iterator<Integer> it = registeredOpponents.iterator();
 		opponentIndex = it.next();
 		
+		//TODO aggiungere check sse qualcuno può mangiare chi scacca
+		Set<Integer> pieceEatingCheckingPiece = this.chessboard.getTile(opponentIndex).getColorListRegistered(this.colorTurn);
+		if(pieceEatingCheckingPiece.size() >0 ){
+			existValidMove = true;
+		}
+		
 		//found the index of tiles between the rival and the king
-		MedusaTree mtBetweenOpponentAndKing = this.getBranchToWantedIndex(opponentIndex,kingIndex);
+		MedusaTree mtBetweenOpponentAndKing = this.getBranchToWantedIndex(opponentIndex,this.oppositePlayer(),kingIndex);
 		CuttedIterator it2 = mtBetweenOpponentAndKing.GetCuttedIterator();
-		while(it.hasNext()){
+		while(it.hasNext() && !existValidMove){
 			int tempoPos = it2.next();
 			//if the tile in that index contains a friend piece, that piece can move and stop king's check
 			if(this.chessboard.getTile(tempoPos).getColorListRegistered(colorTurn).size() > 0){
-				validMoves.add(tempoPos);
+				existValidMove = true;
 			}
 		}
 				
-		return validMoves;
+		return existValidMove;
 	}
 	
 	private boolean thereAreNewCheckFromMovingPiece(Set<Integer> opponentPiecesIndexOnStartingMovePosition){
