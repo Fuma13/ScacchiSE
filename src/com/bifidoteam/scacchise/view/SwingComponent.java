@@ -9,15 +9,17 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayDeque;
 
-import javafx.scene.chart.PieChartBuilder;
-
+import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.border.Border;
 
 import com.bifidoteam.scacchise.model.Chessboard;
 import com.bifidoteam.scacchise.model.Piece;
 import com.bifidoteam.scacchise.util.Constants;
+import com.bifidoteam.util.MedusaTree;
+import com.bifidoteam.util.MedusaTree.CuttedIterator;
 
 public class SwingComponent implements Runnable, ActionListener {
 
@@ -27,19 +29,90 @@ public class SwingComponent implements Runnable, ActionListener {
 	JButton chessboardTiles[];
 	ImageIcon textures[];
 	
+	Border blackline;
+	boolean isInitialized;
 	
 	public SwingComponent(Chessboard base){
 		board = base;
 		eventsQueue= new ArrayDeque<Integer>();
 		
 		chessboardTiles = new JButton[Constants.MAX_INDEX];
+		
+		blackline = BorderFactory.createLineBorder(Color.black);
+		
+		isInitialized = false;
+	}
+	
+	public void RenderWithMedusa(MedusaTree mt){
+		UpdateViewCell();
+		
+		if(mt != null){
+			CuttedIterator toAnalyze = mt.GetCuttedIterator();
+			
+			while(toAnalyze.hasNext()){
+				int val = toAnalyze.next();
+				
+				// If there is another piece in the cell => i can eat! I sign it with another color!
+				chessboardTiles[val].setBackground( board.GetPiece(val) == null ? Color.yellow : Color.red);
+				chessboardTiles[val].setBorder(blackline);
+			}
+		}
+	}
+	
+	public boolean IsInitialize(){
+		return isInitialized;
 	}
 	
 	@Override
 	public void run() {
 		LoadTextures();
 		SwingInit();
+		
+		isInitialized=true;
 	}
+	
+	// *************************************************************************************************************************
+	// **************************************************** EVENTS MANAGEMENT **************************************************
+	// *************************************************************************************************************************
+	
+	@Override
+	// Event listener: Thread safe.
+	public synchronized void actionPerformed(ActionEvent arg0) {
+		if(((JButton) arg0.getSource()) != null){
+			JButton x = (JButton) arg0.getSource();
+			eventsQueue.push(Integer.valueOf(x.getName()));
+
+			System.out.println("Thread id:" + Thread.currentThread().getId());
+			System.out.println("Added event in the queue: " + eventsQueue.peekLast() + ". Size of new events: " + eventsQueue.size());
+		}
+	}
+	
+	// Event peek: Thread safe.
+	public synchronized boolean HasNewEvent(){
+		return !eventsQueue.isEmpty();
+	}
+	
+	// Event eater: Thread safe.
+	public synchronized int GetNextEvent(){
+		// --> Update the background removing the medusa tree! Thread safe because is called by the same thread of the RenderWithMedusa <--
+		RefreshBackground(); 
+		
+		System.out.println("Thread id:" + Thread.currentThread().getId());
+		System.out.println("Consumed event : " + eventsQueue.peekFirst() + ". Number of new events: " + eventsQueue.size());
+		return eventsQueue.removeFirst();
+	}
+
+	// *************************************************************************************************************************
+	// *********************************************************** END *********************************************************
+	// *************************************************************************************************************************
+	
+	
+	
+
+	// *************************************************************************************************************************
+	// ************************************************* INIT PRIVATE FUNCTIONS ************************************************
+	// *************************************************************************************************************************
+	
 
 	private void LoadTextures(){
 		textures = new ImageIcon[Constants.MAX_TEXTURES];
@@ -65,7 +138,8 @@ public class SwingComponent implements Runnable, ActionListener {
 		JFrame.setDefaultLookAndFeelDecorated(true);
         JFrame frame = new JFrame("Badass Chess");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
+        frame.setMinimumSize(new Dimension(700,700));
+        
         //Set up the content pane.
         composeGrid(frame.getContentPane());
 
@@ -106,6 +180,8 @@ public class SwingComponent implements Runnable, ActionListener {
         jbnButton.setPreferredSize(new Dimension(80, 80));
         jbnButton.setBorder(null);
         jbnButton.addActionListener(this);
+        
+        chessboardTiles[pos] = jbnButton;
 
 	    GridBagConstraints gBC = new GridBagConstraints();
 	    gBC.fill = GridBagConstraints.HORIZONTAL;
@@ -114,38 +190,57 @@ public class SwingComponent implements Runnable, ActionListener {
         
         pane.add(jbnButton, gBC);
 	}
-	
-	// *************************************************************************************************************************
-	// **************************************************** EVENTS MANAGEMENT **************************************************
-	// *************************************************************************************************************************
-	
-	@Override
-	// Event listener: Thread safe.
-	public synchronized void actionPerformed(ActionEvent arg0) {
-		if(((JButton) arg0.getSource()) != null){
-			JButton x = (JButton) arg0.getSource();
-			eventsQueue.push(Integer.valueOf(x.getName()));
 
-			System.out.println("Thread id:" + Thread.currentThread().getId());
-			System.out.println("Added event in the queue: " + eventsQueue.peekLast() + ". Size of new events: " + eventsQueue.size());
-		}
-	}
 	
-	// Event peek: Thread safe.
-	public synchronized boolean HasNewEvent(){
-		return !eventsQueue.isEmpty();
-	}
-	
-	// Event eater: Thread safe.
-	public synchronized int GetNextEvent(){
-		System.out.println("Thread id:" + Thread.currentThread().getId());
-		System.out.println("Consumed event : " + eventsQueue.peekFirst() + ". Number of new events: " + eventsQueue.size());
-		return eventsQueue.removeFirst();
-	}
-
 	// *************************************************************************************************************************
 	// *********************************************************** END *********************************************************
 	// *************************************************************************************************************************
+
+	
+	
+
+	// *************************************************************************************************************************
+	// ************************************************ PRIVATE UPDATE FUNCTIONS ***********************************************
+	// *************************************************************************************************************************
+	
+	
+	private void UpdateViewCell(){
+		
+		Piece actual;
+		int index;
+		
+		for(int pos=0; pos< Constants.MAX_INDEX; ++pos){
+			actual = board.GetPiece(pos);
+			
+			if(actual != null){
+				index = GetTextureArrayPosition(actual.GetSymbol());
+				if(index >= 0)
+					chessboardTiles[pos].setIcon(textures[index]);
+				else
+					chessboardTiles[pos].setIcon(null);
+			}
+			else{
+				chessboardTiles[pos].setIcon(new ImageIcon());
+			}
+		}
+	}
+	
+	private void RefreshBackground(){
+		int offsetDueToOddRow;
+		for(int pos=0; pos< Constants.MAX_INDEX; ++pos){
+	        offsetDueToOddRow = (pos / Constants.MAX_INDEX_ROW) % 2;
+	        chessboardTiles[pos].setBackground( ((pos + offsetDueToOddRow) % 2) == 0 ? Color.white : Color.black);
+			chessboardTiles[pos].setBorder(null);
+		}
+	}
+
+	
+	// *************************************************************************************************************************
+	// *********************************************************** END *********************************************************
+	// *************************************************************************************************************************
+	
+	
+	
 	
 	
 	private int GetTextureArrayPosition(char pieceSymbol){

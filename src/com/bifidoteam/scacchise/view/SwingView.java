@@ -1,19 +1,5 @@
 package com.bifidoteam.scacchise.view;
 
-import java.awt.Color;
-import java.awt.Container;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
-
-import javafx.scene.layout.Border;
-
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JFrame;
-import javax.swing.JTextField;
-
 import com.bifidoteam.scacchise.controller.GameManager;
 import com.bifidoteam.scacchise.interfaces.ControllerInterface;
 import com.bifidoteam.scacchise.interfaces.ViewInterface;
@@ -35,28 +21,37 @@ public class SwingView implements ViewInterface {
 	
 	@Override
 	public void Render(MedusaTree reacheblePosition) {
-		// TODO Auto-generated method stub
-		
+		if(sc.IsInitialize())
+			sc.RenderWithMedusa(reacheblePosition);
 	}
 
 	@Override
 	public void MoveFromStartIndexToEndIndex(int startIndex, int endIndex) {
-		// TODO Auto-generated method stub
+		// TODO: (Ricky) Farlo testuale nella schermata!
+		System.out.println("Player move from " + startIndex + " to " + endIndex);
+		System.out.println("Player end turn");
 		
+		gm.OnMoveDone();
 	}
 
 	@Override
 	public void EndGame(int info) {
-		// TODO Auto-generated method stub
-		
+		// TODO: (Ricky) Farlo testuale nella schermata!
+		System.out.println("CheckMate!!! Player " + (info == 0 ? "White" : "Black") + " Win!!");
 	}
 
 	@Override
 	public int GetInput() {
-		if(sc.HasNewEvent())
+
+		// *** NOTA: Qui non e' corretto!! Bisogna gestirlo lato Controller!!! (Non attesa). Parlare con gli altri
+		while(!sc.HasNewEvent()){}
 			return sc.GetNextEvent();
-		else
-			return -1;
+			
+//		if(sc.HasNewEvent())
+//			return sc.GetNextEvent();
+//		else{
+//			return -1;
+//		}
 	}
 
 }
