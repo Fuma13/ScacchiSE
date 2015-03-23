@@ -118,20 +118,20 @@ public class SwingComponent implements Runnable, ActionListener {
 		textures = new ImageIcon[Constants.MAX_TEXTURES];
 		
 		// P1
-		textures[0] = new ImageIcon("res/claptrap2.png");		
-		textures[1] = new ImageIcon("res/claptrap2.png");
-		textures[2] = new ImageIcon("res/claptrap2.png");
-		textures[3] = new ImageIcon("res/claptrap2.png");
-		textures[4] = new ImageIcon("res/claptrap2.png");
-		textures[5] = new ImageIcon("res/claptrap2.png");
+		textures[0] = new ImageIcon("res/ChessImgV1/0.png");		
+		textures[1] = new ImageIcon("res/ChessImgV1/1.png");
+		textures[2] = new ImageIcon("res/ChessImgV1/2.png");
+		textures[3] = new ImageIcon("res/ChessImgV1/3.png");
+		textures[4] = new ImageIcon("res/ChessImgV1/4.png");
+		textures[5] = new ImageIcon("res/ChessImgV1/5.png");
 		
 		// P2
-		textures[6] = new ImageIcon("res/claptrap2.png");		
-		textures[7] = new ImageIcon("res/claptrap2.png");
-		textures[8] = new ImageIcon("res/claptrap2.png");	
-		textures[9] = new ImageIcon("res/claptrap2.png");
-		textures[10] = new ImageIcon("res/claptrap2.png");	
-		textures[11] = new ImageIcon("res/claptrap2.png");
+		textures[6] = new ImageIcon("res/ChessImgV1/6.png");		
+		textures[7] = new ImageIcon("res/ChessImgV1/7.png");
+		textures[8] = new ImageIcon("res/ChessImgV1/8.png");	
+		textures[9] = new ImageIcon("res/ChessImgV1/9.png");
+		textures[10] = new ImageIcon("res/ChessImgV1/10.png");	
+		textures[11] = new ImageIcon("res/ChessImgV1/11.png");
 	}
 
 	private void SwingInit(){
@@ -177,7 +177,7 @@ public class SwingComponent implements Runnable, ActionListener {
         int offsetDueToOddRow = (pos / Constants.MAX_INDEX_ROW) % 2;
         jbnButton.setBackground( ((pos + offsetDueToOddRow) % 2) == 0 ? Color.white : Color.black);
         
-        jbnButton.setPreferredSize(new Dimension(80, 80));
+        jbnButton.setPreferredSize(new Dimension(90, 90));
         jbnButton.setBorder(null);
         jbnButton.addActionListener(this);
         
