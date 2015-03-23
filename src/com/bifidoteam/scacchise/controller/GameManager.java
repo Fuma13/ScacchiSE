@@ -10,6 +10,7 @@ import com.bifidoteam.scacchise.interfaces.ViewInterface;
 import com.bifidoteam.scacchise.model.Chessboard;
 import com.bifidoteam.scacchise.util.Constants;
 import com.bifidoteam.scacchise.view.GameConsoleView;
+import com.bifidoteam.scacchise.view.SwingView;
 import com.bifidoteam.util.MedusaTree;
 import com.bifidoteam.util.MedusaTree.CuttedIterator;
 
@@ -69,7 +70,7 @@ public class GameManager implements ControllerInterface{
 		}
 //		kingPos = new int[Constants.MAX_PLAYERS];
 		this.gameState = GameState.WAITING;
-		viewComponent = new GameConsoleView(); // TODO: Sostituirlo con un factory esterno al GM?
+		viewComponent = new SwingView(); // TODO: Sostituirlo con un factory esterno al GM?
 	}
 	//--------------------------------Costructors-------------------------------------------
 	
