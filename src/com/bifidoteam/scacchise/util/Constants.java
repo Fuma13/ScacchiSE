@@ -8,4 +8,8 @@ public class Constants {
 	
 	public static int WHITE = 0;
 	public static int BLACK = 1;
+	
+
+	// *** SWING CONSTS ***
+	public static final int MAX_TEXTURES = 12; // 6 for player, 2 colors
 }

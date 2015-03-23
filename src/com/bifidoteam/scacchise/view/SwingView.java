@@ -28,7 +28,7 @@ public class SwingView implements ViewInterface {
 	@Override
 	public void Init(Chessboard base) {
 		gm = GameManager.getInstance();
-		sc = new SwingComponent();
+		sc = new SwingComponent(base);
 		
 		javax.swing.SwingUtilities.invokeLater(sc);
 	}

@@ -2,34 +2,64 @@ package com.bifidoteam.scacchise.view;
 
 import java.awt.Color;
 import java.awt.Container;
+import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayDeque;
 
+import javafx.scene.chart.PieChartBuilder;
+
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JComboBox;
 import javax.swing.JFrame;
-import javax.swing.JTextField;
 
-import com.sun.javafx.scene.layout.region.Margins.Converter;
+import com.bifidoteam.scacchise.model.Chessboard;
+import com.bifidoteam.scacchise.model.Piece;
+import com.bifidoteam.scacchise.util.Constants;
 
 public class SwingComponent implements Runnable, ActionListener {
 
 	ArrayDeque<Integer> eventsQueue;
 	
-	public SwingComponent(){
+	Chessboard board;
+	JButton chessboardTiles[];
+	ImageIcon textures[];
+	
+	
+	public SwingComponent(Chessboard base){
+		board = base;
 		eventsQueue= new ArrayDeque<Integer>();
+		
+		chessboardTiles = new JButton[Constants.MAX_INDEX];
 	}
 	
 	@Override
 	public void run() {
+		LoadTextures();
 		SwingInit();
 	}
 
+	private void LoadTextures(){
+		textures = new ImageIcon[Constants.MAX_TEXTURES];
+		
+		// P1
+		textures[0] = new ImageIcon("res/claptrap2.png");		
+		textures[1] = new ImageIcon("res/claptrap2.png");
+		textures[2] = new ImageIcon("res/claptrap2.png");
+		textures[3] = new ImageIcon("res/claptrap2.png");
+		textures[4] = new ImageIcon("res/claptrap2.png");
+		textures[5] = new ImageIcon("res/claptrap2.png");
+		
+		// P2
+		textures[6] = new ImageIcon("res/claptrap2.png");		
+		textures[7] = new ImageIcon("res/claptrap2.png");
+		textures[8] = new ImageIcon("res/claptrap2.png");	
+		textures[9] = new ImageIcon("res/claptrap2.png");
+		textures[10] = new ImageIcon("res/claptrap2.png");	
+		textures[11] = new ImageIcon("res/claptrap2.png");
+	}
 
 	private void SwingInit(){
 		JFrame.setDefaultLookAndFeelDecorated(true);
@@ -45,53 +75,45 @@ public class SwingComponent implements Runnable, ActionListener {
 
 
 	private void composeGrid(Container pane) {
-		JButton jbnButton;
-        pane.setLayout(new GridBagLayout());
-        GridBagConstraints gBC = new GridBagConstraints();
-        gBC.fill = GridBagConstraints.HORIZONTAL;
-
-        ImageIcon clap = new ImageIcon("res/claptrap.png");
-        jbnButton = new JButton(clap);
-        jbnButton.setName("0");
-        jbnButton.setBackground(Color.white);
-        jbnButton.setBorder(null);
-        jbnButton.addActionListener(this);
-        gBC.weightx = 0.5;
-        gBC.gridx = 0;
-        gBC.gridy = 0;
-        pane.add(jbnButton, gBC);
-
-        JTextField jtf = new JTextField("TextField 1");
-        gBC.gridx = 2;
-        gBC.gridy = 0;
-        jtf.setEditable(false);
-        pane.add(jtf, gBC);
-
-        jbnButton = new JButton("Button 3");
-        gBC.gridx = 2;
-        gBC.gridy = 0;
-        pane.add(jbnButton, gBC);
-
-        jbnButton = new JButton("Button 4");
-        gBC.ipady = 40;     //This component has more breadth compared to other buttons
-        gBC.weightx = 0.0;
-        gBC.gridwidth = 3;
-        gBC.gridx = 0;
-        gBC.gridy = 1;
-        pane.add(jbnButton, gBC);
-
-        JComboBox jcmbSample = new JComboBox(new String[]{"ComboBox 1", "hi", "hello"});
-        gBC.ipady = 0;
-        gBC.weighty = 1.0;
-        gBC.anchor = GridBagConstraints.PAGE_END;
-        gBC.insets = new Insets(10,0,0,0);  //Padding
-        gBC.gridx = 1;
-        gBC.gridwidth = 2;
-        gBC.gridy = 2;
-        pane.add(jcmbSample, gBC);
+		
+		pane.setLayout(new GridBagLayout());
+      
+		for(int i=0; i < Constants.MAX_INDEX; ++i)
+			AddCellToGrid(pane, i, board.GetPiece(i));
 	}
 
-	
+	private void AddCellToGrid(Container pane, int pos, Piece piece){
+		JButton jbnButton;
+
+		if(piece != null){
+			
+			int value = GetTextureArrayPosition(piece.GetSymbol());
+			jbnButton = new JButton(textures[value]);
+			
+		}
+		else{
+			
+			jbnButton = new JButton();
+		
+		}
+		
+        jbnButton.setName(Integer.toString(pos));
+        
+        // offsetDueToOddRow is used to alternate colors between adjacent rows
+        int offsetDueToOddRow = (pos / Constants.MAX_INDEX_ROW) % 2;
+        jbnButton.setBackground( ((pos + offsetDueToOddRow) % 2) == 0 ? Color.white : Color.black);
+        
+        jbnButton.setPreferredSize(new Dimension(80, 80));
+        jbnButton.setBorder(null);
+        jbnButton.addActionListener(this);
+
+	    GridBagConstraints gBC = new GridBagConstraints();
+	    gBC.fill = GridBagConstraints.HORIZONTAL;
+        gBC.gridx = pos % Constants.MAX_INDEX_ROW;
+        gBC.gridy = pos / Constants.MAX_INDEX_ROW;
+        
+        pane.add(jbnButton, gBC);
+	}
 	
 	// *************************************************************************************************************************
 	// **************************************************** EVENTS MANAGEMENT **************************************************
@@ -125,4 +147,37 @@ public class SwingComponent implements Runnable, ActionListener {
 	// *********************************************************** END *********************************************************
 	// *************************************************************************************************************************
 	
+	
+	private int GetTextureArrayPosition(char pieceSymbol){
+		int toReturn = -1;
+		
+		switch(pieceSymbol){
+			case 'k':
+				++toReturn;
+			case 'q':
+				++toReturn;
+			case 'b':
+				++toReturn;
+			case 'h':
+				++toReturn;
+			case 't':
+				++toReturn;
+			case 'p':
+				++toReturn;
+			case 'K':
+				++toReturn;
+			case 'Q':
+				++toReturn;
+			case 'B':
+				++toReturn;
+			case 'H':
+				++toReturn;
+			case 'T':
+				++toReturn;
+			case 'P':
+				++toReturn;
+		};
+		
+		return toReturn;
+	}
 }
