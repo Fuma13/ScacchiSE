@@ -1,20 +1,28 @@
 package com.bifidoteam.scacchise.view;
 
+import java.awt.Color;
+
 import com.bifidoteam.scacchise.controller.GameManager;
 import com.bifidoteam.scacchise.interfaces.ControllerInterface;
+import com.bifidoteam.scacchise.interfaces.LogType;
 import com.bifidoteam.scacchise.interfaces.ViewInterface;
 import com.bifidoteam.scacchise.model.Chessboard;
+import com.bifidoteam.scacchise.util.Constants;
 import com.bifidoteam.util.MedusaTree;
 
 public class SwingView implements ViewInterface {
 
 	ControllerInterface gm;
 	SwingComponent sc;
+	SwingLogComponent log;
 	
 	@Override
 	public void Init(Chessboard base) {
 		gm = GameManager.getInstance();
 		sc = new SwingComponent(base);
+		
+		if(Constants.DEBUG_MODE)
+			log = new SwingLogComponent();
 		
 		javax.swing.SwingUtilities.invokeLater(sc);
 	}
@@ -28,9 +36,9 @@ public class SwingView implements ViewInterface {
 	@Override
 	public void MoveFromStartIndexToEndIndex(int startIndex, int endIndex) {
 		// TODO: (Ricky) Farlo testuale nella schermata!
-		System.out.println("Player move from " + startIndex + " to " + endIndex);
-		System.out.println("Player end turn");
-		
+		Log("Player move from " + startIndex + " to " + endIndex, LogType.LOG);
+		Log("Player end turn", LogType.LOG);
+
 		gm.onMoveDone();
 	}
 
@@ -52,6 +60,14 @@ public class SwingView implements ViewInterface {
 //		else{
 //			return -1;
 //		}
+	}
+
+	@Override
+	public void Log(String message, LogType type) {
+
+		if(Constants.DEBUG_MODE){
+			log.logMessage(message, type);
+		}
 	}
 
 }

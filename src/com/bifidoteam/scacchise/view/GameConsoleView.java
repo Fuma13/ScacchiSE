@@ -6,6 +6,7 @@ import java.io.InputStreamReader;
 
 import com.bifidoteam.scacchise.controller.GameManager;
 import com.bifidoteam.scacchise.interfaces.ControllerInterface;
+import com.bifidoteam.scacchise.interfaces.LogType;
 import com.bifidoteam.scacchise.interfaces.ViewInterface;
 import com.bifidoteam.scacchise.model.Chessboard;
 import com.bifidoteam.scacchise.util.Constants;
@@ -98,6 +99,11 @@ public class GameConsoleView implements ViewInterface {
 		}
 		
 		return toReturn;
+	}
+
+	@Override
+	public void Log(String message, LogType type) {
+		System.out.println(type.toString() + ": " + message);
 	}
 
 }

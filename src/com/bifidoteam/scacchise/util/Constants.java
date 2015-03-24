@@ -12,4 +12,5 @@ public class Constants {
 
 	// *** SWING CONSTS ***
 	public static final int MAX_TEXTURES = 12; // 6 for player, 2 colors
+	public static final boolean DEBUG_MODE = true;
 }
