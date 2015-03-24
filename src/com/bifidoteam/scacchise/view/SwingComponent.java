@@ -15,6 +15,7 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.border.Border;
 
+import com.bifidoteam.scacchise.interfaces.LogType;
 import com.bifidoteam.scacchise.model.Chessboard;
 import com.bifidoteam.scacchise.model.Piece;
 import com.bifidoteam.scacchise.util.Constants;
@@ -32,8 +33,12 @@ public class SwingComponent implements Runnable, ActionListener {
 	Border blackline;
 	boolean isInitialized;
 	
-	public SwingComponent(Chessboard base){
+	SwingLogComponent logManager;
+	
+	public SwingComponent(Chessboard base, SwingLogComponent swingLog){
 		board = base;
+		logManager = swingLog;
+		
 		eventsQueue= new ArrayDeque<Integer>();
 		
 		chessboardTiles = new JButton[Constants.MAX_INDEX];
@@ -82,8 +87,10 @@ public class SwingComponent implements Runnable, ActionListener {
 			JButton x = (JButton) arg0.getSource();
 			eventsQueue.push(Integer.valueOf(x.getName()));
 
-			System.out.println("Thread id:" + Thread.currentThread().getId());
-			System.out.println("Added event in the queue: " + eventsQueue.peekLast() + ". Size of new events: " + eventsQueue.size());
+			if(Constants.DEBUG_MODE){
+				logManager.logMessage("Thread id:" + Thread.currentThread().getId(), LogType.LOG);
+				logManager.logMessage("Added event in the queue: " + eventsQueue.peekLast() + ". Size of new events: " + eventsQueue.size(), LogType.LOG);
+			}
 		}
 	}
 	
@@ -96,9 +103,12 @@ public class SwingComponent implements Runnable, ActionListener {
 	public synchronized int GetNextEvent(){
 		// --> Update the background removing the medusa tree! Thread safe because is called by the same thread of the RenderWithMedusa <--
 		RefreshBackground(); 
+
+		if(Constants.DEBUG_MODE){
+			logManager.logMessage("Thread id:" + Thread.currentThread().getId(), LogType.LOG);
+			logManager.logMessage("Consumed event : " + eventsQueue.peekFirst() + ". Number of new events: " + eventsQueue.size(), LogType.LOG);
+		}
 		
-		System.out.println("Thread id:" + Thread.currentThread().getId());
-		System.out.println("Consumed event : " + eventsQueue.peekFirst() + ". Number of new events: " + eventsQueue.size());
 		return eventsQueue.removeFirst();
 	}
 

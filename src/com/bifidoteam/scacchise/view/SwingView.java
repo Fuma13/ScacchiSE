@@ -1,7 +1,5 @@
 package com.bifidoteam.scacchise.view;
 
-import java.awt.Color;
-
 import com.bifidoteam.scacchise.controller.GameManager;
 import com.bifidoteam.scacchise.interfaces.ControllerInterface;
 import com.bifidoteam.scacchise.interfaces.LogType;
@@ -19,10 +17,11 @@ public class SwingView implements ViewInterface {
 	@Override
 	public void Init(Chessboard base) {
 		gm = GameManager.getInstance();
-		sc = new SwingComponent(base);
 		
 		if(Constants.DEBUG_MODE)
 			log = new SwingLogComponent();
+		
+		sc = new SwingComponent(base, log);
 		
 		javax.swing.SwingUtilities.invokeLater(sc);
 	}
@@ -44,8 +43,8 @@ public class SwingView implements ViewInterface {
 
 	@Override
 	public void EndGame(int info) {
-		// TODO: (Ricky) Farlo testuale nella schermata!
-		System.out.println("CheckMate!!! Player " + (info == 0 ? "White" : "Black") + " Win!!");
+		// TODO: (Ricky) Sostituire con "IMPORTANT" o qualcosa del genere
+		Log("CheckMate!!! Player " + (info == 0 ? "White" : "Black") + " Win!!", LogType.LOG);
 	}
 
 	@Override
@@ -65,7 +64,7 @@ public class SwingView implements ViewInterface {
 	@Override
 	public void Log(String message, LogType type) {
 
-		if(Constants.DEBUG_MODE){
+		if(Constants.DEBUG_MODE && log != null){
 			log.logMessage(message, type);
 		}
 	}

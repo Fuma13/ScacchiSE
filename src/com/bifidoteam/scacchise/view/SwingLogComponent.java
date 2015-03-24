@@ -19,6 +19,7 @@ public class SwingLogComponent {
 	DefaultStyledDocument doc;
 	Style textStyles[];
 	
+	
 	public SwingLogComponent() {
 		JFrame.setDefaultLookAndFeelDecorated(true);
 		
@@ -52,6 +53,7 @@ public class SwingLogComponent {
 	public void logMessage(String message, LogType type) {
         try {
     		doc.insertString(doc.getEndPosition().getOffset(), message + "\n", GetMessageTypeStyle(type));
+    		
 		} catch (BadLocationException e) {
 			e.printStackTrace();
 		}
@@ -72,7 +74,7 @@ public class SwingLogComponent {
 		textStyles[0]= errorStyle;
 
 		final Style warningStyle = sc.addStyle("WARNING", null);
-		warningStyle.addAttribute(StyleConstants.Foreground, Color.yellow);
+		warningStyle.addAttribute(StyleConstants.Foreground, Color.orange);
 		warningStyle.addAttribute(StyleConstants.FontSize, new Integer(12));
 //		warningStyle.addAttribute(StyleConstants.FontFamily, "serif");
 		warningStyle.addAttribute(StyleConstants.Italic, new Boolean(true));

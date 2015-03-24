@@ -3,16 +3,13 @@ package com.bifidoteam.scacchise.controller;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Set;
 
 import com.bifidoteam.scacchise.interfaces.ControllerInterface;
+import com.bifidoteam.scacchise.interfaces.LogType;
 import com.bifidoteam.scacchise.interfaces.ViewInterface;
 import com.bifidoteam.scacchise.model.Chessboard;
-import com.bifidoteam.scacchise.model.Piece;
 import com.bifidoteam.scacchise.util.Constants;
-import com.bifidoteam.scacchise.view.GameConsoleView;
 import com.bifidoteam.scacchise.view.SwingView;
 import com.bifidoteam.util.MedusaTree;
 import com.bifidoteam.util.MedusaTree.CuttableCuttedIterator;
@@ -68,6 +65,8 @@ public class GameManager implements ControllerInterface{
 		else {
 			chessboard = c;
 		}
+
+		viewComponent = new SwingView(); // TODO: Sostituirlo con un factory esterno al GM?
 		
 		//TODO: suggerimento a cambiare struttura per Android O_o cosa ne pensate?
 		this.forecastMts = new HashMap<Integer,MedusaTree>();
@@ -80,7 +79,6 @@ public class GameManager implements ControllerInterface{
 		this.registerPiecesOnTheirMT(this.chessboard.getColorList(Constants.BLACK));
 		
 		this.gameState = GameState.WAITING;
-		viewComponent = new SwingView(); // TODO: Sostituirlo con un factory esterno al GM?
 	}
 	//--------------------------------Costructors-------------------------------------------
 	
@@ -181,7 +179,7 @@ public class GameManager implements ControllerInterface{
 						//he tile is free and no opponent can arrive here, the king can move
 						//get all opponents pieces index from starting move position
 						
-						System.out.println("King moves safely");
+						viewComponent.Log("King moves safely", LogType.WARNING);
 						
 						//update chessboad
 						this.chessboard.simulateMovePieceFromStartToEnd(this.lastSelectedIndex, index);
@@ -196,7 +194,7 @@ public class GameManager implements ControllerInterface{
 						this.EndValidMove(this.lastSelectedIndex, index);
 					}
 					else{
-						System.out.println("King DOESN'T move safely");
+						viewComponent.Log("King DOESN'T move safely", LogType.WARNING);
 						setWaitingState();
 					}
 				}
@@ -230,7 +228,7 @@ public class GameManager implements ControllerInterface{
 							if(checkingPieceIndex == index){
 								//valid move: the moved piece eat the checking piece
 								
-								System.out.println("NOT king, eats Checking Piece");
+								viewComponent.Log("NOT king, eats Checking Piece", LogType.WARNING);
 								
 								//Piece eat a piece. Need to deregister from Tile and colorList
 								MedusaTree possibleAtePiece = this.chessboard.confirmMovePiece();
@@ -245,7 +243,7 @@ public class GameManager implements ControllerInterface{
 									//need to check if moving piece intercept the checking one
 									if( mtBranchToKing.IsEmpty()){
 										//Valid move: the piece moved at least has intercepted the checking piece
-										System.out.println("NOT king, intercepts Checking Piece");
+										viewComponent.Log("NOT king, intercepts Checking Piece", LogType.WARNING);
 										
 										//TODO can be removed?
 										//Piece could eat a piece checking the king.
@@ -257,14 +255,14 @@ public class GameManager implements ControllerInterface{
 									}else{
 										//Invalid move, checking piece not eat/intercepted
 										//register again the moving piece on chessBoard
-										System.out.println("NOT king, DOESN'T eat/intercept Checking Piece");
+										viewComponent.Log("NOT king, DOESN'T eat/intercept Checking Piece", LogType.WARNING);
 										
 										this.chessboard.rollbackMovePiece(this.lastSelectedIndex, index);
 										this.setWaitingState();
 									}
 								}else{
 									//Valid moves of a piece (not the king) that doesn't leave the king under check
-									System.out.println("NOT king moves without leave king under check");
+									viewComponent.Log("NOT king moves without leave king under check", LogType.WARNING);
 									
 									//Piece could eat an opposite piece. if exist need to deregister from Tile and colorList
 									MedusaTree possibleAtePiece = this.chessboard.confirmMovePiece();
@@ -275,14 +273,14 @@ public class GameManager implements ControllerInterface{
 								}
 							}
 						}else{
-							System.out.println("Moving peace creates a new check");
+							viewComponent.Log("Moving peace creates a new check", LogType.WARNING);
 							//register again the moving piece on chessBoard
 							this.chessboard.rollbackMovePiece(this.lastSelectedIndex, index);
 							this.setWaitingState();
 						}
 					}else{
 						//There are no possible moves of another piece that can safe the king
-						System.out.println("N>1 but king wasn't selected");
+						viewComponent.Log("N>1 but king wasn't selected", LogType.WARNING);
 						
 						setWaitingState();
 					}					
@@ -476,7 +474,7 @@ public class GameManager implements ControllerInterface{
 		Iterator<Integer> it = piecesList.iterator();
 		while(it.hasNext()){
 			int i = it.next();
-			System.out.println("Register piece index = " + i);
+			viewComponent.Log("Register piece index = " + i, LogType.LOG);
 			this.registerPieceOnHisMT(i,this.chessboard.isPieceWhite(i));
 		}
 	}
@@ -486,7 +484,7 @@ public class GameManager implements ControllerInterface{
 		CuttedIterator it = this.chessboard.getPiece(pieceIndex).getMedusaTree().GetCuttedIterator();
 		while(it.hasNext()){
 			int i = it.next();
-			System.out.println(pieceIndex+" registering in " +i);
+			viewComponent.Log(pieceIndex+" registering in " +i, LogType.LOG);
 			this.chessboard.getTile(i).registerPiece(pieceIndex,pieceColor);
 		}
 	}
@@ -496,7 +494,7 @@ public class GameManager implements ControllerInterface{
 		Iterator<Integer> it = pieces.iterator();
 		while(it.hasNext()){
 			int i = it.next();
-			System.out.println("Deregister piece index = " + i);
+			viewComponent.Log("Deregister piece index = " + i, LogType.LOG);
 			this.deregisterPieceFromTileInMt(i,this.chessboard.isPieceWhite(i));
 		}
 	}
@@ -510,7 +508,7 @@ public class GameManager implements ControllerInterface{
 		CuttedIterator it = confirmMovePiece.GetCuttedIterator();
 		while(it.hasNext()){
 			int tileIndex = it.next();
-			System.out.println(index+" deregistering from " +tileIndex);
+			viewComponent.Log(index+" deregistering from " +tileIndex, LogType.LOG);
 			this.chessboard.getTile(tileIndex).unregisterPiece(index,color);
 		}
 	}
@@ -688,7 +686,7 @@ public class GameManager implements ControllerInterface{
 		//merge also the list of opponent on starting index with the list of piece involved
 		involvedPieces.addAll(opponents);
 		
-		System.out.println("PieceInvolved :" +involvedPieces.size());
+		viewComponent.Log("PieceInvolved :" +involvedPieces.size(), LogType.LOG);
 		
 		//deregister all piece from their tile using old MT
 		if(involvedPieces.size() > 0){
