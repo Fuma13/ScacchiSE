@@ -2,10 +2,10 @@ package com.bifidoteam.scacchise.model;
 
 import com.bifidoteam.scacchise.util.Constants;
 import com.bifidoteam.util.MedusaTree;
+import com.bifidoteam.util.MedusaTree.CuttedIterator;
 
 import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.Iterator;
 import java.util.Set;
 
 public class Chessboard
@@ -16,68 +16,109 @@ public class Chessboard
 	private Tile[] tiles = new Tile[Constants.MAX_INDEX];
 	
 	//Liste dei soli pezzi bianchi e neri.
-	private Set<Integer> [] pieces;
+	private HashSet<Integer> [] pieces;
 	
 	//TODO VALE: facciamo la verifica quando muoviamo che siamo un re ed aggiorniamo la pos o metto i piece che si portano la pos?
-	private Piece[] kingPos;	
+	private Piece[] kingPos;
+	
+	private Piece tempSimulateMove;
 	//-----------------------------Private Variables----------------------------------------
 	
 	//-----------------------------Public functions-----------------------------------------
 	public Chessboard() {
 		//Init tiles
-		this.InizializeTiles();
+		this.inizializeTiles();
 		
 		//init the sets
-		this.pieces = new Set[Constants.MAX_PLAYERS];
+		this.pieces = new HashSet[Constants.MAX_PLAYERS];
 		this.pieces[0] = new HashSet<Integer>();
 		this.pieces[1] = new HashSet<Integer>();
 		
+		tempSimulateMove = null;
+		
 		//populates chessboard with piece and null, populates colored lists 
-		InizializeChessboard();
+		inizializeChessboard();
 	}
 	
-	
-	public MedusaTree GetRealIndices(int index) {
+	//return the mt with all reachable position of the piece in index tile
+	public MedusaTree getPossibleMovementIndices(int index) {
 		if(index >= 0 && index < Constants.MAX_INDEX && chessboard[index] != null) {
 			return chessboard[index].GetReachableIndices();
 		}
 		return null;
 	}
 	
-	public MedusaTree GetEatableIndices(int index) {
-		if(IsPieceSpecial(index)) {
+	//return the mt with all reachable position where can eat of the piece in index tile
+	public MedusaTree getPossibleEatIndices(int index) {
+		if(isPieceSpecial(index)) {
 			return ((PawnInterface)chessboard[index]).GetEatableIndices();
 		}
 		return null;
 	}
 	
-	public boolean IsPieceSpecial(int index){
-		if(index >= 0 && index < Constants.MAX_INDEX && chessboard[index] != null && chessboard[index] instanceof PawnInterface) {
+	public boolean isPieceSpecial(int index){
+		if(index >= 0 && index < Constants.MAX_INDEX && chessboard[index] != null 
+				&& chessboard[index] instanceof PawnInterface) {
 			return true;
 		}
 		return false;
 	}
 	
 	//Assume that index >= 0 && index < Constants.MAX_INDEX && chessboard[index] != null
-	public int IsPieceWhite(int index) {
-			return chessboard[index].isWhite();
+	public int isPieceWhite(int index) {
+		if(chessboard[index] == null)
+			throw new NullPointerException("Try to get color of empty position");
+		
+		return chessboard[index].isWhite();
 	}
 	
-	public Piece GetPiece(int index) {
+	public boolean isKingPiece(int index, int colorPlayre){
+		if(index >= 0 && index < Constants.MAX_INDEX && chessboard[index] != null 
+				&& index == kingPos[colorPlayre].getIndex()) {
+			return true;
+		}
+		return false;
+	}
+	
+	public Piece getPiece(int index) {
 		if(index >= 0 && index < Constants.MAX_INDEX)
 			return chessboard[index];
 		else
-			return null; //TODO:FUMA: distinguere null di cella vuota da out of bound
+			return null;
 	}
 	
-	public boolean MovePieceFromStartIndexToEndIndex(int startIndex, int endIndex) {
-		if(startIndex >= 0 && startIndex < Constants.MAX_INDEX && endIndex >= 0 && endIndex < Constants.MAX_INDEX) {
-			chessboard[endIndex] = chessboard[startIndex];
-			chessboard[endIndex].index = endIndex;
-			chessboard[startIndex] = null;
-			return true;
-		}	
-		return false;
+	public MedusaTree getMedusaTree(int pieceIndex){
+		if(pieceIndex >= 0 && pieceIndex < Constants.MAX_INDEX && this.chessboard[pieceIndex] != null)
+			return chessboard[pieceIndex].getMedusaTree();
+		else
+			return new MedusaTree();
+	}
+	
+	//This move operation can rollbacked if is wrong and confirmed if is right
+	//with respective functions
+	public void simulateMovePieceFromStartToEnd(int startIndex, int endIndex){
+		tempSimulateMove = chessboard[endIndex];
+		movePieceFromStartIndexToEndIndex(startIndex, endIndex);
+	}
+	
+	public void rollbackMovePiece(int oldStartIndex, int oldEndIndex){
+		chessboard[oldStartIndex] = chessboard[oldEndIndex];
+		chessboard[oldStartIndex].index = oldStartIndex;
+		chessboard[oldEndIndex] = tempSimulateMove;
+		if(chessboard[oldEndIndex] != null){
+			chessboard[oldEndIndex].index = oldEndIndex;
+		}
+	}
+	
+	public MedusaTree confirmMovePiece(){
+		MedusaTree tempMt = new MedusaTree();
+		if(tempSimulateMove!= null){
+			tempMt = this.tempSimulateMove.getMedusaTree();
+			this.getTile(tempSimulateMove.index).unregisterPiece(tempSimulateMove.index,tempSimulateMove.isWhite());
+			this.pieces[tempSimulateMove.isWhite()].remove(tempSimulateMove);
+		}
+		tempSimulateMove = null;
+		return tempMt;
 	}
 	
 	//return the list of pieces of color "Color"
@@ -104,13 +145,20 @@ public class Chessboard
 		this.kingPos[colorPlayer] = this.chessboard[index];
 	}
 	
+	//TODO: vale: aggiorniamo l'mt del pezzo soltanto? o dobbiamo aggiornare altre cose?
+	public void setPieceMt(int pieceIndex,MedusaTree newMt){
+		this.chessboard[pieceIndex].setMedusaTree(newMt);
+	}
+	
+	//set the piece in pieceIndex
+	public void setPiece(int pieceIndex, Piece piece) {
+		this.chessboard[pieceIndex] = piece;
+	}
+	
 	//-----------------------------Public functions-----------------------------------------
 	
 	//-----------------------------Private functions----------------------------------------
-	private void InizializeChessboard() {
-		//TODO:FUMA: Togliere i magic numbers (ma mi sa che non si puo')
-		//VALE: No non credo, è la configurazione iniziale, ho messo i colori const
-		
+	private void inizializeChessboard() {
 		//Set initial king position, change manually to switch from standard initialization
 		this.kingPos = new Piece [Constants.MAX_PLAYERS];
 		
@@ -169,10 +217,21 @@ public class Chessboard
 		this.colorListAddPiece(this.chessboard[63].getIndex(),this.chessboard[63].isWhite());
 	}
 	
-	private void InizializeTiles(){		
+	private void inizializeTiles(){		
 		for(int i=0; i<Constants.MAX_INDEX; i++){
 			this.tiles[i] = new Tile(i);
 		}
 	}
+	
+	private boolean movePieceFromStartIndexToEndIndex(int startIndex, int endIndex) {
+		if(startIndex >= 0 && startIndex < Constants.MAX_INDEX && endIndex >= 0 && endIndex < Constants.MAX_INDEX) {
+			chessboard[endIndex] = chessboard[startIndex];
+			chessboard[endIndex].index = endIndex;
+			chessboard[startIndex] = null;
+			return true;
+		}	
+		return false;
+	}
 	//-----------------------------Private functions----------------------------------------
+
 }
