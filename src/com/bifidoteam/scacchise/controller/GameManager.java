@@ -13,7 +13,6 @@ import com.bifidoteam.scacchise.model.Chessboard;
 import com.bifidoteam.scacchise.model.Piece;
 import com.bifidoteam.scacchise.util.Constants;
 import com.bifidoteam.scacchise.view.GameConsoleView;
-import com.bifidoteam.scacchise.view.SwingView;
 import com.bifidoteam.util.MedusaTree;
 import com.bifidoteam.util.MedusaTree.CuttableCuttedIterator;
 import com.bifidoteam.util.MedusaTree.CuttedIterator;
@@ -80,7 +79,7 @@ public class GameManager implements ControllerInterface{
 		this.registerPiecesOnTheirMT(this.chessboard.getColorList(Constants.BLACK));
 		
 		this.gameState = GameState.WAITING;
-		viewComponent = new SwingView(); // TODO: Sostituirlo con un factory esterno al GM?
+		viewComponent = new GameConsoleView(); // TODO: Sostituirlo con un factory esterno al GM?
 	}
 	//--------------------------------Costructors-------------------------------------------
 	
