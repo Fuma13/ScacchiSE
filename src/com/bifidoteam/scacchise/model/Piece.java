@@ -3,11 +3,12 @@ package com.bifidoteam.scacchise.model;
 import com.bifidoteam.util.MedusaTree;
 
 
-abstract class Piece {	
+public abstract class Piece {	
 		
 	//-----------------------------Private Variables----------------------------------------
 	protected int index;
-	protected int white; //0 white, 1 black
+	protected int white;
+	protected MedusaTree mt;
 	//private Graphic_Info gi; 								-> creare la classe Graphic_Info
 	//-----------------------------Private Variables----------------------------------------
 	
@@ -16,6 +17,7 @@ abstract class Piece {
 	protected Piece(int startingIndex,int startingColor){
 		this.index = startingIndex;
 		this.white = startingColor;
+		this.mt = null;
 	}
 	//--------------------------------Costructors-------------------------------------------
 	
@@ -23,6 +25,8 @@ abstract class Piece {
 	
 	//-----------------------------Public functions-----------------------------------------
 	abstract MedusaTree GetReachableIndices();
+	
+	public abstract char GetSymbol();
 	
 	protected String ToString(){
 		return "IndexOnBoard:"+index+" White?"+white;
@@ -44,6 +48,13 @@ abstract class Piece {
 	}
 	public void setWhite(int color) {
 		this.white = color;
+	}
+	
+	public MedusaTree getMedusaTree(){
+		return this.mt;
+	}
+	public void setMedusaTree(MedusaTree mt){
+		this.mt = mt;
 	}
 	//--------------------------------Getter/Setter-----------------------------------------
 }

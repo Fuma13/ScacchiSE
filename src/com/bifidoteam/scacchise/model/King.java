@@ -40,4 +40,10 @@ public class King extends Piece {
 		return "King, " + super.toString();
 	}
 	//-----------------------------Public functions-----------------------------------------
+
+	@Override
+	public char GetSymbol()
+	{
+		return white == Constants.WHITE ? 'K' : 'k';
+	}
 }

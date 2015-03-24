@@ -2,8 +2,7 @@ package com.bifidoteam.util;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-
-import android.R.bool;
+import java.util.NoSuchElementException;
 
 public class MedusaTree {//implements Iterable<Integer>,Iterator<Integer>{
 	
@@ -31,15 +30,22 @@ public class MedusaTree {//implements Iterable<Integer>,Iterator<Integer>{
 //	}
 	//--------------------------------Getter/Setter-----------------------------------------
 	
-	//-----------------------------Public functions-----------------------------------------
-	public String toString() {
-		String s = "";
-		for(MedusaLeaf m:nearPositions) {
-			s += m.toString() + "\n";
-		}
-		
-		return s;
+	//-----------------------------Private functions----------------------------------------
+	private SurfaceIterator GetSurfaceIterator()
+	{
+		return new SurfaceIterator();
 	}
+	//-----------------------------Private functions----------------------------------------
+	
+	//-----------------------------Public functions-----------------------------------------
+//	public String toString() {
+//		String s = "";
+//		for(MedusaLeaf m:nearPositions) {
+//			s += m.toString() + "\n";
+//		}
+//		
+//		return s;
+//	}
 	
 	//Add a leaf to the last branch crated
 	public void AddLeafToLastBranch(int index) {
@@ -55,6 +61,16 @@ public class MedusaTree {//implements Iterable<Integer>,Iterator<Integer>{
 		lastLeaf = newLeaf;
 	}
 	
+	//Add an existing branch as a new branch to the mt
+	public void AddExistingBranch(MedusaLeaf leaf) {
+		nearPositions.add(leaf);
+		while(leaf.getNext() != null)
+		{
+			leaf = leaf.getNext();
+		}
+		lastLeaf = leaf;
+	}
+	
 	public boolean Contain(int index) {
 		//Iterator<Integer> mtIterator = iterator();
 		CuttedIterator mtIterator = GetCuttedIterator();
@@ -66,32 +82,46 @@ public class MedusaTree {//implements Iterable<Integer>,Iterator<Integer>{
 		return found;
 	}
 	
-	//TODO:FUMA: Funzione merge
+	public boolean IsEmpty(){
+		CuttedIterator mtIterator = GetCuttedIterator();
+		if(mtIterator.hasNext())
+			return false;
+		
+		return true;
+	}
+
+	//Merge two mt adding the other branches to the this mt
 	public void MergeMedusaTreeNewBanch(MedusaTree other){
 		
-//		CompleteIterator mtIterator = other.GetCompleteIterator();
-//		while(mtIterator.hasNext())
-//		{
-//			Integer leaf = mtIterator.next();
-//			AddBranch(leaf);
-//		}
+		SurfaceIterator bi = other.GetSurfaceIterator();
+		
+		while(bi.hasNext())
+		{
+			AddExistingBranch(bi.next());
+		}
 		
 	}
 	
 	public CompleteIterator GetCompleteIterator()
 	{
-		return new CompleteIterator().iterator();
+		return new CompleteIterator();
 	}
 	
 	public CuttedIterator GetCuttedIterator()
 	{
-		return new CuttedIterator().iterator();
+		return new CuttedIterator();
 	}
+	
+	public CuttableCuttedIterator GetCuttableCuttedIterator()
+	{
+		return new CuttableCuttedIterator();
+	}
+	
 	//-----------------------------Public functions-----------------------------------------
 
 	//--------------------------------Iterator functions------------------------------------
-	public class CuttedIterator implements Iterable<Integer>,Iterator<Integer>{
-		//TODO:FUMA: Controllare che l'iterator sia giusto
+	//
+	public class CuttedIterator implements Iterator<Integer>{
 		//-----------------------------Iterator variables
 		private int currentNearPos;
 		private MedusaLeaf currentLeaf;
@@ -100,24 +130,28 @@ public class MedusaTree {//implements Iterable<Integer>,Iterator<Integer>{
 		public boolean hasNext() {
 			boolean hasNextValue = false;
 			if(currentNearPos == -1) {//check on the first one
-				MedusaLeaf tempCurrentLeaf = nearPositions.get(0);
-				if(tempCurrentLeaf != null) {
-					if(!tempCurrentLeaf.IsCut())
-						hasNextValue = true;
-					//Search in depth or Change branch
-					else {
-						hasNextValue = hasNextUncutted();
+				if(!nearPositions.isEmpty()){
+					MedusaLeaf tempCurrentLeaf = nearPositions.get(0);
+					if(tempCurrentLeaf != null) {
+						if(!tempCurrentLeaf.IsCut())
+							hasNextValue = true;
+						//Search in depth or Change branch
+						else {
+							hasNextValue = hasNextUncutted(tempCurrentLeaf,0);
+						}
 					}
 				}//Else Tree Empty
 			}
 			else {
-				//Continue in this branch
-				if(!currentLeaf.IsCut() && currentLeaf.getNext() != null){
-					hasNextValue = true;
-				}
-				//Search in depth or Change branch
-				else {
-					hasNextValue = hasNextUncutted();
+				if(currentLeaf != null) {
+					//Continue in this branch
+					if(!currentLeaf.IsCut() && currentLeaf.getNext() != null){
+						hasNextValue = true;
+					}
+					//Search in depth or Change branch
+					else {
+						hasNextValue = hasNextUncutted(currentLeaf,currentNearPos);
+					}
 				}
 			}
 			return hasNextValue;
@@ -126,68 +160,63 @@ public class MedusaTree {//implements Iterable<Integer>,Iterator<Integer>{
 		
 		//Search the first uncutted in this branch
 		//If there is not change branch
-		private boolean hasNextUncutted() {
+		private boolean hasNextUncutted(MedusaLeaf tempCurrentLeaf, int tempCurrentNearPos) {
 			boolean hasNextValue = false;
-			MedusaLeaf tempCurrentLeaf = currentLeaf;
+			tempCurrentLeaf = tempCurrentLeaf.getRealNext();
 			do{
-				tempCurrentLeaf = tempCurrentLeaf.getRealNext();
-				if(tempCurrentLeaf!= null && !tempCurrentLeaf.IsCut()){
-					hasNextValue = true;
-					break;
-				}
-			}while(tempCurrentLeaf != null);
-			
-			if(tempCurrentLeaf == null) {
-				hasNextValue = hasNextChangeBranch();
-			}
-			
-			return hasNextValue;
-		}
-		
-		private boolean hasNextChangeBranch() {
-			boolean hasNextValue = false;
-			int tempCurrentNearPos = currentNearPos;
-			while(tempCurrentNearPos +1 < nearPositions.size() && !hasNextValue){ //if is not the last
-				tempCurrentNearPos += 1;
-				if(nearPositions.get(tempCurrentNearPos)!= null) {
-					//if this branch is not cut 
-					if(!nearPositions.get(tempCurrentNearPos).IsCut()){
-						hasNextValue = true;
+				do{
+					if(tempCurrentLeaf!= null){
+						if(!tempCurrentLeaf.IsCut()){
+							hasNextValue = true;
+						}
+						else {
+							tempCurrentLeaf = tempCurrentLeaf.getRealNext();
+						}
 					}
-					else {
-						hasNextValue = hasNextUncutted();
-					}
+				}while(tempCurrentLeaf != null && !hasNextValue);
+				
+				//Change branch
+				if(!hasNextValue && tempCurrentNearPos + 1 < nearPositions.size()) {
+					tempCurrentNearPos += 1;
+					tempCurrentLeaf = nearPositions.get(tempCurrentNearPos);
 				}
-			}
+			
+			}while(!hasNextValue && tempCurrentLeaf != null);
+			
 			return hasNextValue;
 		}
 	
 		@Override
 		public Integer next() {
 			Integer nextIndex = null;
-			if(currentNearPos == -1) {//return the first one
-				currentNearPos = 0;
-				currentLeaf = nearPositions.get(currentNearPos);
-				if(currentLeaf != null) {
-					if(!currentLeaf.IsCut()) {
-						nextIndex = currentLeaf.getValue();
-					}
-					else {
-						nextIndex = NextUncutted();
+			if(currentNearPos == -1){
+				if(!nearPositions.isEmpty()){
+					currentNearPos = 0;
+					currentLeaf = nearPositions.get(currentNearPos);
+					
+					if(currentLeaf != null) {
+						if(!currentLeaf.IsCut()) {
+							nextIndex = currentLeaf.getValue();
+						}
+						else{
+							nextIndex = NextUncutted();
+						}
 					}
 				}// Else Tree Empty
-			}
-			else {
+			}else{
 				if(currentLeaf.getNext() != null){
 					//Next leaf in this branch
 					currentLeaf = currentLeaf.getNext();
 					nextIndex =  currentLeaf.getValue();
 				}
 				else {
-					
 					nextIndex = NextUncutted();
 				}
+			
 			}
+			
+			if(nextIndex == null)
+				throw new NoSuchElementException();
 			//There are not next leaf or branch
 			return nextIndex;
 		}
@@ -196,57 +225,101 @@ public class MedusaTree {//implements Iterable<Integer>,Iterator<Integer>{
 		//If there is not change branch
 		private Integer NextUncutted() {
 			Integer nextIndex = null;
+			currentLeaf = currentLeaf.getRealNext();
 			do{
-				currentLeaf = currentLeaf.getRealNext();
-				if(currentLeaf!= null && !currentLeaf.IsCut()){
-					nextIndex = currentLeaf.getValue();
-					break;
+				do{
+					if(currentLeaf!= null) {
+						if(!currentLeaf.IsCut()){
+							nextIndex = currentLeaf.getValue();
+						}
+						else
+						{
+							currentLeaf = currentLeaf.getRealNext();
+						}	
+					}
+					
+				}while(currentLeaf != null && nextIndex == null);
+				
+				//Change branch
+				if(nextIndex == null && currentNearPos + 1 < nearPositions.size()) {
+					currentNearPos += 1;
+					currentLeaf = nearPositions.get(currentNearPos);
 				}
-			}while(currentLeaf != null);
 			
-			if(currentLeaf == null) {
-				nextIndex = NextChangeBranch();
-			}
+			}while(nextIndex == null && currentLeaf != null);
 			
 			return nextIndex;
 		}
 		
-		//Change branch, If the first  is cutted
-		//Search the first uncutted in this branch
-		private Integer NextChangeBranch() {
-			Integer nextIndex = null;
-			//while if is not the last branch
-			while(currentNearPos +1 < nearPositions.size() && nextIndex == null){
-				//Change branch
-				currentNearPos += 1;
-				//Take the first leaf in this branch
-				currentLeaf = nearPositions.get(currentNearPos);
-				//if this leaf is not cut 
-				if(!currentLeaf.IsCut()){
-					nextIndex = currentLeaf.getValue();
-				}
-				else {
-					nextIndex = NextUncutted();
-				}
-			}
-			return nextIndex;
-		}
-	
 		@Override
 		public void remove() {
 			throw new UnsupportedOperationException();
 			
 		}
 	
-		@Override
-		public CuttedIterator iterator() {
+		
+		public CuttedIterator() {
 			currentNearPos = -1;
 			currentLeaf = null;
-			return this;
 		}
 	}
 	
-	public class CompleteIterator implements Iterable<Integer>,Iterator<Integer>{
+	
+	public class CuttableCuttedIterator extends CuttedIterator {
+		
+		public CuttableCuttedIterator(){
+			super();
+		}
+		
+		public void CutOtherBranches(){
+			int tempCurrentNearPos = 0;
+			MedusaLeaf tempCurrentLeaf;
+			do{
+				if(tempCurrentNearPos != super.currentNearPos) {
+					tempCurrentLeaf = nearPositions.get(tempCurrentNearPos);
+					if(tempCurrentLeaf != null)
+						CutThisBranch(tempCurrentLeaf);
+				}
+				
+			}while(tempCurrentNearPos < nearPositions.size());
+		}
+		
+		private void CutThisBranch(MedusaLeaf currentLeaf)
+		{
+			do
+			{
+				currentLeaf.setIsCut(true);
+				currentLeaf = currentLeaf.getRealNext();
+			}while(currentLeaf != null);
+		}
+		
+//		@Override
+//		public CuttedIterator iterator() {
+//			super.iterator();
+//			return this;
+//		}
+		
+		public void CutAllBranches(){
+			int tempCurrentNearPos = 0;
+			MedusaLeaf tempCurrentLeaf;
+			do{
+					tempCurrentLeaf = nearPositions.get(tempCurrentNearPos);
+					if(tempCurrentLeaf != null)
+						CutThisBranch(tempCurrentLeaf);
+			}while(tempCurrentNearPos < nearPositions.size());
+		}
+		
+		public void CutThisAndAfter() {
+			if(super.currentNearPos != -1) {
+				if(super.currentLeaf != null) {
+					CutThisBranch(super.currentLeaf);
+				}
+			}
+		}
+		
+	}
+	
+	public class CompleteIterator implements Iterator<Integer>{
 
 		//-----------------------------Iterator variables
 		private int currentNearPos;
@@ -257,9 +330,11 @@ public class MedusaTree {//implements Iterable<Integer>,Iterator<Integer>{
 		{
 			boolean hasNextValue = false;
 			if(currentNearPos == -1) {//check on the first one
-				MedusaLeaf tempCurrentLeaf = nearPositions.get(0);
-				if(tempCurrentLeaf != null) {
-						hasNextValue = true;
+				if(!nearPositions.isEmpty()){
+					MedusaLeaf tempCurrentLeaf = nearPositions.get(0);
+					if(tempCurrentLeaf != null) {
+							hasNextValue = true;
+					}
 				}//Else Tree Empty
 			}
 			else {
@@ -293,10 +368,12 @@ public class MedusaTree {//implements Iterable<Integer>,Iterator<Integer>{
 		{
 			Integer nextIndex = null;
 			if(currentNearPos == -1) {//return the first one
-				currentNearPos = 0;
-				currentLeaf = nearPositions.get(currentNearPos);
-				if(currentLeaf != null) {
-						nextIndex = currentLeaf.getValue();
+				if(!nearPositions.isEmpty()){
+					currentNearPos = 0;
+					currentLeaf = nearPositions.get(currentNearPos);
+					if(currentLeaf != null) {
+							nextIndex = currentLeaf.getValue();
+					}
 				}// Else Tree Empty
 			}
 			else {
@@ -309,14 +386,18 @@ public class MedusaTree {//implements Iterable<Integer>,Iterator<Integer>{
 					nextIndex = NextChangeBranch();
 				}
 			}
+
 			//There are not next leaf or branch
+			if(nextIndex == null)
+				throw new NoSuchElementException();
+			
 			return nextIndex;
 		}
 		
 		private Integer NextChangeBranch() {
 			Integer nextIndex = null;
 			//while if is not the last branch
-			if(currentNearPos +1 < nearPositions.size() && nextIndex == null){
+			if(currentNearPos +1 < nearPositions.size()){
 				//Change branch
 				currentNearPos += 1;
 				//Take the first leaf in this branch
@@ -332,12 +413,10 @@ public class MedusaTree {//implements Iterable<Integer>,Iterator<Integer>{
 			throw new UnsupportedOperationException();
 		}
 
-		@Override
-		public CompleteIterator iterator()
+		public CompleteIterator()
 		{
 			currentNearPos = -1;
 			currentLeaf = null;
-			return this;
 		}
 		
 		public void CutThisAndAfter() {
@@ -387,5 +466,65 @@ public class MedusaTree {//implements Iterable<Integer>,Iterator<Integer>{
 	
 	}
 	
+	//Iterate on the top of the branch
+	private class SurfaceIterator implements Iterator<MedusaLeaf>{
+
+		private int currentNearPos;
+		private MedusaLeaf currentLeaf;
+		
+		@Override
+		public boolean hasNext()
+		{
+			boolean hasNextValue = false;
+			if(currentNearPos == -1) {//check on the first one
+				if(!nearPositions.isEmpty()){
+					MedusaLeaf tempCurrentLeaf = nearPositions.get(0);
+					if(tempCurrentLeaf != null){
+						hasNextValue = true;
+					}//Else Tree Empty
+				}
+			}
+			else if(currentNearPos +1 < nearPositions.size()) {
+				MedusaLeaf tempCurrentLeaf = nearPositions.get(currentNearPos+1);
+				if(tempCurrentLeaf != null){
+					hasNextValue = true;
+				}
+			}
+			
+			return hasNextValue;
+		}
+
+		@Override
+		public MedusaLeaf next()
+		{
+			if(currentNearPos == -1) {//return the first one
+				currentNearPos = 0;
+				currentLeaf = nearPositions.get(currentNearPos);
+			}
+			else if(currentNearPos +1 < nearPositions.size()){
+					//Next branch
+					currentNearPos += 1;
+					currentLeaf = nearPositions.get(currentNearPos);
+				}
+			else {
+				throw new NoSuchElementException();
+			}
+			return currentLeaf;
+		}
+
+		@Override
+		public void remove()
+		{
+			throw new UnsupportedOperationException();
+			
+		}
+
+		public SurfaceIterator()
+		{
+			currentNearPos = -1;
+			currentLeaf = null;
+		}
+		
+	}
 	//--------------------------------Iterator functions------------------------------------
 }

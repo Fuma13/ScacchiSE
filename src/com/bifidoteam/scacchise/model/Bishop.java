@@ -5,6 +5,8 @@ import com.bifidoteam.util.MedusaTree;
 import java.lang.Math;
 
 public class Bishop extends Piece {
+	
+	//prova commit
 
 	//--------------------------------Costructors-------------------------------------------
 	public Bishop(int startingIndex, int startingColor) {
@@ -25,7 +27,7 @@ public class Bishop extends Piece {
 			mt.AddBranch(nextIndex);
 			feasableMoves--;
 			for(;feasableMoves>0;feasableMoves--){
-				nextIndex -= Constants.MAX_INDEX_ROW-1;
+				nextIndex = nextIndex - Constants.MAX_INDEX_ROW-1;
 				mt.AddLeafToLastBranch(nextIndex);
 			}
 		}
@@ -37,7 +39,7 @@ public class Bishop extends Piece {
 			mt.AddBranch(nextIndex);
 			feasableMoves--;
 			for(;feasableMoves>0;feasableMoves--){
-				nextIndex -= Constants.MAX_INDEX_ROW+1;
+				nextIndex = nextIndex - Constants.MAX_INDEX_ROW+1;
 				mt.AddLeafToLastBranch(nextIndex);
 			}
 		}
@@ -73,4 +75,10 @@ public class Bishop extends Piece {
 		return "Alfiere, " + super.toString();
 	}
 	//-----------------------------Public functions-----------------------------------------
+
+	@Override
+	public	char GetSymbol()
+	{
+		return white == Constants.WHITE ? 'B' : 'b';
+	}
 }

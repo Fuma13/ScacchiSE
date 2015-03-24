@@ -49,7 +49,7 @@ public class MedusaLeaf {
 	}
 
 	public MedusaLeaf getNext() {
-		if(next.isCut)
+		if(next == null || next.isCut)
 			return null;
 		else
 			return next;

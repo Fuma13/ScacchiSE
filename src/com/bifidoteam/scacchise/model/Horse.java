@@ -44,7 +44,7 @@ public class Horse extends Piece {
 			mt.AddBranch(indexToAdd);
 		}
 		//DownMiddleRight
-		indexToAdd = this.index+Constants.MAX_INDEX_ROW+22;
+		indexToAdd = this.index+Constants.MAX_INDEX_ROW+2;
 		if(indexToAdd>=0 && indexToAdd<Constants.MAX_INDEX && indexToAdd/Constants.MAX_INDEX_ROW==actualRow+1){
 			mt.AddBranch(indexToAdd);
 		}
@@ -67,4 +67,10 @@ public class Horse extends Piece {
 		return "Horse, " + super.toString();
 	}
 	//-----------------------------Public functions-----------------------------------------
+
+	@Override
+	public char GetSymbol()
+	{
+		return white == Constants.WHITE ? 'H' : 'h';
+	}
 }

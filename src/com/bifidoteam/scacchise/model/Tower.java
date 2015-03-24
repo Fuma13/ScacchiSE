@@ -75,4 +75,10 @@ public class Tower extends Piece {
 		return "Tower, " + super.toString();
 	}
 	//-----------------------------Public functions-----------------------------------------
+
+	@Override
+	public char GetSymbol()
+	{
+		return white == Constants.WHITE ? 'T' : 't';
+	}
 }
