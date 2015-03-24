@@ -31,7 +31,7 @@ public class SwingView implements ViewInterface {
 		System.out.println("Player move from " + startIndex + " to " + endIndex);
 		System.out.println("Player end turn");
 		
-		gm.OnMoveDone();
+		gm.onMoveDone();
 	}
 
 	@Override

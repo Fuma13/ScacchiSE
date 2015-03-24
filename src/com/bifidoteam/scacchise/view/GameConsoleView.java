@@ -39,7 +39,7 @@ public class GameConsoleView implements ViewInterface {
 	@Override
 	public void MoveFromStartIndexToEndIndex(int startIndex, int endIndex) {
 		
-		gm.OnMoveDone();
+		gm.onMoveDone();
 		
 		return;
 	}

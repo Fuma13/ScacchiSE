@@ -8,7 +8,7 @@ public class DummyMain {
 		
 		GameManager x = GameManager.getInstance();
 		
-		x.GameLoop();
+		x.gameLoop();
 		
 	}
 	

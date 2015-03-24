@@ -53,7 +53,7 @@ public class SwingComponent implements Runnable, ActionListener {
 				int val = toAnalyze.next();
 				
 				// If there is another piece in the cell => i can eat! I sign it with another color!
-				chessboardTiles[val].setBackground( board.GetPiece(val) == null ? Color.yellow : Color.red);
+				chessboardTiles[val].setBackground( board.getPiece(val) == null ? Color.yellow : Color.red);
 				chessboardTiles[val].setBorder(blackline);
 			}
 		}
@@ -153,7 +153,7 @@ public class SwingComponent implements Runnable, ActionListener {
 		pane.setLayout(new GridBagLayout());
       
 		for(int i=0; i < Constants.MAX_INDEX; ++i)
-			AddCellToGrid(pane, i, board.GetPiece(i));
+			AddCellToGrid(pane, i, board.getPiece(i));
 	}
 
 	private void AddCellToGrid(Container pane, int pos, Piece piece){
@@ -210,7 +210,7 @@ public class SwingComponent implements Runnable, ActionListener {
 		int index;
 		
 		for(int pos=0; pos< Constants.MAX_INDEX; ++pos){
-			actual = board.GetPiece(pos);
+			actual = board.getPiece(pos);
 			
 			if(actual != null){
 				index = GetTextureArrayPosition(actual.GetSymbol());
