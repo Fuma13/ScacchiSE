@@ -13,6 +13,7 @@ import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.UIManager;
 import javax.swing.border.Border;
 
 import com.bifidoteam.scacchise.interfaces.LogType;
@@ -36,6 +37,13 @@ public class SwingComponent implements Runnable, ActionListener {
 	SwingLogComponent logManager;
 	
 	public SwingComponent(Chessboard base, SwingLogComponent swingLog){
+		
+		//Mac graphics fix!
+		 try {
+			    UIManager.setLookAndFeel( UIManager.getCrossPlatformLookAndFeelClassName() );
+			 } catch (Exception e) {
+			            e.printStackTrace();
+			 }
 		board = base;
 		logManager = swingLog;
 		
@@ -60,6 +68,7 @@ public class SwingComponent implements Runnable, ActionListener {
 				// If there is another piece in the cell => i can eat! I sign it with another color!
 				chessboardTiles[val].setBackground( board.getPiece(val) == null ? Color.yellow : Color.red);
 				chessboardTiles[val].setBorder(blackline);
+//				chessboardTiles[val].setOpaque(true);
 			}
 		}
 	}
@@ -169,17 +178,20 @@ public class SwingComponent implements Runnable, ActionListener {
 	private void AddCellToGrid(Container pane, int pos, Piece piece){
 		JButton jbnButton;
 
-		if(piece != null){
-			
-			int value = GetTextureArrayPosition(piece.GetSymbol());
-			jbnButton = new JButton(textures[value]);
-			
-		}
-		else{
-			
-			jbnButton = new JButton();
+//		if(piece != null){
+//			
+//			int value = GetTextureArrayPosition(piece.GetSymbol());
+//			jbnButton = new JButton(textures[value]);
+//			
+//		}
+//		else{
+//			
+//			
+//			jbnButton.setIcon(null);
+//		
+//		}
 		
-		}
+		jbnButton = new JButton();
 		
         jbnButton.setName(Integer.toString(pos));
         
@@ -192,6 +204,17 @@ public class SwingComponent implements Runnable, ActionListener {
         jbnButton.addActionListener(this);
         
         chessboardTiles[pos] = jbnButton;
+//		chessboardTiles[pos].setOpaque(true);
+        
+		if(piece != null){
+			int value = GetTextureArrayPosition(piece.GetSymbol());
+			chessboardTiles[pos].setIcon(textures[value]);
+		}
+		else{
+			chessboardTiles[pos].setIcon(null);
+		}
+		
+		
 
 	    GridBagConstraints gBC = new GridBagConstraints();
 	    gBC.fill = GridBagConstraints.HORIZONTAL;
@@ -230,9 +253,12 @@ public class SwingComponent implements Runnable, ActionListener {
 					chessboardTiles[pos].setIcon(null);
 			}
 			else{
-				chessboardTiles[pos].setIcon(new ImageIcon());
+				chessboardTiles[pos].setIcon(null);
 			}
+
+//			chessboardTiles[pos].setOpaque(true);
 		}
+		
 	}
 	
 	private void RefreshBackground(){
@@ -241,6 +267,7 @@ public class SwingComponent implements Runnable, ActionListener {
 	        offsetDueToOddRow = (pos / Constants.MAX_INDEX_ROW) % 2;
 	        chessboardTiles[pos].setBackground( ((pos + offsetDueToOddRow) % 2) == 0 ? Color.white : Color.black);
 			chessboardTiles[pos].setBorder(null);
+//			chessboardTiles[pos].setOpaque(true);
 		}
 	}
 
