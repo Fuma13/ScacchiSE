@@ -169,17 +169,20 @@ public class SwingComponent implements Runnable, ActionListener {
 	private void AddCellToGrid(Container pane, int pos, Piece piece){
 		JButton jbnButton;
 
-		if(piece != null){
-			
-			int value = GetTextureArrayPosition(piece.GetSymbol());
-			jbnButton = new JButton(textures[value]);
-			
-		}
-		else{
-			
-			jbnButton = new JButton();
+//		if(piece != null){
+//			
+//			int value = GetTextureArrayPosition(piece.GetSymbol());
+//			jbnButton = new JButton(textures[value]);
+//			
+//		}
+//		else{
+//			
+//			
+//			jbnButton.setIcon(null);
+//		
+//		}
 		
-		}
+		jbnButton = new JButton();
 		
         jbnButton.setName(Integer.toString(pos));
         
@@ -192,6 +195,14 @@ public class SwingComponent implements Runnable, ActionListener {
         jbnButton.addActionListener(this);
         
         chessboardTiles[pos] = jbnButton;
+        
+		if(piece != null){
+			int value = GetTextureArrayPosition(piece.GetSymbol());
+			chessboardTiles[pos].setIcon(textures[value]);
+		}
+		else{
+			chessboardTiles[pos].setIcon(null);
+		}
 
 	    GridBagConstraints gBC = new GridBagConstraints();
 	    gBC.fill = GridBagConstraints.HORIZONTAL;
@@ -230,7 +241,7 @@ public class SwingComponent implements Runnable, ActionListener {
 					chessboardTiles[pos].setIcon(null);
 			}
 			else{
-				chessboardTiles[pos].setIcon(new ImageIcon());
+				chessboardTiles[pos].setIcon(null);
 			}
 		}
 	}
