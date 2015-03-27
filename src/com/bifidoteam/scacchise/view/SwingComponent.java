@@ -158,6 +158,7 @@ public class SwingComponent implements Runnable, ActionListener {
         JFrame frame = new JFrame("Badass Chess");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setMinimumSize(new Dimension(700,700));
+        frame.setResizable(false);
         
         //Set up the content pane.
         composeGrid(frame.getContentPane());

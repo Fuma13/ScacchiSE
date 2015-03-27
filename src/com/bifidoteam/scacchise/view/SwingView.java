@@ -19,7 +19,7 @@ public class SwingView implements ViewInterface {
 		gm = GameManager.getInstance();
 		
 		if(Constants.DEBUG_MODE)
-			log = new SwingLogComponent();
+			log = new SwingLogComponent(base);
 		
 		sc = new SwingComponent(base, log);
 		
@@ -38,6 +38,9 @@ public class SwingView implements ViewInterface {
 		Log("Player move from " + startIndex + " to " + endIndex, LogType.LOG);
 		Log("Player end turn", LogType.LOG);
 
+		if(Constants.DEBUG_MODE)
+			log.LogOnFileActualChessboard();
+		
 		gm.onMoveDone();
 	}
 

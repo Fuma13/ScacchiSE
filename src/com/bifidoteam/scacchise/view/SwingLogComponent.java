@@ -1,8 +1,19 @@
 package com.bifidoteam.scacchise.view;
 
 import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.FileNotFoundException;
+import java.io.PrintStream;
+import java.io.UnsupportedEncodingException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
 import javax.swing.text.BadLocationException;
@@ -12,15 +23,24 @@ import javax.swing.text.StyleConstants;
 import javax.swing.text.StyleContext;
 
 import com.bifidoteam.scacchise.interfaces.LogType;
+import com.bifidoteam.scacchise.model.Chessboard;
+import com.bifidoteam.scacchise.model.Piece;
+import com.bifidoteam.scacchise.util.Constants;
 
-public class SwingLogComponent {
+public class SwingLogComponent implements ActionListener {
 
 	JFrame frame;
 	DefaultStyledDocument doc;
 	Style textStyles[];
 	
+	PrintStream toPrint;
+	JTextPane text;
 	
-	public SwingLogComponent() {
+	Chessboard chessboard;
+	
+	public SwingLogComponent(Chessboard base) {
+		chessboard = base;
+		
 		JFrame.setDefaultLookAndFeelDecorated(true);
 		
        	frame = new JFrame("Log console");
@@ -28,16 +48,28 @@ public class SwingLogComponent {
         frame.pack();
         frame.setBounds(850, 150, 400, 400);
         
+        JMenuBar menu = new JMenuBar();
+        JMenu tab1 =new JMenu("File");
+        menu.add(tab1);
+        JMenuItem save = new JMenuItem("Save");
+        save.addActionListener(this);
+        save.setPreferredSize(new Dimension(100,20));
+        JMenuItem clean = new JMenuItem("Clean");
+        clean.setPreferredSize(new Dimension(100,20));
+        clean.addActionListener(this);
+        tab1.add(save);
+        tab1.add(clean);
+        
+        frame.setJMenuBar(menu);
 
         // TEXT DOC THAT WILL BE PRINT (The one to update)
         StyleContext sc = new StyleContext();
         doc = new DefaultStyledDocument(sc);
         
         InitializeStyles(sc);
-        logMessage("*** LOG START ***", LogType.LOG);
         
         // TEXT BOX
-    	JTextPane text = new JTextPane(doc);
+    	text = new JTextPane(doc);
         text.setEditable(false);
 		text.setAutoscrolls(true);
 		
@@ -48,17 +80,36 @@ public class SwingLogComponent {
 		frame.add(scrollPane);
 		
         frame.setVisible(true);
+
+        // ****** LOG INIT ******
+        if(Constants.DEBUG_MODE){
+	        // Init of the file log
+			try {
+				SimpleDateFormat ft = new SimpleDateFormat ("'Log\\Log'-ddMMyy_hhmm'.txt'");
+		        toPrint = new PrintStream(ft.format(new Date()), "UTF-8"); 
+			} catch (FileNotFoundException e) {
+				logMessage(e.getMessage(), LogType.ERROR);
+			} catch (UnsupportedEncodingException e) {
+				logMessage(e.getMessage(), LogType.ERROR);
+			}
+        }
+        
+        logMessage("*** LOG START ***", LogType.LOG);
 	}
 
 	public void logMessage(String message, LogType type) {
-        try {
-    		doc.insertString(doc.getEndPosition().getOffset(), message + "\n", GetMessageTypeStyle(type));
-    		
-		} catch (BadLocationException e) {
-			e.printStackTrace();
-		}
+    		try {
+				doc.insertString(doc.getEndPosition().getOffset(), message + "\n", GetMessageTypeStyle(type));
+				
+				// If in debugMode => saving into file
+	    		if(Constants.DEBUG_MODE){
+	    			toPrint.append(message + "\n");
+	    		}
+			} catch (BadLocationException e) {
+				// The only one that doesn't call itself! (otherwise => deadlock)
+				e.printStackTrace();
+			} 
 	}
-
 	
 	
 	
@@ -98,6 +149,63 @@ public class SwingLogComponent {
 		default:
 			return null;
 		}
+	}
+
+	
+	public void LogOnFileActualChessboard(){
+
+		String toLog = "";
+		// ** Header
+		toLog += "Chessboard Status: \n";
+		toLog += "    A  B  C  D  E  F  G  H \n";
+		// ** END
+		
+		char actualSymbol = ' ';
+		Piece actualPiece = null;
+		
+		for(int i=0; i<Constants.MAX_INDEX_ROW; ++i){
+			
+			toLog += " " + i + " ";
+			
+			for(int j=0; j<Constants.MAX_INDEX_ROW; ++j){
+				actualPiece = chessboard.getPiece(i*Constants.MAX_INDEX_ROW + j);
+				if(actualPiece != null)
+					actualSymbol = actualPiece.GetSymbol();
+				else 
+					actualSymbol =  ' ';
+				
+				toLog += ("[" + actualSymbol + "]");
+			}
+			toLog += "\n";
+		}
+		toLog += ("\n\n");
+		
+		toPrint.append(toLog);
+	}
+	
+	
+	@Override
+	public void actionPerformed(ActionEvent arg0) {
+		// Pressing the button
+		if(arg0.getActionCommand() == "Clean"){
+	        doc = new DefaultStyledDocument();
+			text.setDocument(doc);
+			
+			logMessage("Cleaned!", LogType.ERROR);
+		}
+//		else if(arg0.getActionCommand() == "Save"){
+//			String x = null;
+//			
+//			try {
+//				x = doc.getText(0, doc.getEndPosition().getOffset());
+//			} catch (BadLocationException e) {
+//				logMessage(e.getMessage(), LogType.ERROR);
+//			}
+//			
+//			toPrint.append(x);
+//			toPrint.close();
+//			logMessage("Saving!", LogType.ERROR);
+//		}
 	}
 	
 }
