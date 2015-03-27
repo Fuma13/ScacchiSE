@@ -673,6 +673,7 @@ public class GameManager implements ControllerInterface{
 		Set<Integer> involvedPieces = new HashSet<Integer>(temp);
 		
 		//bug1 Fix
+		involvedPieces.remove(destIndex);
 		involvedPieces.remove(this.lastSelectedIndex);
 		//bug1 fix
 		
@@ -694,6 +695,7 @@ public class GameManager implements ControllerInterface{
 		}
 		
 		//update old mt with forecast ones
+		this.forecastMts.remove(this.lastSelectedIndex);
 		this.updateForecastMt();
 		
 		//register all pieces using their new MT
