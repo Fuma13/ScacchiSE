@@ -673,6 +673,7 @@ public class GameManager implements ControllerInterface{
 		Set<Integer> involvedPieces = new HashSet<Integer>(temp);
 		
 		//bug1 Fix
+		involvedPieces.remove(destIndex);
 		involvedPieces.remove(this.lastSelectedIndex);
 		//bug1 fix
 		
