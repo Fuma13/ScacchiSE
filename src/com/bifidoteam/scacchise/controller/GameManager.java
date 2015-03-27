@@ -695,6 +695,7 @@ public class GameManager implements ControllerInterface{
 		}
 		
 		//update old mt with forecast ones
+		this.forecastMts.remove(this.lastSelectedIndex);
 		this.updateForecastMt();
 		
 		//register all pieces using their new MT
