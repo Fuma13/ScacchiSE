@@ -1,0 +1,1349 @@
+*** LOG START ***
+Thread id:15
+Added event in the queue: 48. Size of new events: 1
+Thread id:1
+Consumed event : 48. Number of new events: 1
+Thread id:15
+Added event in the queue: 40. Size of new events: 1
+Thread id:1
+Consumed event : 40. Number of new events: 1
+NOT king moves without leave king under check
+48 deregistering from 40
+48 deregistering from 41
+40 registering in 32
+40 registering in 33
+PieceInvolved :3
+Deregister piece index = 49
+49 deregistering from 41
+49 deregistering from 40
+49 deregistering from 42
+Deregister piece index = 57
+57 deregistering from 40
+57 deregistering from 42
+57 deregistering from 51
+Deregister piece index = 56
+56 deregistering from 57
+56 deregistering from 48
+Register piece index = 49
+49 registering in 41
+49 registering in 40
+49 registering in 42
+Register piece index = 57
+57 registering in 40
+57 registering in 42
+57 registering in 51
+Register piece index = 56
+56 registering in 57
+56 registering in 48
+56 registering in 40
+Player move from 48 to 40
+Player end turn
+Chessboard Status: 
+    A  B  C  D  E  F  G  H 
+ 0 [t][h][b][q][k][b][h][t]
+ 1 [p][p][p][p][p][p][p][p]
+ 2 [ ][ ][ ][ ][ ][ ][ ][ ]
+ 3 [ ][ ][ ][ ][ ][ ][ ][ ]
+ 4 [ ][ ][ ][ ][ ][ ][ ][ ]
+ 5 [P][ ][ ][ ][ ][ ][ ][ ]
+ 6 [ ][P][P][P][P][P][P][P]
+ 7 [T][H][B][Q][K][B][H][T]
+
+
+Thread id:15
+Added event in the queue: 12. Size of new events: 1
+Thread id:1
+Consumed event : 12. Number of new events: 1
+Thread id:15
+Added event in the queue: 20. Size of new events: 1
+Thread id:1
+Consumed event : 20. Number of new events: 1
+NOT king moves without leave king under check
+12 deregistering from 20
+12 deregistering from 19
+12 deregistering from 21
+20 registering in 28
+20 registering in 27
+20 registering in 29
+PieceInvolved :6
+Deregister piece index = 3
+3 deregistering from 2
+3 deregistering from 4
+3 deregistering from 10
+3 deregistering from 11
+3 deregistering from 12
+Deregister piece index = 4
+4 deregistering from 3
+4 deregistering from 5
+4 deregistering from 11
+4 deregistering from 12
+4 deregistering from 13
+Deregister piece index = 5
+5 deregistering from 12
+5 deregistering from 14
+Deregister piece index = 6
+6 deregistering from 12
+6 deregistering from 21
+6 deregistering from 23
+Deregister piece index = 11
+11 deregistering from 19
+11 deregistering from 18
+11 deregistering from 20
+Deregister piece index = 13
+13 deregistering from 21
+13 deregistering from 20
+13 deregistering from 22
+Register piece index = 3
+3 registering in 2
+3 registering in 4
+3 registering in 10
+3 registering in 11
+3 registering in 12
+3 registering in 21
+3 registering in 30
+3 registering in 39
+Register piece index = 4
+4 registering in 3
+4 registering in 5
+4 registering in 11
+4 registering in 12
+4 registering in 13
+Register piece index = 5
+5 registering in 12
+5 registering in 19
+5 registering in 26
+5 registering in 33
+5 registering in 40
+5 registering in 14
+Register piece index = 6
+6 registering in 12
+6 registering in 21
+6 registering in 23
+Register piece index = 11
+11 registering in 19
+11 registering in 18
+11 registering in 20
+Register piece index = 13
+13 registering in 21
+13 registering in 20
+13 registering in 22
+Player move from 12 to 20
+Player end turn
+Chessboard Status: 
+    A  B  C  D  E  F  G  H 
+ 0 [t][h][b][q][k][b][h][t]
+ 1 [p][p][p][p][ ][p][p][p]
+ 2 [ ][ ][ ][ ][p][ ][ ][ ]
+ 3 [ ][ ][ ][ ][ ][ ][ ][ ]
+ 4 [ ][ ][ ][ ][ ][ ][ ][ ]
+ 5 [P][ ][ ][ ][ ][ ][ ][ ]
+ 6 [ ][P][P][P][P][P][P][P]
+ 7 [T][H][B][Q][K][B][H][T]
+
+
+Thread id:15
+Added event in the queue: 53. Size of new events: 1
+Thread id:1
+Consumed event : 53. Number of new events: 1
+Thread id:15
+Added event in the queue: 53. Size of new events: 1
+Thread id:1
+Consumed event : 53. Number of new events: 1
+Thread id:15
+Added event in the queue: 3. Size of new events: 1
+Thread id:1
+Consumed event : 3. Number of new events: 1
+Thread id:15
+Added event in the queue: 49. Size of new events: 1
+Thread id:1
+Consumed event : 49. Number of new events: 1
+Thread id:15
+Added event in the queue: 41. Size of new events: 1
+Thread id:1
+Consumed event : 41. Number of new events: 1
+NOT king moves without leave king under check
+49 deregistering from 41
+49 deregistering from 40
+49 deregistering from 42
+41 registering in 33
+41 registering in 32
+41 registering in 34
+PieceInvolved :2
+Deregister piece index = 50
+50 deregistering from 42
+50 deregistering from 41
+50 deregistering from 43
+Deregister piece index = 58
+58 deregistering from 49
+58 deregistering from 51
+Register piece index = 50
+50 registering in 42
+50 registering in 41
+50 registering in 43
+Register piece index = 58
+58 registering in 49
+58 registering in 40
+58 registering in 51
+Player move from 49 to 41
+Player end turn
+Chessboard Status: 
+    A  B  C  D  E  F  G  H 
+ 0 [t][h][b][q][k][b][h][t]
+ 1 [p][p][p][p][ ][p][p][p]
+ 2 [ ][ ][ ][ ][p][ ][ ][ ]
+ 3 [ ][ ][ ][ ][ ][ ][ ][ ]
+ 4 [ ][ ][ ][ ][ ][ ][ ][ ]
+ 5 [P][P][ ][ ][ ][ ][ ][ ]
+ 6 [ ][ ][P][P][P][P][P][P]
+ 7 [T][H][B][Q][K][B][H][T]
+
+
+Thread id:15
+Added event in the queue: 3. Size of new events: 1
+Thread id:1
+Consumed event : 3. Number of new events: 1
+Thread id:15
+Added event in the queue: 39. Size of new events: 1
+Thread id:1
+Consumed event : 39. Number of new events: 1
+NOT king moves without leave king under check
+3 deregistering from 2
+3 deregistering from 4
+3 deregistering from 10
+3 deregistering from 11
+3 deregistering from 12
+3 deregistering from 21
+3 deregistering from 30
+3 deregistering from 39
+39 registering in 30
+39 registering in 21
+39 registering in 12
+39 registering in 3
+39 registering in 31
+39 registering in 23
+39 registering in 15
+39 registering in 38
+39 registering in 37
+39 registering in 36
+39 registering in 35
+39 registering in 34
+39 registering in 33
+39 registering in 32
+39 registering in 46
+39 registering in 53
+39 registering in 47
+39 registering in 55
+PieceInvolved :1
+Deregister piece index = 4
+4 deregistering from 3
+4 deregistering from 5
+4 deregistering from 11
+4 deregistering from 12
+4 deregistering from 13
+Register piece index = 4
+4 registering in 3
+4 registering in 5
+4 registering in 11
+4 registering in 12
+4 registering in 13
+Player move from 3 to 39
+Player end turn
+Chessboard Status: 
+    A  B  C  D  E  F  G  H 
+ 0 [t][h][b][ ][k][b][h][t]
+ 1 [p][p][p][p][ ][p][p][p]
+ 2 [ ][ ][ ][ ][p][ ][ ][ ]
+ 3 [ ][ ][ ][ ][ ][ ][ ][ ]
+ 4 [ ][ ][ ][ ][ ][ ][ ][q]
+ 5 [P][P][ ][ ][ ][ ][ ][ ]
+ 6 [ ][ ][P][P][P][P][P][P]
+ 7 [T][H][B][Q][K][B][H][T]
+
+
+Thread id:15
+Added event in the queue: 54. Size of new events: 1
+Thread id:1
+Consumed event : 54. Number of new events: 1
+Thread id:15
+Added event in the queue: 46. Size of new events: 1
+Thread id:1
+Consumed event : 46. Number of new events: 1
+NOT king moves without leave king under check
+54 deregistering from 46
+54 deregistering from 45
+54 deregistering from 47
+46 registering in 38
+46 registering in 37
+46 registering in 39
+PieceInvolved :4
+Deregister piece index = 55
+55 deregistering from 47
+55 deregistering from 46
+Deregister piece index = 39
+39 deregistering from 30
+39 deregistering from 21
+39 deregistering from 12
+39 deregistering from 3
+39 deregistering from 31
+39 deregistering from 23
+39 deregistering from 15
+39 deregistering from 38
+39 deregistering from 37
+39 deregistering from 36
+39 deregistering from 35
+39 deregistering from 34
+39 deregistering from 33
+39 deregistering from 32
+39 deregistering from 46
+39 deregistering from 53
+39 deregistering from 47
+39 deregistering from 55
+Deregister piece index = 53
+53 deregistering from 45
+53 deregistering from 44
+53 deregistering from 46
+Deregister piece index = 61
+61 deregistering from 52
+61 deregistering from 54
+Register piece index = 55
+55 registering in 47
+55 registering in 46
+Register piece index = 39
+39 registering in 30
+39 registering in 21
+39 registering in 12
+39 registering in 3
+39 registering in 31
+39 registering in 23
+39 registering in 15
+39 registering in 38
+39 registering in 37
+39 registering in 36
+39 registering in 35
+39 registering in 34
+39 registering in 33
+39 registering in 32
+39 registering in 46
+39 registering in 47
+39 registering in 55
+Register piece index = 53
+53 registering in 45
+53 registering in 44
+53 registering in 46
+Register piece index = 61
+61 registering in 52
+61 registering in 54
+61 registering in 47
+Player move from 54 to 46
+Player end turn
+Chessboard Status: 
+    A  B  C  D  E  F  G  H 
+ 0 [t][h][b][ ][k][b][h][t]
+ 1 [p][p][p][p][ ][p][p][p]
+ 2 [ ][ ][ ][ ][p][ ][ ][ ]
+ 3 [ ][ ][ ][ ][ ][ ][ ][ ]
+ 4 [ ][ ][ ][ ][ ][ ][ ][q]
+ 5 [P][P][ ][ ][ ][ ][P][ ]
+ 6 [ ][ ][P][P][P][P][ ][P]
+ 7 [T][H][B][Q][K][B][H][T]
+
+
+Thread id:15
+Added event in the queue: 11. Size of new events: 1
+Thread id:1
+Consumed event : 11. Number of new events: 1
+Thread id:15
+Added event in the queue: 19. Size of new events: 1
+Thread id:1
+Consumed event : 19. Number of new events: 1
+NOT king moves without leave king under check
+11 deregistering from 19
+11 deregistering from 18
+11 deregistering from 20
+19 registering in 27
+19 registering in 26
+19 registering in 28
+PieceInvolved :5
+Deregister piece index = 1
+1 deregistering from 11
+1 deregistering from 16
+1 deregistering from 18
+Deregister piece index = 2
+2 deregistering from 9
+2 deregistering from 11
+Deregister piece index = 4
+4 deregistering from 3
+4 deregistering from 5
+4 deregistering from 11
+4 deregistering from 12
+4 deregistering from 13
+Deregister piece index = 5
+5 deregistering from 12
+5 deregistering from 19
+5 deregistering from 26
+5 deregistering from 33
+5 deregistering from 40
+5 deregistering from 14
+Deregister piece index = 10
+10 deregistering from 18
+10 deregistering from 17
+10 deregistering from 19
+Register piece index = 1
+1 registering in 11
+1 registering in 16
+1 registering in 18
+Register piece index = 2
+2 registering in 9
+2 registering in 11
+2 registering in 20
+Register piece index = 4
+4 registering in 3
+4 registering in 5
+4 registering in 11
+4 registering in 12
+4 registering in 13
+Register piece index = 5
+5 registering in 12
+5 registering in 19
+5 registering in 14
+Register piece index = 10
+10 registering in 18
+10 registering in 17
+10 registering in 19
+Player move from 11 to 19
+Player end turn
+Chessboard Status: 
+    A  B  C  D  E  F  G  H 
+ 0 [t][h][b][ ][k][b][h][t]
+ 1 [p][p][p][ ][ ][p][p][p]
+ 2 [ ][ ][ ][p][p][ ][ ][ ]
+ 3 [ ][ ][ ][ ][ ][ ][ ][ ]
+ 4 [ ][ ][ ][ ][ ][ ][ ][q]
+ 5 [P][P][ ][ ][ ][ ][P][ ]
+ 6 [ ][ ][P][P][P][P][ ][P]
+ 7 [T][H][B][Q][K][B][H][T]
+
+
+Thread id:15
+Added event in the queue: 53. Size of new events: 1
+Thread id:1
+Consumed event : 53. Number of new events: 1
+Thread id:15
+Added event in the queue: 45. Size of new events: 1
+Thread id:1
+Consumed event : 45. Number of new events: 1
+NOT king moves without leave king under check
+53 deregistering from 45
+53 deregistering from 44
+53 deregistering from 46
+45 registering in 37
+45 registering in 36
+45 registering in 38
+PieceInvolved :3
+Deregister piece index = 52
+52 deregistering from 44
+52 deregistering from 43
+52 deregistering from 45
+Deregister piece index = 62
+62 deregistering from 45
+62 deregistering from 47
+62 deregistering from 52
+Deregister piece index = 60
+60 deregistering from 51
+60 deregistering from 52
+60 deregistering from 53
+60 deregistering from 59
+60 deregistering from 61
+Register piece index = 52
+52 registering in 44
+52 registering in 43
+52 registering in 45
+Register piece index = 62
+62 registering in 45
+62 registering in 47
+62 registering in 52
+Register piece index = 60
+60 registering in 51
+60 registering in 52
+60 registering in 53
+60 registering in 59
+60 registering in 61
+Player move from 53 to 45
+Player end turn
+Chessboard Status: 
+    A  B  C  D  E  F  G  H 
+ 0 [t][h][b][ ][k][b][h][t]
+ 1 [p][p][p][ ][ ][p][p][p]
+ 2 [ ][ ][ ][p][p][ ][ ][ ]
+ 3 [ ][ ][ ][ ][ ][ ][ ][ ]
+ 4 [ ][ ][ ][ ][ ][ ][ ][q]
+ 5 [P][P][ ][ ][ ][P][P][ ]
+ 6 [ ][ ][P][P][P][ ][ ][P]
+ 7 [T][H][B][Q][K][B][H][T]
+
+
+Thread id:15
+Added event in the queue: 39. Size of new events: 1
+Thread id:1
+Consumed event : 39. Number of new events: 1
+Thread id:15
+Added event in the queue: 46. Size of new events: 1
+Thread id:1
+Consumed event : 46. Number of new events: 1
+NOT king moves without leave king under check
+46 deregistering from 38
+46 deregistering from 37
+46 deregistering from 39
+39 deregistering from 30
+39 deregistering from 21
+39 deregistering from 12
+39 deregistering from 3
+39 deregistering from 31
+39 deregistering from 23
+39 deregistering from 15
+39 deregistering from 38
+39 deregistering from 37
+39 deregistering from 36
+39 deregistering from 35
+39 deregistering from 34
+39 deregistering from 33
+39 deregistering from 32
+39 deregistering from 46
+39 deregistering from 47
+39 deregistering from 55
+46 registering in 37
+46 registering in 28
+46 registering in 19
+46 registering in 38
+46 registering in 30
+46 registering in 22
+46 registering in 14
+46 registering in 39
+46 registering in 45
+46 registering in 47
+46 registering in 53
+46 registering in 60
+46 registering in 54
+46 registering in 62
+46 registering in 55
+PieceInvolved :1
+Deregister piece index = 55
+55 deregistering from 47
+55 deregistering from 46
+Register piece index = 55
+55 registering in 47
+55 registering in 46
+Player move from 39 to 46
+Player end turn
+Chessboard Status: 
+    A  B  C  D  E  F  G  H 
+ 0 [t][h][b][ ][k][b][h][t]
+ 1 [p][p][p][ ][ ][p][p][p]
+ 2 [ ][ ][ ][p][p][ ][ ][ ]
+ 3 [ ][ ][ ][ ][ ][ ][ ][ ]
+ 4 [ ][ ][ ][ ][ ][ ][ ][ ]
+ 5 [P][P][ ][ ][ ][P][q][ ]
+ 6 [ ][ ][P][P][P][ ][ ][P]
+ 7 [T][H][B][Q][K][B][H][T]
+
+
+Thread id:15
+Added event in the queue: 55. Size of new events: 1
+Thread id:1
+Consumed event : 55. Number of new events: 1
+Thread id:15
+Added event in the queue: 55. Size of new events: 1
+Thread id:1
+Consumed event : 55. Number of new events: 1
+Thread id:15
+Added event in the queue: 60. Size of new events: 1
+Thread id:1
+Consumed event : 60. Number of new events: 1
+Thread id:15
+Added event in the queue: 53. Size of new events: 1
+Thread id:1
+Consumed event : 53. Number of new events: 1
+King DOESN'T move safely
+Thread id:15
+Added event in the queue: 61. Size of new events: 1
+Thread id:1
+Consumed event : 61. Number of new events: 1
+Thread id:15
+Added event in the queue: 54. Size of new events: 1
+Thread id:1
+Consumed event : 54. Number of new events: 1
+NOT king, DOESN'T eat/intercept Checking Piece
+Thread id:15
+Added event in the queue: 55. Size of new events: 1
+Thread id:1
+Consumed event : 55. Number of new events: 1
+Thread id:15
+Added event in the queue: 46. Size of new events: 1
+Thread id:1
+Consumed event : 46. Number of new events: 1
+NOT king, intercepts Checking Piece
+46 deregistering from 37
+46 deregistering from 28
+46 deregistering from 19
+46 deregistering from 38
+46 deregistering from 30
+46 deregistering from 22
+46 deregistering from 14
+46 deregistering from 39
+46 deregistering from 45
+46 deregistering from 47
+46 deregistering from 53
+46 deregistering from 60
+46 deregistering from 54
+46 deregistering from 62
+46 deregistering from 55
+55 deregistering from 47
+55 deregistering from 46
+46 registering in 38
+46 registering in 37
+46 registering in 39
+PieceInvolved :1
+Deregister piece index = 63
+63 deregistering from 62
+63 deregistering from 55
+Register piece index = 63
+63 registering in 62
+63 registering in 55
+63 registering in 47
+63 registering in 39
+63 registering in 31
+63 registering in 23
+63 registering in 15
+Player move from 55 to 46
+Player end turn
+Chessboard Status: 
+    A  B  C  D  E  F  G  H 
+ 0 [t][h][b][ ][k][b][h][t]
+ 1 [p][p][p][ ][ ][p][p][p]
+ 2 [ ][ ][ ][p][p][ ][ ][ ]
+ 3 [ ][ ][ ][ ][ ][ ][ ][ ]
+ 4 [ ][ ][ ][ ][ ][ ][ ][ ]
+ 5 [P][P][ ][ ][ ][P][P][ ]
+ 6 [ ][ ][P][P][P][ ][ ][ ]
+ 7 [T][H][B][Q][K][B][H][T]
+
+
+Thread id:15
+Added event in the queue: 13. Size of new events: 1
+Thread id:1
+Consumed event : 13. Number of new events: 1
+Thread id:15
+Added event in the queue: 21. Size of new events: 1
+Thread id:1
+Consumed event : 21. Number of new events: 1
+NOT king moves without leave king under check
+13 deregistering from 21
+13 deregistering from 20
+13 deregistering from 22
+21 registering in 29
+21 registering in 28
+21 registering in 30
+PieceInvolved :3
+Deregister piece index = 4
+4 deregistering from 3
+4 deregistering from 5
+4 deregistering from 11
+4 deregistering from 12
+4 deregistering from 13
+Deregister piece index = 6
+6 deregistering from 12
+6 deregistering from 21
+6 deregistering from 23
+Deregister piece index = 14
+14 deregistering from 22
+14 deregistering from 21
+14 deregistering from 23
+Register piece index = 4
+4 registering in 3
+4 registering in 5
+4 registering in 11
+4 registering in 12
+4 registering in 13
+Register piece index = 6
+6 registering in 12
+6 registering in 21
+6 registering in 23
+Register piece index = 14
+14 registering in 22
+14 registering in 21
+14 registering in 23
+Player move from 13 to 21
+Player end turn
+Chessboard Status: 
+    A  B  C  D  E  F  G  H 
+ 0 [t][h][b][ ][k][b][h][t]
+ 1 [p][p][p][ ][ ][ ][p][p]
+ 2 [ ][ ][ ][p][p][p][ ][ ]
+ 3 [ ][ ][ ][ ][ ][ ][ ][ ]
+ 4 [ ][ ][ ][ ][ ][ ][ ][ ]
+ 5 [P][P][ ][ ][ ][P][P][ ]
+ 6 [ ][ ][P][P][P][ ][ ][ ]
+ 7 [T][H][B][Q][K][B][H][T]
+
+
+Thread id:15
+Added event in the queue: 60. Size of new events: 1
+Thread id:1
+Consumed event : 60. Number of new events: 1
+Thread id:15
+Added event in the queue: 53. Size of new events: 1
+Thread id:1
+Consumed event : 53. Number of new events: 1
+King moves safely
+60 deregistering from 51
+60 deregistering from 52
+60 deregistering from 53
+60 deregistering from 59
+60 deregistering from 61
+53 registering in 44
+53 registering in 45
+53 registering in 46
+53 registering in 52
+53 registering in 54
+53 registering in 60
+53 registering in 61
+53 registering in 62
+PieceInvolved :3
+Deregister piece index = 52
+52 deregistering from 44
+52 deregistering from 43
+52 deregistering from 45
+Deregister piece index = 59
+59 deregistering from 50
+59 deregistering from 51
+59 deregistering from 52
+59 deregistering from 58
+59 deregistering from 60
+Deregister piece index = 62
+62 deregistering from 45
+62 deregistering from 47
+62 deregistering from 52
+Register piece index = 52
+52 registering in 44
+52 registering in 43
+52 registering in 45
+Register piece index = 59
+59 registering in 50
+59 registering in 51
+59 registering in 52
+59 registering in 58
+59 registering in 60
+59 registering in 61
+Register piece index = 62
+62 registering in 45
+62 registering in 47
+62 registering in 52
+Player move from 60 to 53
+Player end turn
+Chessboard Status: 
+    A  B  C  D  E  F  G  H 
+ 0 [t][h][b][ ][k][b][h][t]
+ 1 [p][p][p][ ][ ][ ][p][p]
+ 2 [ ][ ][ ][p][p][p][ ][ ]
+ 3 [ ][ ][ ][ ][ ][ ][ ][ ]
+ 4 [ ][ ][ ][ ][ ][ ][ ][ ]
+ 5 [P][P][ ][ ][ ][P][P][ ]
+ 6 [ ][ ][P][P][P][K][ ][ ]
+ 7 [T][H][B][Q][ ][B][H][T]
+
+
+Thread id:15
+Added event in the queue: 14. Size of new events: 1
+Thread id:1
+Consumed event : 14. Number of new events: 1
+Thread id:15
+Added event in the queue: 22. Size of new events: 1
+Thread id:1
+Consumed event : 22. Number of new events: 1
+NOT king moves without leave king under check
+14 deregistering from 22
+14 deregistering from 21
+14 deregistering from 23
+22 registering in 30
+22 registering in 29
+22 registering in 31
+PieceInvolved :2
+Deregister piece index = 5
+5 deregistering from 12
+5 deregistering from 19
+5 deregistering from 14
+Deregister piece index = 15
+15 deregistering from 23
+15 deregistering from 22
+Register piece index = 5
+5 registering in 12
+5 registering in 19
+5 registering in 14
+5 registering in 23
+Register piece index = 15
+15 registering in 23
+15 registering in 22
+Player move from 14 to 22
+Player end turn
+Chessboard Status: 
+    A  B  C  D  E  F  G  H 
+ 0 [t][h][b][ ][k][b][h][t]
+ 1 [p][p][p][ ][ ][ ][ ][p]
+ 2 [ ][ ][ ][p][p][p][p][ ]
+ 3 [ ][ ][ ][ ][ ][ ][ ][ ]
+ 4 [ ][ ][ ][ ][ ][ ][ ][ ]
+ 5 [P][P][ ][ ][ ][P][P][ ]
+ 6 [ ][ ][P][P][P][K][ ][ ]
+ 7 [T][H][B][Q][ ][B][H][T]
+
+
+Thread id:15
+Added event in the queue: 46. Size of new events: 1
+Thread id:1
+Consumed event : 46. Number of new events: 1
+Thread id:15
+Added event in the queue: 38. Size of new events: 1
+Thread id:1
+Consumed event : 38. Number of new events: 1
+NOT king moves without leave king under check
+46 deregistering from 38
+46 deregistering from 37
+46 deregistering from 39
+38 registering in 30
+38 registering in 29
+38 registering in 31
+PieceInvolved :2
+Deregister piece index = 53
+53 deregistering from 44
+53 deregistering from 45
+53 deregistering from 46
+53 deregistering from 52
+53 deregistering from 54
+53 deregistering from 60
+53 deregistering from 61
+53 deregistering from 62
+Deregister piece index = 45
+45 deregistering from 37
+45 deregistering from 36
+45 deregistering from 38
+Register piece index = 53
+53 registering in 44
+53 registering in 45
+53 registering in 46
+53 registering in 52
+53 registering in 54
+53 registering in 60
+53 registering in 61
+53 registering in 62
+Register piece index = 45
+45 registering in 37
+45 registering in 36
+45 registering in 38
+Player move from 46 to 38
+Player end turn
+Chessboard Status: 
+    A  B  C  D  E  F  G  H 
+ 0 [t][h][b][ ][k][b][h][t]
+ 1 [p][p][p][ ][ ][ ][ ][p]
+ 2 [ ][ ][ ][p][p][p][p][ ]
+ 3 [ ][ ][ ][ ][ ][ ][ ][ ]
+ 4 [ ][ ][ ][ ][ ][ ][P][ ]
+ 5 [P][P][ ][ ][ ][P][ ][ ]
+ 6 [ ][ ][P][P][P][K][ ][ ]
+ 7 [T][H][B][Q][ ][B][H][T]
+
+
+Thread id:15
+Added event in the queue: 5. Size of new events: 1
+Thread id:1
+Consumed event : 5. Number of new events: 1
+Thread id:15
+Added event in the queue: 23. Size of new events: 1
+Thread id:1
+Consumed event : 23. Number of new events: 1
+NOT king moves without leave king under check
+5 deregistering from 12
+5 deregistering from 19
+5 deregistering from 14
+5 deregistering from 23
+23 registering in 14
+23 registering in 5
+23 registering in 30
+23 registering in 37
+23 registering in 44
+23 registering in 51
+PieceInvolved :4
+Deregister piece index = 4
+4 deregistering from 3
+4 deregistering from 5
+4 deregistering from 11
+4 deregistering from 12
+4 deregistering from 13
+Deregister piece index = 6
+6 deregistering from 12
+6 deregistering from 21
+6 deregistering from 23
+Deregister piece index = 63
+63 deregistering from 62
+63 deregistering from 55
+63 deregistering from 47
+63 deregistering from 39
+63 deregistering from 31
+63 deregistering from 23
+63 deregistering from 15
+Deregister piece index = 15
+15 deregistering from 23
+15 deregistering from 22
+Register piece index = 4
+4 registering in 3
+4 registering in 5
+4 registering in 11
+4 registering in 12
+4 registering in 13
+Register piece index = 6
+6 registering in 12
+6 registering in 21
+6 registering in 23
+Register piece index = 63
+63 registering in 62
+63 registering in 55
+63 registering in 47
+63 registering in 39
+63 registering in 31
+63 registering in 23
+Register piece index = 15
+15 registering in 23
+15 registering in 22
+Player move from 5 to 23
+Player end turn
+Chessboard Status: 
+    A  B  C  D  E  F  G  H 
+ 0 [t][h][b][ ][k][ ][h][t]
+ 1 [p][p][p][ ][ ][ ][ ][p]
+ 2 [ ][ ][ ][p][p][p][p][b]
+ 3 [ ][ ][ ][ ][ ][ ][ ][ ]
+ 4 [ ][ ][ ][ ][ ][ ][P][ ]
+ 5 [P][P][ ][ ][ ][P][ ][ ]
+ 6 [ ][ ][P][P][P][K][ ][ ]
+ 7 [T][H][B][Q][ ][B][H][T]
+
+
+Thread id:15
+Added event in the queue: 50. Size of new events: 1
+Thread id:1
+Consumed event : 50. Number of new events: 1
+Thread id:15
+Added event in the queue: 42. Size of new events: 1
+Thread id:1
+Consumed event : 42. Number of new events: 1
+NOT king moves without leave king under check
+50 deregistering from 42
+50 deregistering from 41
+50 deregistering from 43
+42 registering in 34
+42 registering in 33
+42 registering in 35
+PieceInvolved :3
+Deregister piece index = 51
+51 deregistering from 43
+51 deregistering from 42
+51 deregistering from 44
+Deregister piece index = 59
+59 deregistering from 50
+59 deregistering from 51
+59 deregistering from 52
+59 deregistering from 58
+59 deregistering from 60
+59 deregistering from 61
+Deregister piece index = 57
+57 deregistering from 40
+57 deregistering from 42
+57 deregistering from 51
+Register piece index = 51
+51 registering in 43
+51 registering in 42
+51 registering in 44
+Register piece index = 59
+59 registering in 50
+59 registering in 41
+59 registering in 51
+59 registering in 52
+59 registering in 58
+59 registering in 60
+59 registering in 61
+Register piece index = 57
+57 registering in 40
+57 registering in 42
+57 registering in 51
+Player move from 50 to 42
+Player end turn
+Chessboard Status: 
+    A  B  C  D  E  F  G  H 
+ 0 [t][h][b][ ][k][ ][h][t]
+ 1 [p][p][p][ ][ ][ ][ ][p]
+ 2 [ ][ ][ ][p][p][p][p][b]
+ 3 [ ][ ][ ][ ][ ][ ][ ][ ]
+ 4 [ ][ ][ ][ ][ ][ ][P][ ]
+ 5 [P][P][P][ ][ ][P][ ][ ]
+ 6 [ ][ ][ ][P][P][K][ ][ ]
+ 7 [T][H][B][Q][ ][B][H][T]
+
+
+Thread id:15
+Added event in the queue: 23. Size of new events: 1
+Thread id:1
+Consumed event : 23. Number of new events: 1
+Thread id:15
+Added event in the queue: 51. Size of new events: 1
+Thread id:1
+Consumed event : 51. Number of new events: 1
+NOT king moves without leave king under check
+51 deregistering from 43
+51 deregistering from 42
+51 deregistering from 44
+23 deregistering from 14
+23 deregistering from 5
+23 deregistering from 30
+23 deregistering from 37
+23 deregistering from 44
+23 deregistering from 51
+51 registering in 42
+51 registering in 44
+51 registering in 37
+51 registering in 30
+51 registering in 23
+51 registering in 58
+51 registering in 60
+PieceInvolved :6
+Deregister piece index = 6
+6 deregistering from 12
+6 deregistering from 21
+6 deregistering from 23
+Deregister piece index = 59
+59 deregistering from 50
+59 deregistering from 41
+59 deregistering from 51
+59 deregistering from 52
+59 deregistering from 58
+59 deregistering from 60
+59 deregistering from 61
+Deregister piece index = 58
+58 deregistering from 49
+58 deregistering from 40
+58 deregistering from 51
+Deregister piece index = 57
+57 deregistering from 40
+57 deregistering from 42
+57 deregistering from 51
+Deregister piece index = 63
+63 deregistering from 62
+63 deregistering from 55
+63 deregistering from 47
+63 deregistering from 39
+63 deregistering from 31
+63 deregistering from 23
+Deregister piece index = 15
+15 deregistering from 23
+15 deregistering from 22
+Register piece index = 6
+6 registering in 12
+6 registering in 21
+6 registering in 23
+Register piece index = 59
+59 registering in 50
+59 registering in 41
+59 registering in 51
+59 registering in 52
+59 registering in 58
+59 registering in 60
+59 registering in 61
+Register piece index = 58
+58 registering in 49
+58 registering in 40
+58 registering in 51
+Register piece index = 57
+57 registering in 40
+57 registering in 42
+57 registering in 51
+Register piece index = 63
+63 registering in 62
+63 registering in 55
+63 registering in 47
+63 registering in 39
+63 registering in 31
+63 registering in 23
+63 registering in 15
+Register piece index = 15
+15 registering in 23
+15 registering in 22
+Player move from 23 to 51
+Player end turn
+Chessboard Status: 
+    A  B  C  D  E  F  G  H 
+ 0 [t][h][b][ ][k][ ][h][t]
+ 1 [p][p][p][ ][ ][ ][ ][p]
+ 2 [ ][ ][ ][p][p][p][p][ ]
+ 3 [ ][ ][ ][ ][ ][ ][ ][ ]
+ 4 [ ][ ][ ][ ][ ][ ][P][ ]
+ 5 [P][P][P][ ][ ][P][ ][ ]
+ 6 [ ][ ][ ][b][P][K][ ][ ]
+ 7 [T][H][B][Q][ ][B][H][T]
+
+
+Thread id:15
+Added event in the queue: 19. Size of new events: 1
+Thread id:1
+Consumed event : 19. Number of new events: 1
+Thread id:15
+Added event in the queue: 19. Size of new events: 1
+Thread id:1
+Consumed event : 19. Number of new events: 1
+Thread id:15
+Added event in the queue: 52. Size of new events: 1
+Thread id:1
+Consumed event : 52. Number of new events: 1
+Thread id:15
+Added event in the queue: 44. Size of new events: 1
+Thread id:1
+Consumed event : 44. Number of new events: 1
+NOT king moves without leave king under check
+52 deregistering from 44
+52 deregistering from 43
+52 deregistering from 45
+44 registering in 36
+44 registering in 35
+44 registering in 37
+PieceInvolved :5
+Deregister piece index = 51
+51 deregistering from 42
+51 deregistering from 44
+51 deregistering from 37
+51 deregistering from 30
+51 deregistering from 23
+51 deregistering from 58
+51 deregistering from 60
+Deregister piece index = 53
+53 deregistering from 44
+53 deregistering from 45
+53 deregistering from 46
+53 deregistering from 52
+53 deregistering from 54
+53 deregistering from 60
+53 deregistering from 61
+53 deregistering from 62
+Deregister piece index = 59
+59 deregistering from 50
+59 deregistering from 41
+59 deregistering from 51
+59 deregistering from 52
+59 deregistering from 58
+59 deregistering from 60
+59 deregistering from 61
+Deregister piece index = 62
+62 deregistering from 45
+62 deregistering from 47
+62 deregistering from 52
+Deregister piece index = 61
+61 deregistering from 52
+61 deregistering from 54
+61 deregistering from 47
+Register piece index = 51
+51 registering in 42
+51 registering in 44
+51 registering in 58
+51 registering in 60
+Register piece index = 53
+53 registering in 44
+53 registering in 45
+53 registering in 46
+53 registering in 52
+53 registering in 54
+53 registering in 60
+53 registering in 61
+53 registering in 62
+Register piece index = 59
+59 registering in 50
+59 registering in 41
+59 registering in 51
+59 registering in 52
+59 registering in 45
+59 registering in 58
+59 registering in 60
+59 registering in 61
+Register piece index = 62
+62 registering in 45
+62 registering in 47
+62 registering in 52
+Register piece index = 61
+61 registering in 52
+61 registering in 43
+61 registering in 34
+61 registering in 25
+61 registering in 16
+61 registering in 54
+61 registering in 47
+Player move from 52 to 44
+Player end turn
+Chessboard Status: 
+    A  B  C  D  E  F  G  H 
+ 0 [t][h][b][ ][k][ ][h][t]
+ 1 [p][p][p][ ][ ][ ][ ][p]
+ 2 [ ][ ][ ][p][p][p][p][ ]
+ 3 [ ][ ][ ][ ][ ][ ][ ][ ]
+ 4 [ ][ ][ ][ ][ ][ ][P][ ]
+ 5 [P][P][P][ ][P][P][ ][ ]
+ 6 [ ][ ][ ][b][ ][K][ ][ ]
+ 7 [T][H][B][Q][ ][B][H][T]
+
+
+Thread id:15
+Added event in the queue: 51. Size of new events: 1
+Thread id:1
+Consumed event : 51. Number of new events: 1
+Thread id:15
+Added event in the queue: 44. Size of new events: 1
+Thread id:1
+Consumed event : 44. Number of new events: 1
+NOT king moves without leave king under check
+44 deregistering from 36
+44 deregistering from 35
+44 deregistering from 37
+51 deregistering from 42
+51 deregistering from 44
+51 deregistering from 58
+51 deregistering from 60
+44 registering in 35
+44 registering in 26
+44 registering in 17
+44 registering in 8
+44 registering in 37
+44 registering in 30
+44 registering in 23
+44 registering in 51
+44 registering in 58
+44 registering in 53
+PieceInvolved :4
+Deregister piece index = 53
+53 deregistering from 44
+53 deregistering from 45
+53 deregistering from 46
+53 deregistering from 52
+53 deregistering from 54
+53 deregistering from 60
+53 deregistering from 61
+53 deregistering from 62
+Deregister piece index = 59
+59 deregistering from 50
+59 deregistering from 41
+59 deregistering from 51
+59 deregistering from 52
+59 deregistering from 45
+59 deregistering from 58
+59 deregistering from 60
+59 deregistering from 61
+Deregister piece index = 58
+58 deregistering from 49
+58 deregistering from 40
+58 deregistering from 51
+Deregister piece index = 57
+57 deregistering from 40
+57 deregistering from 42
+57 deregistering from 51
+Register piece index = 53
+53 registering in 44
+53 registering in 45
+53 registering in 46
+53 registering in 52
+53 registering in 54
+53 registering in 60
+53 registering in 61
+53 registering in 62
+Register piece index = 59
+59 registering in 50
+59 registering in 41
+59 registering in 51
+59 registering in 43
+59 registering in 35
+59 registering in 27
+59 registering in 19
+59 registering in 52
+59 registering in 45
+59 registering in 58
+59 registering in 60
+59 registering in 61
+Register piece index = 58
+58 registering in 49
+58 registering in 40
+58 registering in 51
+58 registering in 44
+Register piece index = 57
+57 registering in 40
+57 registering in 42
+57 registering in 51
+Player move from 51 to 44
+Player end turn
+Chessboard Status: 
+    A  B  C  D  E  F  G  H 
+ 0 [t][h][b][ ][k][ ][h][t]
+ 1 [p][p][p][ ][ ][ ][ ][p]
+ 2 [ ][ ][ ][p][p][p][p][ ]
+ 3 [ ][ ][ ][ ][ ][ ][ ][ ]
+ 4 [ ][ ][ ][ ][ ][ ][P][ ]
+ 5 [P][P][P][ ][b][P][ ][ ]
+ 6 [ ][ ][ ][ ][ ][K][ ][ ]
+ 7 [T][H][B][Q][ ][B][H][T]
+
+
+Thread id:15
+Added event in the queue: 53. Size of new events: 1
+Thread id:1
+Consumed event : 53. Number of new events: 1
+Thread id:15
+Added event in the queue: 53. Size of new events: 1
+Thread id:1
+Consumed event : 53. Number of new events: 1
+Thread id:15
+Added event in the queue: 53. Size of new events: 1
+Thread id:1
+Consumed event : 53. Number of new events: 1
+Thread id:15
+Added event in the queue: 53. Size of new events: 1
+Thread id:1
+Consumed event : 53. Number of new events: 1
+Thread id:15
+Added event in the queue: 53. Size of new events: 1
+Thread id:1
+Consumed event : 53. Number of new events: 1
+Thread id:15
+Added event in the queue: 44. Size of new events: 1
+Thread id:1
+Consumed event : 44. Number of new events: 1
+King moves safely
+44 deregistering from 35
+44 deregistering from 26
+44 deregistering from 17
+44 deregistering from 8
+44 deregistering from 37
+44 deregistering from 30
+44 deregistering from 23
+44 deregistering from 51
+44 deregistering from 58
+44 deregistering from 53
+53 deregistering from 44
+53 deregistering from 45
+53 deregistering from 46
+53 deregistering from 52
+53 deregistering from 54
+53 deregistering from 60
+53 deregistering from 61
+53 deregistering from 62
+44 registering in 35
+44 registering in 36
+44 registering in 37
+44 registering in 43
+44 registering in 45
+44 registering in 51
+44 registering in 52
+44 registering in 53
+PieceInvolved :3
+Deregister piece index = 52

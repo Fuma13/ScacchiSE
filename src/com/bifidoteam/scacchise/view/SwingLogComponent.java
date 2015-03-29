@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
@@ -94,7 +95,8 @@ public class SwingLogComponent implements ActionListener {
         if(Constants.DEBUG_MODE){
 	        // Init of the file log
 			try {
-				SimpleDateFormat ft = new SimpleDateFormat ("'Log\\Log'-ddMMyy_hhmm'.txt'");
+				String fileName = "'Log\'"+ File.separator + "'Log'-ddMMyy_hhmm'.txt'";
+				SimpleDateFormat ft = new SimpleDateFormat (fileName);
 		        toPrint = new PrintStream(ft.format(new Date()), "UTF-8"); 
 			} catch (FileNotFoundException e) {
 				logMessage(e.getMessage(), LogType.ERROR);
