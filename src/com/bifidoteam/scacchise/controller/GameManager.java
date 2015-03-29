@@ -122,7 +122,8 @@ public class GameManager implements ControllerInterface{
 			
 			int indexChosen = viewComponent.GetInput();
 			
-			manageInput(indexChosen);
+			if(indexChosen != -1)
+				manageInput(indexChosen);
 
 			viewComponent.Render(medusaTreeSelectedIndex);
 		}
@@ -391,6 +392,10 @@ public class GameManager implements ControllerInterface{
 				reachebleIndices.MergeMedusaTreeNewBanch(eatableIndices);
 			}
 		}
+		else
+		{
+			reachebleIndices = new MedusaTree();
+		}
 		return reachebleIndices;
 	}
 	
@@ -495,6 +500,7 @@ public class GameManager implements ControllerInterface{
 		while(it.hasNext()){
 			int i = it.next();
 			viewComponent.Log("Deregister piece index = " + i, LogType.LOG);
+			//TODO: BUGGGGG! cerca di deregistrare un pezzo che non c'e'!!!
 			this.deregisterPieceFromTileInMt(i,this.chessboard.isPieceWhite(i));
 		}
 	}
@@ -610,7 +616,7 @@ public class GameManager implements ControllerInterface{
 		Iterator<Integer> it = registeredOpponents.iterator();
 		opponentIndex = it.next();
 		
-		//TODO aggiungere check sse qualcuno può mangiare chi scacca
+		//TODO aggiungere check sse qualcuno puo' mangiare chi scacca
 		Set<Integer> pieceEatingCheckingPiece = this.chessboard.getTile(opponentIndex).getColorListRegistered(this.colorTurn);
 		if(pieceEatingCheckingPiece.size() >0 ){
 			existValidMove = true;
@@ -634,7 +640,7 @@ public class GameManager implements ControllerInterface{
 		//for each opponent registered on starting index position
 		boolean newCheck = false;
 		Iterator<Integer> it = opponentPiecesIndexOnStartingMovePosition.iterator();
-		while(it.hasNext() && newCheck){
+		while(it.hasNext() && !newCheck){
 			int oppositeIndex = it.next();
 			//create the forecast mt
 			MedusaTree forecastMt = this.getPossibleMovesPlusFirstOccupated(oppositeIndex);

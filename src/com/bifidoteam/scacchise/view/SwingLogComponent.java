@@ -16,6 +16,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
+import javax.swing.UIManager;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DefaultStyledDocument;
 import javax.swing.text.Style;
@@ -39,6 +40,14 @@ public class SwingLogComponent implements ActionListener {
 	Chessboard chessboard;
 	
 	public SwingLogComponent(Chessboard base) {
+		
+		//Mac graphics fix!
+		 try {
+			    UIManager.setLookAndFeel( UIManager.getCrossPlatformLookAndFeelClassName() );
+			 } catch (Exception e) {
+			            e.printStackTrace();
+			 }
+		 
 		chessboard = base;
 		
 		JFrame.setDefaultLookAndFeelDecorated(true);

@@ -274,14 +274,16 @@ public class MedusaTree {//implements Iterable<Integer>,Iterator<Integer>{
 		public void CutOtherBranches(){
 			int tempCurrentNearPos = 0;
 			MedusaLeaf tempCurrentLeaf;
-			do{
+			while(tempCurrentNearPos < nearPositions.size())
+			{
 				if(tempCurrentNearPos != super.currentNearPos) {
 					tempCurrentLeaf = nearPositions.get(tempCurrentNearPos);
 					if(tempCurrentLeaf != null)
 						CutThisBranch(tempCurrentLeaf);
 				}
+				tempCurrentNearPos++;
 				
-			}while(tempCurrentNearPos < nearPositions.size());
+			}
 		}
 		
 		private void CutThisBranch(MedusaLeaf currentLeaf)
@@ -302,11 +304,13 @@ public class MedusaTree {//implements Iterable<Integer>,Iterator<Integer>{
 		public void CutAllBranches(){
 			int tempCurrentNearPos = 0;
 			MedusaLeaf tempCurrentLeaf;
-			do{
+			while(tempCurrentNearPos < nearPositions.size())
+			{
 					tempCurrentLeaf = nearPositions.get(tempCurrentNearPos);
 					if(tempCurrentLeaf != null)
 						CutThisBranch(tempCurrentLeaf);
-			}while(tempCurrentNearPos < nearPositions.size());
+					tempCurrentNearPos++;
+			}
 		}
 		
 		public void CutThisAndAfter() {

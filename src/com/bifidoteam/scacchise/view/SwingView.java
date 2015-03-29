@@ -53,15 +53,15 @@ public class SwingView implements ViewInterface {
 	@Override
 	public int GetInput() {
 
-		// *** NOTA: Qui non e' corretto!! Bisogna gestirlo lato Controller!!! (Non attesa). Parlare con gli altri
-		while(!sc.HasNewEvent()){}
-			return sc.GetNextEvent();
-			
-//		if(sc.HasNewEvent())
+//		// *** NOTA: Qui non e' corretto!! Bisogna gestirlo lato Controller!!! (Non attesa). Parlare con gli altri
+//		while(!sc.HasNewEvent()){}
 //			return sc.GetNextEvent();
-//		else{
-//			return -1;
-//		}
+			
+		if(sc.HasNewEvent())
+			return sc.GetNextEvent();
+		else{
+			return -1;
+		}
 	}
 
 	@Override
