@@ -1,6 +1,7 @@
 package com.bifidoteam.scacchise.model;
 
 import com.bifidoteam.scacchise.util.Constants;
+import com.bifidoteam.util.MedusaLeaf;
 import com.bifidoteam.util.MedusaTree;
 import com.bifidoteam.util.MedusaTree.CuttedIterator;
 
@@ -113,8 +114,14 @@ public class Chessboard
 	public MedusaTree confirmMovePiece(){
 		MedusaTree tempMt = new MedusaTree();
 		if(tempSimulateMove!= null){
+			System.out.println("eliminating piece "+tempSimulateMove.index);
 			tempMt = this.tempSimulateMove.getMedusaTree();
-			this.getTile(tempSimulateMove.index).unregisterPiece(tempSimulateMove.index,tempSimulateMove.isWhite());
+			this.getTile(this.tempSimulateMove.index).unregisterPiece(tempSimulateMove.index,tempSimulateMove.isWhite());
+			CuttedIterator it = tempMt.GetCuttedIterator();
+			while(it.hasNext()){
+				int leafIndex = it.next();
+				this.getTile(leafIndex).unregisterPiece(tempSimulateMove.index,tempSimulateMove.isWhite());
+			}
 			this.pieces[tempSimulateMove.isWhite()].remove(tempSimulateMove);
 		}
 		tempSimulateMove = null;
@@ -228,6 +235,7 @@ public class Chessboard
 			chessboard[endIndex] = chessboard[startIndex];
 			chessboard[endIndex].index = endIndex;
 			chessboard[startIndex] = null;
+			chessboard[endIndex].setIndex(endIndex);
 			return true;
 		}	
 		return false;
