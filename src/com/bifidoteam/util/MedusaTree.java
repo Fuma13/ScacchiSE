@@ -117,6 +117,28 @@ public class MedusaTree {//implements Iterable<Integer>,Iterator<Integer>{
 		return new CuttableCuttedIterator();
 	}
 	
+	@Override
+	public String toString()
+	{
+		String value = "";
+		
+		SurfaceIterator si = GetSurfaceIterator();
+		MedusaLeaf leaf;
+		
+		while(si.hasNext())
+		{
+			leaf = si.next();
+			while(leaf.getNext() != null)
+			{
+				if(!leaf.IsCut())
+					value += "[" + leaf.getValue() + "]";
+				leaf = leaf.getNext();
+			}
+			value += "\n";
+		}
+		return value;
+	}
+	
 	//-----------------------------Public functions-----------------------------------------
 
 	//--------------------------------Iterator functions------------------------------------
@@ -321,6 +343,13 @@ public class MedusaTree {//implements Iterable<Integer>,Iterator<Integer>{
 			}
 		}
 		
+		public void CutAfter() {
+			if(super.currentNearPos != -1) {
+				if(super.currentLeaf != null && super.currentLeaf.getRealNext() != null) {
+					CutThisBranch(super.currentLeaf.getRealNext());
+				}
+			}
+		}
 	}
 	
 	public class CompleteIterator implements Iterator<Integer>{
