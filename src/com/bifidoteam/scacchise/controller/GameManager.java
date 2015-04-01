@@ -176,6 +176,7 @@ public class GameManager implements ControllerInterface{
 					
 					int numberOfOpponentOnDestIndex = this.chessboard.getTile(index).numberOfOpponentPiecesRegisteredOn(this.colorTurn);
 					//If the tile is free and no opponent can arrive here, the king can move
+					//TODO Problema quando mi muovo indietro ma rimango sulla stessa linea che mi puo' mangiare
 					if(numberOfOpponentOnDestIndex == 0){
 						//Valid move
 						//he tile is free and no opponent can arrive here, the king can move
@@ -327,8 +328,12 @@ public class GameManager implements ControllerInterface{
 		setWaitingState();
 	}
 	
-	private int oppositePlayer() {
-		return (Constants.MAX_PLAYERS - 1) - colorTurn;
+	private int oppositePlayer(){
+		return oppositeColor(this.colorTurn);
+	}
+	
+	private int oppositeColor(int color) {
+		return (Constants.MAX_PLAYERS - 1) - color;
 	}
 	
 	//-----------------------------Chessboard functions
@@ -374,7 +379,7 @@ public class GameManager implements ControllerInterface{
 	
 				while(meEatableIterator.hasNext()) {
 					Integer eatableIndex = meEatableIterator.next();
-					if(chessboard.getPiece(eatableIndex) != null && isPlayerPiece(eatableIndex, oppositePlayer())) {//If is an opponent piece
+					if(chessboard.getPiece(eatableIndex) != null && isPlayerPiece(eatableIndex, oppositeColor(chessboard.isPieceWhite(index)))) {//If is an opponent piece
 						//then this piece can eat it and can't continue on this way 
 						meEatableIterator.CutAfter();
 					}
@@ -576,7 +581,7 @@ public class GameManager implements ControllerInterface{
 			if(numOpponentsRegisteredOnLeaf == 0){
 				
 				existValidMove = true;
-				
+				viewComponent.Log("First possible move of king to safe itself: " + leafIndex, LogType.LOG);
 //				//if is exactly one, king can eat if the opponent piece is there
 //				if(numOpponentsRegisteredOnLeaf == 1){
 //					
@@ -618,6 +623,7 @@ public class GameManager implements ControllerInterface{
 		Set<Integer> pieceEatingCheckingPiece = this.chessboard.getTile(opponentIndex).getColorListRegistered(this.colorTurn);
 		if(pieceEatingCheckingPiece.size() >0 ){
 			existValidMove = true;
+			viewComponent.Log("First possible move of other piece to safe the king: EAT the opponent piece in " + opponentIndex , LogType.LOG);
 		}
 		
 		//found the index of tiles between the rival and the king
@@ -630,6 +636,7 @@ public class GameManager implements ControllerInterface{
 				//if the tile in that index contains a friend piece, that piece can move and stop king's check
 				if(this.chessboard.getTile(tempoPos).getColorListRegistered(colorTurn).size() > 0){
 					existValidMove = true;
+					viewComponent.Log("First possible move of other piece to safe the king: intercept opponent piece in " + tempoPos , LogType.LOG);
 				}
 			}
 		}
