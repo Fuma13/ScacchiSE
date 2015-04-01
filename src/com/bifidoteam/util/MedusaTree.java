@@ -117,6 +117,8 @@ public class MedusaTree {//implements Iterable<Integer>,Iterator<Integer>{
 		return new CuttableCuttedIterator();
 	}
 	
+	//Return the complete mt
+	//each row is a branch and when the value is followed by 'c', that leaf is cutted
 	@Override
 	public String toString()
 	{
@@ -128,13 +130,45 @@ public class MedusaTree {//implements Iterable<Integer>,Iterator<Integer>{
 		while(si.hasNext())
 		{
 			leaf = si.next();
-			while(leaf.getNext() != null)
+			while(leaf != null)
 			{
-				if(!leaf.IsCut())
+				if(!leaf.IsCut()){
 					value += "[" + leaf.getValue() + "]";
-				leaf = leaf.getNext();
+				}
+				else{
+					value += "[" + leaf.getValue() + "c]";
+				}
+				leaf = leaf.getRealNext();
 			}
 			value += "\n";
+		}
+		return value;
+	}
+	
+	//Return the complete mt
+	//each branch is separated by '-' and when the value is followed by 'c', that leaf is cutted
+	public String toStringInline()
+	{
+		String value = "";
+		
+		SurfaceIterator si = GetSurfaceIterator();
+		MedusaLeaf leaf;
+		
+		while(si.hasNext())
+		{
+			leaf = si.next();
+			while(leaf != null)
+			{
+				if(!leaf.IsCut()){
+					value += "[" + leaf.getValue() + "]";
+				}
+				else{
+					value += "[" + leaf.getValue() + "c]";
+				}
+				leaf = leaf.getRealNext();
+			}
+			if(si.hasNext())
+				value += " - ";
 		}
 		return value;
 	}

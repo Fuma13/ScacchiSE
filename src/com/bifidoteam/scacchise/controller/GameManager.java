@@ -11,7 +11,6 @@ import com.bifidoteam.scacchise.interfaces.ViewInterface;
 import com.bifidoteam.scacchise.model.Chessboard;
 import com.bifidoteam.scacchise.util.Constants;
 import com.bifidoteam.scacchise.view.SwingView;
-import com.bifidoteam.util.MedusaLeaf;
 import com.bifidoteam.util.MedusaTree;
 import com.bifidoteam.util.MedusaTree.CuttableCuttedIterator;
 import com.bifidoteam.util.MedusaTree.CuttedIterator;
@@ -153,7 +152,7 @@ public class GameManager implements ControllerInterface{
 	//Check if the new index is valid, if true set the selected piece and generate its mt
 	//and pass to the selected state, otherwise reset the state and return in waiting
 	private void selectPiece(int index) {
-		this.viewComponent.Log(this.PrintRemainigPieceWhite(54),LogType.LOG);
+		this.viewComponent.Log(this.PrintRemainigPiece(index,this.colorTurn),LogType.LOG);
 		if(index >= 0 && index < Constants.MAX_INDEX && isPlayerPiece(index, this.colorTurn)) {
 			lastSelectedIndex = index;
 			medusaTreeSelectedIndex = getPossibleMoves(index,this.colorTurn);
@@ -170,7 +169,7 @@ public class GameManager implements ControllerInterface{
 	//set the state in Moving that wait the view
 	private void movePiece(int index) {
 		if(index >= 0 && index < Constants.MAX_INDEX && index != this.lastSelectedIndex) {
-			this.viewComponent.Log(this.PrintRemainigPieceWhite(54),LogType.LOG);
+			this.viewComponent.Log(this.PrintRemainigPiece(this.lastSelectedIndex,this.colorTurn),LogType.LOG);
 			if(this.medusaTreeSelectedIndex != null && this.medusaTreeSelectedIndex.Contain(index)) {
 				
 				if(this.chessboard.isKingPiece(this.lastSelectedIndex, this.colorTurn)){
@@ -671,7 +670,7 @@ public class GameManager implements ControllerInterface{
 	private void SetPieceDestAndValidateMt(int destIndex,Set<Integer> opponents){
 		
 		this.viewComponent.Log("\n---------------VALIDATING MOVES---------------",LogType.LOG);
-		this.viewComponent.Log(this.PrintRemainigPieceWhite(54), LogType.LOG);
+		this.viewComponent.Log(this.PrintRemainigPiece(this.lastSelectedIndex,this.colorTurn), LogType.LOG);
 		this.viewComponent.Log("\n", LogType.LOG);
 		
 		//TODO Bug1 piece moved so start is empty and must valorize piece with new index and new mt
@@ -686,12 +685,12 @@ public class GameManager implements ControllerInterface{
 		this.registerPieceOnHisMT(destIndex, this.colorTurn);
 		
 		this.viewComponent.Log("\n---------------AFTER SELECTED PIECE MOVE---------------",LogType.LOG);
-		this.viewComponent.Log(this.PrintRemainigPieceWhite(54), LogType.LOG);
+		this.viewComponent.Log(this.PrintRemainigPiece(this.lastSelectedIndex,this.colorTurn), LogType.LOG);
 		this.viewComponent.Log("\n", LogType.LOG);
 		//bug1 fix
 		
 		//get friend pieces on starting index 
-		Set<Integer> temp = this.chessboard.getTile(this.lastSelectedIndex).getColorListRegistered(this.colorTurn);
+		Set<Integer> temp = new HashSet<Integer>(this.chessboard.getTile(this.lastSelectedIndex).getColorListRegistered(this.colorTurn));
 		//get friend pieces on dest index
 		temp.addAll(this.chessboard.getTile(destIndex).getColorListRegistered(this.colorTurn));
 		//get opposite pieces registered on dest index
@@ -707,7 +706,7 @@ public class GameManager implements ControllerInterface{
 		//TODO delete
 		this.viewComponent.Log("\n----------------AFTER FOUND PieceInvolved(all friend and DestEnemy)-----------",LogType.LOG);
 		this.viewComponent.Log("PieceInvolved(all friend and DestEnemy)" +involvedPieces.size(), LogType.LOG);
-		this.viewComponent.Log(this.PrintRemainigPieceWhite(54), LogType.LOG);
+		this.viewComponent.Log(this.PrintRemainigPiece(this.lastSelectedIndex,this.colorTurn), LogType.LOG);
 		this.viewComponent.Log("\n", LogType.LOG);
 		//rimuovere
 		
@@ -758,8 +757,8 @@ public class GameManager implements ControllerInterface{
 		this.chessboard.confirmMovePiece();
 
 		//TODO debug, remove
-		this.viewComponent.Log(this.PrintRemainigPieceWhite(startIndex),LogType.LOG);
-		this.viewComponent.Log(this.PrintRemainigPieceWhite(endIndex),LogType.LOG);
+		this.viewComponent.Log(this.PrintRemainigPiece(startIndex, this.colorTurn),LogType.LOG);
+		this.viewComponent.Log(this.PrintRemainigPiece(endIndex,this.colorTurn),LogType.LOG);
 		
 		this.setMovingState();
 		viewComponent.MoveFromStartIndexToEndIndex(startIndex, endIndex);
@@ -770,12 +769,13 @@ public class GameManager implements ControllerInterface{
 	
 	//--------------------------------PRIVATE DEBUGGING METHOD------------------------------
 	private String PrintRemainingPiece(int tileIndex){
-		return this.PrintRemainigPieceWhite(tileIndex)+	this.PrintRemainigPieceBlack(tileIndex);
+		return this.PrintRemainigPiece(tileIndex, Constants.WHITE)+	this.PrintRemainigPiece(tileIndex, Constants.BLACK);
 	}
 	
-	private String PrintRemainigPieceWhite(int tileIndex){
-		String listindex = "White still registered on " +tileIndex + ":\n";
-		Set<Integer> remainingWhites = this.chessboard.getTile(tileIndex).getColorListRegistered(Constants.WHITE);
+	private String PrintRemainigPiece(int tileIndex, int color){
+		String listindex = (color == Constants.WHITE ? "White" : "Black");
+		listindex += " still registered on " +tileIndex + ":\n";
+		Set<Integer> remainingWhites = this.chessboard.getTile(tileIndex).getColorListRegistered(color);
 		Iterator<Integer> itpiece = remainingWhites.iterator();
 		while(itpiece.hasNext()){
 			listindex += " "+itpiece.next();
@@ -783,23 +783,25 @@ public class GameManager implements ControllerInterface{
 		return listindex;
 	}
 	
-	private String PrintRemainigPieceBlack(int tileIndex){
-		String listindex = "Black still registered on " +tileIndex + ":\n";
-		Set<Integer> remainingBlacks = this.chessboard.getTile(tileIndex).getColorListRegistered(Constants.BLACK);
-		Iterator<Integer> itpiece = remainingBlacks.iterator();
-		while(itpiece.hasNext()){
-			listindex += " "+itpiece.next();
-		}
-		return listindex;
-	}
+//	private String PrintRemainigPieceBlack(int tileIndex){
+//		String listindex = "Black still registered on " +tileIndex + ":\n";
+//		Set<Integer> remainingBlacks = this.chessboard.getTile(tileIndex).getColorListRegistered(Constants.BLACK);
+//		Iterator<Integer> itpiece = remainingBlacks.iterator();
+//		while(itpiece.hasNext()){
+//			listindex += " "+itpiece.next();
+//		}
+//		return listindex;
+//	}
 	
 	private void PrintPieceMt(int i) {
 		String mtIndex = "MT of "+i+" is: ";
 		MedusaTree pieceMt = this.chessboard.getMedusaTree(i);
-		CuttedIterator itMt = pieceMt.GetCuttedIterator();
-		while(itMt.hasNext()){
-			mtIndex += itMt.next()+" ";
-		}
+		mtIndex += pieceMt.toStringInline();
+		//Esiste gia' il toString del medusa tree!!!
+//		CuttedIterator itMt = pieceMt.GetCuttedIterator();
+//		while(itMt.hasNext()){
+//			mtIndex += itMt.next()+" ";
+//		}
 		this.viewComponent.Log(mtIndex, LogType.LOG);
 	}
 
@@ -811,10 +813,11 @@ public class GameManager implements ControllerInterface{
 			int pieceIndex = it.next();
 			forecastIndex += "Piece "+pieceIndex+" :\t";
 			MedusaTree mt = this.forecastMts.get(pieceIndex);
-			CuttedIterator it2 = mt.GetCuttedIterator();
-			while(it2.hasNext()){
-				forecastIndex += it2.next()+" ";
-			}
+			forecastIndex += mt.toStringInline();
+//			CuttedIterator it2 = mt.GetCuttedIterator();
+//			while(it2.hasNext()){
+//				forecastIndex += it2.next()+" ";
+//			}
 			forecastIndex += "\n";			
 		}
 		return forecastIndex;
