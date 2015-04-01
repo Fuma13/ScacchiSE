@@ -172,29 +172,62 @@ public class GameManager implements ControllerInterface{
 			this.viewComponent.Log(this.PrintRemainigPiece(this.lastSelectedIndex,this.colorTurn),LogType.LOG);
 			if(this.medusaTreeSelectedIndex != null && this.medusaTreeSelectedIndex.Contain(index)) {
 				
+				//always clear old forecastMt
+				this.forecastMts.clear();
+				
+				//check if was selected the king
 				if(this.chessboard.isKingPiece(this.lastSelectedIndex, this.colorTurn)){
-					
+					//king was selected, get the num of opponents registered on his position					
 					int numberOfOpponentOnDestIndex = this.chessboard.getTile(index).numberOfOpponentPiecesRegisteredOn(this.colorTurn);
+					
+					//TODO Debug only-----------------
+					String debug = "\nKing in "+this.lastSelectedIndex+" was selected, it has "+numberOfOpponentOnDestIndex+" checking him";
+					this.viewComponent.Log(debug, LogType.LOG);
+					//Debug only-----------------
+					
 					//If the tile is free and no opponent can arrive here, the king can move
-					//TODO Problema quando mi muovo indietro ma rimango sulla stessa linea che mi puo' mangiare
 					if(numberOfOpponentOnDestIndex == 0){
-						//Valid move
-						//he tile is free and no opponent can arrive here, the king can move
-						//get all opponents pieces index from starting move position
+						//Still not a valid move because
+						//the tile is free but an opponent can arrive here because the king moves
+						//on a line checked by an opponent (see king move on bishop diagonal behind king position)
 						
-						viewComponent.Log("King moves safely", LogType.WARNING);
+						//TODO debug only, delete-----------------------------
+						viewComponent.Log("King moves safely but still can exist a piece checking him because king move on a dest position not reachable before by opponent because shielded by the king itself", LogType.WARNING);
+						//----------------------------------------------------
 						
-						//update chessboad
+						//simulate king position
 						this.chessboard.simulateMovePieceFromStartToEnd(this.lastSelectedIndex, index);
 						
-						//King could eat a piece. if exist need to deregister from Tile and colorList
-						MedusaTree possibleAtePiece = this.chessboard.confirmMovePiece();
-						this.deregisterPieceFromTileInMt(possibleAtePiece,index,this.oppositePlayer());
+						//IF NUMOfOpponentsOnDEST is 0 before simulating king moves, how can eat someone?
 						
+//						//King could eat a piece. if exist need to deregister from Tile and colorList
+//						//otherwise mt is empty and don't deregiser nothing
+//						//used because for example a pawn can stay in front of kin without check him
+//						//king can eat pawn
+//						MedusaTree possibleAtePiece = this.chessboard.confirmMovePiece();
+//						this.deregisterPieceFromTileInMt(possibleAtePiece,index,this.oppositePlayer());
+						
+						
+						//get all opponents pieces index from starting move position
 						Set<Integer> opponents = this.chessboard.getTile(this.lastSelectedIndex).getColorListRegistered(this.oppositePlayer());
 						
-						this.SetPieceDestAndValidateMt(index,opponents);
-						this.EndValidMove(this.lastSelectedIndex, index);
+						//check if the king himself create a new 
+						if(!this.thereAreNewCheckFromMovingPiece(opponents)){
+							
+							//TODO debug only, delete-----------------------------
+							viewComponent.Log("King moves safely without create a new check on him", LogType.WARNING);
+							//----------------------------------------------------
+							
+							this.SetPieceDestAndValidateMt(index,opponents);
+							this.EndValidMove(this.lastSelectedIndex, index);
+						}else{
+							//TODO debug only, delete-----------------------------
+							viewComponent.Log("King moves but is again under check", LogType.WARNING);
+							//----------------------------------------------------
+							
+							this.chessboard.rollbackMovePiece(this.lastSelectedIndex, index);
+							this.setWaitingState();
+						}
 					}
 					else{
 						viewComponent.Log("King DOESN'T move safely", LogType.WARNING);
@@ -210,9 +243,6 @@ public class GameManager implements ControllerInterface{
 						//simulate the move
 						this.chessboard.simulateMovePieceFromStartToEnd(this.lastSelectedIndex, index);
 
-						//clear old forecastMt
-						this.forecastMts.clear();
-						
 						//get all opponents pieces index from starting move position
 						Set<Integer> opponents = this.chessboard.getTile(this.lastSelectedIndex).getColorListRegistered(this.oppositePlayer());
 						//check if the moving piece creates new check when leaving the starting position
