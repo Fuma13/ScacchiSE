@@ -300,13 +300,6 @@ public class GameManager implements ControllerInterface{
 		}
 	}
 
-//	private void updateTiles(int startIndex, int endIndex)
-//	{
-//		// TODO VALE: mossa valida quindi devo aggiornare le tile
-//		//** si ma quali? (vale)
-//		
-//	}
-
 	private void setWaitingState(){
 		gameState = GameState.WAITING;
 		resetMoveState();
@@ -564,7 +557,6 @@ public class GameManager implements ControllerInterface{
 	}
 	
 	//return the index of valid tiles around the king where he can moves
-	//TODO: se da cambiare con il nuovo algoritmo potrebbe tornare un int soltanto
 	private boolean searchKingAdjacentSafe(){
 		boolean existValidMove = false;
 		
@@ -610,7 +602,6 @@ public class GameManager implements ControllerInterface{
 	}
 	
 	//return the index of valid tiles usefull to block the check
-	//TODO: se da cambiare con il nuovo algoritmo potrebbe tornare un int soltanto
 	private boolean searchDistantSafeMoves(){
 		boolean existValidMove = false;
 		
@@ -624,7 +615,6 @@ public class GameManager implements ControllerInterface{
 		Iterator<Integer> it = registeredOpponents.iterator();
 		opponentIndex = it.next();
 		
-		//TODO aggiungere check sse qualcuno puo' mangiare chi scacca
 		Set<Integer> pieceEatingCheckingPiece = this.chessboard.getTile(opponentIndex).getColorListRegistered(this.colorTurn);
 		if(pieceEatingCheckingPiece.size() >0 ){
 			existValidMove = true;
@@ -703,7 +693,7 @@ public class GameManager implements ControllerInterface{
 		involvedPieces.remove(this.lastSelectedIndex);
 		//bug1 fix
 		
-		//TODO delete
+		//TODO DEBUG ONLY DELETE IT --------------------------------
 		this.viewComponent.Log("\n----------------AFTER FOUND PieceInvolved(all friend and DestEnemy)-----------",LogType.LOG);
 		this.viewComponent.Log("PieceInvolved(all friend and DestEnemy)" +involvedPieces.size(), LogType.LOG);
 		this.viewComponent.Log(this.PrintRemainigPiece(this.lastSelectedIndex,this.colorTurn), LogType.LOG);
@@ -720,7 +710,7 @@ public class GameManager implements ControllerInterface{
 		//merge also the list of opponent on starting index with the list of piece involved
 		involvedPieces.addAll(opponents);
 		
-		//TODO delete, debug only-------------------
+		//TODO DEBUG ONLY DELETE IT --------------------------------
 		viewComponent.Log("\nPieceInvolved(all) :" +involvedPieces.size(), LogType.LOG);
 		Iterator<Integer> itInd = involvedPieces.iterator();
 		String involvedPieceIndex = "Involved Index: ";
@@ -756,7 +746,7 @@ public class GameManager implements ControllerInterface{
 		//cambio stato in MOVING e turnColor
 		this.chessboard.confirmMovePiece();
 
-		//TODO debug, remove
+		//TODO DEBUG ONLY DELETE IT --------------------------------
 		this.viewComponent.Log(this.PrintRemainigPiece(startIndex, this.colorTurn),LogType.LOG);
 		this.viewComponent.Log(this.PrintRemainigPiece(endIndex,this.colorTurn),LogType.LOG);
 		

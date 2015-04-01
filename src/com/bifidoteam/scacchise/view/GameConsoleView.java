@@ -48,7 +48,7 @@ public class GameConsoleView implements ViewInterface {
 	@Override
 	public int GetInput() {
 		
-		System.out.println("Write next Move: (Syntax: \"king\" or \"A4\")");
+		System.out.println("Write next Move: (Syntax: \"A4\")");
 		String in = null;
 		int toReturn = -1;
 	    InputStreamReader streamReader = new InputStreamReader(System.in);
@@ -60,7 +60,6 @@ public class GameConsoleView implements ViewInterface {
 				toReturn = ParseInput(in);
 			}
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		

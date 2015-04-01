@@ -19,7 +19,6 @@ public class Chessboard
 	//Liste dei soli pezzi bianchi e neri.
 	private HashSet<Integer> [] pieces;
 	
-	//TODO VALE: facciamo la verifica quando muoviamo che siamo un re ed aggiorniamo la pos o metto i piece che si portano la pos?
 	private Piece[] kingPos;
 	
 	private Piece tempSimulateMove;

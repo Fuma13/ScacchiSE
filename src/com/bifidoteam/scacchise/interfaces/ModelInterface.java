@@ -1,5 +1,5 @@
 package com.bifidoteam.scacchise.interfaces;
 
 public interface ModelInterface {
-	//TODO vale: si può modellare un "model" di base comune
+	//TODO VALE: si puo' modellare un "model" di base comune
 }
