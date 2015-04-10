@@ -95,7 +95,7 @@ public class SwingLogComponent implements ActionListener {
         if(Constants.DEBUG_MODE){
 	        // Init of the file log
 			try {
-				String fileName = "'Log\'"+ File.separator + "'Log'-ddMMyy_hhmm'.txt'";
+				String fileName = "'Log\'"+ File.separator + "'Log'-yyMMdd_HHmm'.txt'";
 				SimpleDateFormat ft = new SimpleDateFormat (fileName);
 		        toPrint = new PrintStream(ft.format(new Date()), "UTF-8"); 
 			} catch (FileNotFoundException e) {
