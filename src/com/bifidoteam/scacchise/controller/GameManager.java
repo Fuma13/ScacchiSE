@@ -433,20 +433,29 @@ public class GameManager implements ControllerInterface{
 	//Valid positions are: free positions, enemy positions and friend positions
 	private MedusaTree getPossibleMovesPlusFirstOccupated(int index)
 	{
-		MedusaTree reachebleIndices = chessboard.getPossibleMovementIndices(index);
-		if(reachebleIndices != null){
-			MedusaTree.CompleteIterator mtIterator = reachebleIndices.GetCompleteIterator();
-			while(mtIterator.hasNext()) {
-				Integer reachebleIndex = mtIterator.next();
-				//If there is another piece I leave this and cut after
-				if(chessboard.getPiece(reachebleIndex) != null){
-						mtIterator.CutAfter();	
+		MedusaTree reachebleIndices;
+		if(!chessboard.isPieceSpecial(index)){
+			reachebleIndices = chessboard.getPossibleMovementIndices(index);
+			if(reachebleIndices != null){
+				MedusaTree.CompleteIterator mtIterator = reachebleIndices.GetCompleteIterator();
+				while(mtIterator.hasNext()) {
+					Integer reachebleIndex = mtIterator.next();
+					//If there is another piece I leave this and cut after
+					if(chessboard.getPiece(reachebleIndex) != null){
+							mtIterator.CutAfter();	
+					}
 				}
 			}
-			if(chessboard.isPieceSpecial(index)){
-	
-				MedusaTree eatableIndices = chessboard.getPossibleEatIndices(index);
-				MedusaTree.CompleteIterator meEatableIterator = eatableIndices.GetCompleteIterator();
+			else
+			{
+				reachebleIndices = new MedusaTree();
+			}
+		} 
+		else
+		{
+			reachebleIndices = chessboard.getPossibleEatIndices(index);
+			if(reachebleIndices != null){
+				MedusaTree.CompleteIterator meEatableIterator = reachebleIndices.GetCompleteIterator();
 	
 				while(meEatableIterator.hasNext()) {
 					Integer eatableIndex = meEatableIterator.next();
@@ -454,13 +463,12 @@ public class GameManager implements ControllerInterface{
 						meEatableIterator.CutAfter();
 					}
 				}
-	
-				reachebleIndices.MergeMedusaTreeNewBanch(eatableIndices);
 			}
-		}
-		else
-		{
-			reachebleIndices = new MedusaTree();
+			else
+			{
+				reachebleIndices = new MedusaTree();
+			}
+			//reachebleIndices.MergeMedusaTreeNewBanch(eatableIndices);
 		}
 		return reachebleIndices;
 	}
