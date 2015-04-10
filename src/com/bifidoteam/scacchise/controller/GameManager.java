@@ -218,6 +218,10 @@ public class GameManager implements ControllerInterface{
 							viewComponent.Log("King moves safely without create a new check on him", LogType.WARNING);
 							//----------------------------------------------------
 							
+							//Piece eat a piece. Need to deregister from Tile and colorList
+							MedusaTree possibleAtePiece = this.chessboard.confirmMovePiece();
+							this.deregisterPieceFromTileInMt(possibleAtePiece,index,this.oppositePlayer());
+							
 							this.SetPieceDestAndValidateMt(index,opponents);
 							this.EndValidMove(this.lastSelectedIndex, index);
 						}else{
@@ -671,9 +675,25 @@ public class GameManager implements ControllerInterface{
 		opponentIndex = it.next();
 		
 		Set<Integer> pieceEatingCheckingPiece = this.chessboard.getTile(opponentIndex).getColorListRegistered(this.colorTurn);
-		if(pieceEatingCheckingPiece.size() >0 && !pieceEatingCheckingPiece.contains(kingIndex) ){
-			existValidMove = true;
-			viewComponent.Log("First possible move of other piece to safe the king: EAT the opponent piece in " + opponentIndex , LogType.LOG);
+		if(pieceEatingCheckingPiece.size() >0 ){
+			Iterator<Integer> itCheckingPiece = pieceEatingCheckingPiece.iterator();
+			while(itCheckingPiece.hasNext()){
+				int pieceEatingCheckingOpponent = itCheckingPiece.next();
+				if(pieceEatingCheckingOpponent != kingIndex){
+					this.chessboard.simulateMovePieceFromStartToEnd(pieceEatingCheckingOpponent, opponentIndex);
+					Set<Integer> newCheckingPieces = this.chessboard.getTile(pieceEatingCheckingOpponent).getColorListRegistered(oppositePlayer());
+					if(!this.thereAreNewCheckFromMovingPiece(newCheckingPieces)){
+						existValidMove = true;
+						viewComponent.Log("First possible move of other piece to safe the king: EAT the opponent piece in " + opponentIndex , LogType.LOG);
+					}
+					this.chessboard.rollbackMovePiece(pieceEatingCheckingOpponent, opponentIndex);
+				}
+			}
+			
+//			if( pieceEatingCheckingPiece.size() != 1 || !pieceEatingCheckingPiece.contains(kingIndex) ){
+//			existValidMove = true;
+//			viewComponent.Log("First possible move of other piece to safe the king: EAT the opponent piece in " + opponentIndex , LogType.LOG);
+//			}
 		}
 		
 		//found the index of tiles between the rival and the king
