@@ -609,8 +609,9 @@ public class GameManager implements ControllerInterface{
 	private boolean searchKingAdjacentSafe(){
 		boolean existValidMove = false;
 		
+		int kingIndex = this.chessboard.getKing(this.colorTurn);
 		//get the king mt
-		MedusaTree kingMt = this.getPossibleMoves(this.chessboard.getKing(this.colorTurn),this.colorTurn);
+		MedusaTree kingMt = this.getPossibleMoves(kingIndex,this.colorTurn);
 		
 		//for each leaf gets the tile and checks how many opponents are registered on
 		CuttedIterator it = kingMt.GetCuttedIterator();
@@ -624,8 +625,13 @@ public class GameManager implements ControllerInterface{
 			//no covering pieces or tile empty
 			if(numOpponentsRegisteredOnLeaf == 0){
 				
-				existValidMove = true;
-				viewComponent.Log("First possible move of king to safe itself: " + leafIndex, LogType.LOG);
+				this.chessboard.simulateMovePieceFromStartToEnd(kingIndex, leafIndex);
+				Set<Integer> registeredOpponents = this.chessboard.getTile(kingIndex).getColorListRegistered(oppositePlayer());
+				if(!this.thereAreNewCheckFromMovingPiece(registeredOpponents)){
+					existValidMove = true;
+					viewComponent.Log("First possible move of king to safe itself: " + leafIndex, LogType.LOG);
+				}
+				this.chessboard.rollbackMovePiece(kingIndex, leafIndex);
 //				//if is exactly one, king can eat if the opponent piece is there
 //				if(numOpponentsRegisteredOnLeaf == 1){
 //					
@@ -665,7 +671,7 @@ public class GameManager implements ControllerInterface{
 		opponentIndex = it.next();
 		
 		Set<Integer> pieceEatingCheckingPiece = this.chessboard.getTile(opponentIndex).getColorListRegistered(this.colorTurn);
-		if(pieceEatingCheckingPiece.size() >0 ){
+		if(pieceEatingCheckingPiece.size() >0 && !pieceEatingCheckingPiece.contains(kingIndex) ){
 			existValidMove = true;
 			viewComponent.Log("First possible move of other piece to safe the king: EAT the opponent piece in " + opponentIndex , LogType.LOG);
 		}
