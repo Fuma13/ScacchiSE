@@ -353,9 +353,12 @@ public class GameManager implements ControllerInterface{
 	
 	private void changePlayerTurn() {
 		colorTurn = oppositePlayer();
-		if(isUnderCheckmate())
+		if(isUnderCheckmate()){
 			setWinState();
-		setWaitingState();
+		}
+		else{
+			setWaitingState();
+		}
 	}
 	
 	private int oppositePlayer(){
@@ -597,7 +600,9 @@ public class GameManager implements ControllerInterface{
 	private int isUnderCheck(){
 		//get the king pos
 		int kingPos = this.chessboard.getKing(this.colorTurn);
-		return this.chessboard.getTile(kingPos).numberOfOpponentPiecesRegisteredOn(this.colorTurn);
+		int checkingPiece = this.chessboard.getTile(kingPos).numberOfOpponentPiecesRegisteredOn(this.colorTurn);
+		if(checkingPiece > 0) viewComponent.Log("King is undercheck", LogType.WARNING);
+		return checkingPiece;
 	}
 	
 	//return the index of valid tiles around the king where he can moves
