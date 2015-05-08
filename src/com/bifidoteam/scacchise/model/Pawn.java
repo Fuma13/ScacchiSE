@@ -20,8 +20,17 @@ public class Pawn extends Piece implements PawnInterface {
 		int j = this.index;
 		int segno = (this.isWhite() == Constants.WHITE)? -1:1;
 		
-		j += Constants.MAX_INDEX_ROW*segno;
-		mt.AddBranch(j);
+		int rowIndex = j/ Constants.MAX_INDEX_ROW;
+		
+		if(segno<0 && rowIndex>0 ){
+			j += Constants.MAX_INDEX_ROW*segno;
+			mt.AddBranch(j);
+		}
+		
+		if(segno>0 && rowIndex < (Constants.MAX_INDEX_ROW-1) ){
+			j += Constants.MAX_INDEX_ROW*segno;
+			mt.AddBranch(j);
+		}
 		
 		return mt;
 	}
